@@ -1,0 +1,18 @@
+#!/bin/sh
+#prereq: zypper -n in build-compare
+
+pushd binaries
+origrpms=$(ls *.rpm | grep -v "^::import::")
+popd
+
+overall=0
+for f in $origrpms ; do
+    # strip rebuild counter
+    rpm=$(echo "$f" | sed 's/-[0-9.]*\(\.[a-z0-9_]*\.rpm\)$/-*\1/')
+    #ls -l binaries/$f RPMS/$rpm
+    /usr/lib/build/pkg-diff.sh -a binaries/$f RPMS/$rpm
+    compareresult=$?
+    [[ $compareresult = 0 ]] || overall=1
+done
+
+exit $overall

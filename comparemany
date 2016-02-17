@@ -1,0 +1,17 @@
+#!/bin/sh
+for p in "$@" ; do
+    if ! pushd $p > /dev/null || ! [ -e binaries ] ; then
+        echo "could not find $p/binaries"
+        exit 21
+    fi
+    shopt -s nullglob
+    if [[ -z RPMS/* ]] ; then
+         echo "result:$p=notbuilt"
+         continue
+    fi
+    ~/reproducibleopensuse/compare >/dev/null
+    ret=$?
+    popd > /dev/null
+    echo "result:$p=$ret"
+done
+

@@ -1,0 +1,6 @@
+#!/bin/sh
+for p in "$@" ; do
+    pushd $p && ! [ -e binaries ] && ~/reproducibleopensuse/rebuild
+    popd
+done
+
