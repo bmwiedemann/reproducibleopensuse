@@ -1,0 +1,11 @@
+--- /usr/lib/build/functions.sh.orig	2015-11-03 23:50:40.000000000 +0000
++++ /usr/lib/build/functions.sh	2016-02-17 07:32:58.383483607 +0000
+@@ -135,7 +135,7 @@
+     # the DISTURL tag can be used as checkin ID
+     #echo "$QF"
+     echo "comparing rpmtags"
+-    if ! diff -au $file1 $file2; then
++    if ! diff -au -I "^ openSUSE openSUSE Factory" -I "^ openSUSE openSUSE Leap 42" $file1 $file2; then
+       if test -z "$check_all"; then
+         rm $file1 $file2
+         return 1
