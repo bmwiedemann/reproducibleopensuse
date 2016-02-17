@@ -1,0 +1,7 @@
+These tools are intended to make it easier
+to verify that the binaries resulting from openSUSE builds are reproducible
+
+for this, we rebuild locally from source
+and compare the results with published binaries
+using the build-compare script that abstracts away
+some unavoidable (or unimportant) differences like rpm timestamps
