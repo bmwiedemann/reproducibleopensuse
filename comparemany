@@ -12,6 +12,7 @@ for p in "$@" ; do
     fi
     $scriptdir/compare > RPMS/$p-compare.out
     ret=$?
+    [ $ret = 0 ] && rm -f RPMS/$p-compare.out
     popd > /dev/null
     echo "result:$p=$ret"
 done
