@@ -9,7 +9,7 @@ for p in "$@" ; do
          echo "result:$p=notbuilt"
          continue
     fi
-    ~/reproducibleopensuse/compare >/dev/null
+    ~/reproducibleopensuse/compare > RPMS/$p-compare.out
     ret=$?
     popd > /dev/null
     echo "result:$p=$ret"
