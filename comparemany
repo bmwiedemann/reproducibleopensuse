@@ -1,4 +1,5 @@
 #!/bin/sh
+scriptdir=$(dirname $0)
 for p in "$@" ; do
     if ! pushd $p > /dev/null || ! [ -e binaries ] ; then
         echo "could not find $p/binaries"
@@ -9,7 +10,7 @@ for p in "$@" ; do
          echo "result:$p=notbuilt"
          continue
     fi
-    ~/reproducibleopensuse/compare > RPMS/$p-compare.out
+    $scriptdir/compare > RPMS/$p-compare.out
     ret=$?
     popd > /dev/null
     echo "result:$p=$ret"
