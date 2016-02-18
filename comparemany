@@ -5,8 +5,7 @@ for p in "$@" ; do
         echo "could not find $p/binaries"
         exit 21
     fi
-    shopt -s nullglob
-    if [[ -z RPMS/* ]] ; then
+    if test -z "$(find RPMS/ -maxdepth 1 -name '*.rpm' -print -quit)" ; then
          echo "result:$p=notbuilt"
          continue
     fi
