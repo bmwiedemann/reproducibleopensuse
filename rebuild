@@ -6,7 +6,7 @@ export OSC_BUILD_ROOT
 #vmtype="--vm-type=kvm"
 rm -rf binaries $OSC_BUILD_ROOT/home/abuild/rpmbuild/RPMS/ $OSC_BUILD_ROOT/.mount/.build.packages/RPMS/
 osc getbinaries standard x86_64
-osc build $vmtype --clean
+osc build $vmtype --clean $(basename `pwd`).spec
 rm -rf RPMS
 mkdir -p RPMS
 cp -a $OSC_BUILD_ROOT/home/abuild/rpmbuild/RPMS/*/*.rpm $OSC_BUILD_ROOT/.mount/.build.packages/RPMS/*/*.rpm RPMS/
