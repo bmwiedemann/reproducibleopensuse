@@ -1,6 +1,7 @@
 #!/bin/sh
 scriptdir=$(dirname $0)
 for p in "$@" ; do
+    popd > /dev/null
     if ! pushd $p > /dev/null || ! [ -e binaries ] ; then
         echo "could not find $p/binaries"
         exit 21
@@ -13,7 +14,6 @@ for p in "$@" ; do
     $scriptdir/compare > $o
     ret=$?
     [ $ret = 0 ] && rm -f $o
-    popd > /dev/null
     echo "result:$p=$ret"
 done
 
