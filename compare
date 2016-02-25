@@ -15,4 +15,5 @@ for f in $origrpms ; do
     [[ $compareresult = 0 ]] || overall=1
 done
 
+echo overall=$overall
 exit $overall
