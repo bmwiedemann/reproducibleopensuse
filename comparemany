@@ -9,9 +9,10 @@ for p in "$@" ; do
          echo "result:$p=notbuilt"
          continue
     fi
-    $scriptdir/compare > RPMS/$p-compare.out
+    o=RPMS/$p-compare.out
+    $scriptdir/compare > $o
     ret=$?
-    [ $ret = 0 ] && rm -f RPMS/$p-compare.out
+    [ $ret = 0 ] && rm -f $o
     popd > /dev/null
     echo "result:$p=$ret"
 done
