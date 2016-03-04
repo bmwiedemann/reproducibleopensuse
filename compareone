@@ -6,7 +6,7 @@ p=$(basename $(pwd))
          exit 0
     fi
     o=RPMS/$p-compare.out
-    $scriptdir/compare > $o
-    ret=$?
+    $scriptdir/compare | tee $o
+    ret=${PIPESTATUS[0]}
     [ $ret = 0 ] && rm -f $o
     echo "result:$p=$ret"
