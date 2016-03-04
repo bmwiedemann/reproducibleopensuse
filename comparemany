@@ -6,14 +6,6 @@ for p in "$@" ; do
         echo "Error: could not find $p"
         continue
     fi
-    if ! test -e binaries || test -z "$(find RPMS/ -maxdepth 1 -name '*.rpm' -print -quit)" ; then
-         echo "result:$p=notbuilt"
-         continue
-    fi
-    o=RPMS/$p-compare.out
-    $scriptdir/compare > $o
-    ret=$?
-    [ $ret = 0 ] && rm -f $o
-    echo "result:$p=$ret"
+    $scriptdir/compareone
 done
 

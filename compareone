@@ -1,0 +1,12 @@
+#!/bin/sh
+scriptdir=$(dirname $0)
+p=$(basename $(pwd))
+    if ! test -e binaries || test -z "$(find RPMS/ -maxdepth 1 -name '*.rpm' -print -quit)" ; then
+         echo "result:$p=notbuilt"
+         exit 0
+    fi
+    o=RPMS/$p-compare.out
+    $scriptdir/compare > $o
+    ret=$?
+    [ $ret = 0 ] && rm -f $o
+    echo "result:$p=$ret"
