@@ -1,7 +1,8 @@
 #!/bin/sh
 scriptdir=$(dirname $0)
 for p in "$@" ; do
-    pushd $p && ! [ -e RPMS ] && $scriptdir/rebuild
+    test -e /tmp/stoprebuild && break
+    pushd $p && ! [ -e RPMS ] && rb4
     popd
 done
 

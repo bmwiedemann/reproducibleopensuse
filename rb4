@@ -1,0 +1,7 @@
+#!/bin/sh -e
+date --set="2017-01-01"
+hostname sles12
+rb
+rm -rf RPMS.2017
+cp -a RPMS{,.2017}
+rb4b
