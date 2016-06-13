@@ -1,14 +1,15 @@
 #!/bin/sh
 
 : ${OSC_BUILD_ROOT:="/var/tmp/build-root/standard-x86_64"}
+: ${clean:=--clean}
 export OSC_BUILD_ROOT
 
 #vmtype="--vm-type=kvm"
 rm -rf binaries $OSC_BUILD_ROOT/home/abuild/rpmbuild/RPMS/ $OSC_BUILD_ROOT/.mount/.build.packages/RPMS/
-osc build $vmtype --clean $(basename `pwd`).spec
+osc build $vmtype $clean $(basename `pwd`).spec "$@"
 rm -rf RPMS
 mkdir -p RPMS
 cp -a $OSC_BUILD_ROOT/home/abuild/rpmbuild/RPMS/*/*.rpm $OSC_BUILD_ROOT/.mount/.build.packages/RPMS/*/*.rpm RPMS/
 test -n "$(find RPMS/ -maxdepth 1 -name '*.rpm' -print -quit)" &&\
   ! test -e binaries &&\
-  osc getbinaries standard x86_64
+  true #osc getbinaries standard x86_64
