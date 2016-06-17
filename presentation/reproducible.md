@@ -1,0 +1,37 @@
+# Introduction
+
+## What are reproducible builds?
+
+* Get the same results from building sources
+
+* ideally bit-by-bit identical (thus same hashes)
+
+* * still good: same content after applying some filters (via build-compare)
+
+<!--
+
+-->
+
+## Why reproducible builds?
+
+* Need less trust in the build hosts
+
+* Reduced load on build-service from rebuilds
+
+
+## Typical problems
+
+* embedded timestamps
+
+* compile-time CPU detection
+
+* embedded build counters
+
+<!--
+-->
+
+## Current state
+
+* 71 submit-requests sent
+
+
