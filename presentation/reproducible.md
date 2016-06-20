@@ -32,6 +32,13 @@
 
 ## Current state
 
-* 71 submit-requests sent
+* 71 submit-requests
+
+* 6 bugs filed
+
+
+## rebuild-test-scripts
+
+* available from https://github.com/bmwiedemann/reproducibleopensuse.git
 
 
