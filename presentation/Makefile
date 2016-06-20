@@ -13,7 +13,7 @@ PNG :=  $(DIA_PNG) $(SVG_PNG)
 	--break-master Break \
 	$< template.odp $@
 
-all: reproducible.odp
+all: reproducible.odp ${PNG}
 
 img/%.png: img/%.svg
 	convert $< $@

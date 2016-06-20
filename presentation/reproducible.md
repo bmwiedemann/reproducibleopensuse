@@ -1,5 +1,9 @@
 # Introduction
 
+## Where does our code come from
+
+![Codeflow](img/codeflow.png)
+
 ## What are reproducible builds?
 
 * Get the same results from building sources
