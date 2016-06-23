@@ -13,7 +13,7 @@ PNG :=  $(DIA_PNG) $(SVG_PNG)
 	--break-master Break \
 	$< template.odp $@
 
-all: reproducible.odp ${PNG}
+all: reproducible.odp
 
 img/%.png: img/%.svg
 	convert $< $@
@@ -27,5 +27,8 @@ clean:
 	rm -f img/*png
 	rm -f img/*PNG
 
-transcript.txt: slides.md
-	bin/htmlcomments slides.md > transcript.txt
+transcript.txt: reproducible.md
+	bin/htmlcomments reproducible.md > transcript.txt
+
+show: reproducible.odp
+	ooimpress reproducible.odp &
