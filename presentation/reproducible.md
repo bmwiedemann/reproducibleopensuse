@@ -46,6 +46,8 @@ make it safer
 
 * embedded rebuild counters
 
+* random .o file link order changes optimization
+
 * compile-time CPU detection
 
 <!--
