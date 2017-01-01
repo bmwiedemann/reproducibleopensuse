@@ -1,0 +1,3 @@
+all: .osc-build-retval
+.osc-build-retval: .osc/_files
+	rb4
