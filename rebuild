@@ -6,7 +6,7 @@ export OSC_BUILD_ROOT
 
 #vmtype="--vm-type=kvm"
 rm -rf binaries $OSC_BUILD_ROOT/home/abuild/rpmbuild/RPMS/ $OSC_BUILD_ROOT/.mount/.build.packages/RPMS/
-osc build $vmtype $clean $(basename `pwd`).spec "$@"
+osc build --noservice $vmtype $clean $(basename `pwd`).spec "$@"
 echo $? > .osc-build-retval
 if [ `cat .osc-build-retval` -gt 0 ] ; then
     cp -a $OSC_BUILD_ROOT/.build.log .
