@@ -1,5 +1,6 @@
 #!/bin/sh
 scriptdir=$(dirname $0)
+rm -f /tmp/stoprebuild
 for p in "$@" ; do
     test -e /tmp/stoprebuild && break
     pushd $p && ! [ -e RPMS ] && rb4
