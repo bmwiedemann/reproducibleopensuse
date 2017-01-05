@@ -1,0 +1,2 @@
+#!/bin/sh
+make -f ~/reproducibleopensuse/Makefile.rebuild
