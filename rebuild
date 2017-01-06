@@ -10,3 +10,4 @@ osc build $vmtype --clean $(basename `pwd`).spec
 rm -rf RPMS
 mkdir -p RPMS
 cp -a $OSC_BUILD_ROOT/home/abuild/rpmbuild/RPMS/*/*.rpm $OSC_BUILD_ROOT/.mount/.build.packages/RPMS/*/*.rpm RPMS/
+test -n "$(find RPMS/ -maxdepth 1 -name '*.rpm' -print -quit)"
