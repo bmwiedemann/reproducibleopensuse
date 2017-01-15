@@ -3,6 +3,9 @@
 : ${OSC_BUILD_ROOT:="/var/tmp/build-root/standard-x86_64"}
 : ${clean:=--clean}
 export OSC_BUILD_ROOT
+if grep -q "^$(basename $(pwd))$" ~/reproducibleopensuse/exceptions.cleanbuild ; then
+  clean=${clean/--noinit/--clean}
+fi
 
 #vmtype="--vm-type=kvm"
 rm -rf binaries $OSC_BUILD_ROOT/home/abuild/rpmbuild/RPMS/ $OSC_BUILD_ROOT/.mount/.build.packages/RPMS/ $OSC_BUILD_ROOT/.build.log
