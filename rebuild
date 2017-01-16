@@ -6,10 +6,13 @@ export OSC_BUILD_ROOT
 if grep -q "^$(basename $(pwd))$" ~/reproducibleopensuse/exceptions.cleanbuild ; then
   clean=${clean/--noinit/--clean}
 fi
+if grep -q "^$(basename $(pwd))$" ~/reproducibleopensuse/exceptions.rootforbuild ; then
+  rootforbuild=" --userootforbuild"
+fi
 
 #vmtype="--vm-type=kvm"
 rm -rf binaries $OSC_BUILD_ROOT/home/abuild/rpmbuild/RPMS/ $OSC_BUILD_ROOT/.mount/.build.packages/RPMS/ $OSC_BUILD_ROOT/.build.log
-osc build --nopreinstallimage --disable-debuginfo --noservice $vmtype $clean $(basename `pwd`).spec "$@" 2>&1 | tee .build.log2
+osc build --nopreinstallimage --disable-debuginfo --noservice$rootforbuild $vmtype $clean $(basename `pwd`).spec "$@" 2>&1 | tee .build.log2
 echo ${PIPESTATUS[0]} > .osc-build-retval
 ntpdate -p 1 ntp.zq1.de ntp.suse.de
 find -mtime -0 -print0 | xargs -0 touch
@@ -19,7 +22,9 @@ if [ `cat .osc-build-retval` -gt 0 ] ; then
 fi
 rm -rf RPMS
 mkdir -p RPMS
-cp -a $OSC_BUILD_ROOT/home/abuild/rpmbuild/RPMS/*/*.rpm $OSC_BUILD_ROOT/.mount/.build.packages/RPMS/*/*.rpm $OSC_BUILD_ROOT/.build.log RPMS/
+rpmdir="$OSC_BUILD_ROOT/home/abuild/rpmbuild/RPMS"
+[[ $rootforbuild ]] && rpmdir="$OSC_BUILD_ROOT/usr/src/packages/RPMS"
+cp -a $rpmdir/*/*.rpm $OSC_BUILD_ROOT/.mount/.build.packages/RPMS/*/*.rpm $OSC_BUILD_ROOT/.build.log RPMS/
 test -n "$(find RPMS/ -maxdepth 1 -name '*.rpm' -print -quit)" &&\
   ! test -e binaries &&\
   true #osc getbinaries standard x86_64
