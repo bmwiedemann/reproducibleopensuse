@@ -1,8 +1,8 @@
 #!/bin/sh -e
 export SOURCE_DATE_EPOCH=1482385409
-date --set="2017-01-01"
+date --set="2017-01-21"
 hostname sles12
-clean="--clean --release 0.0" rb
+clean="--clean --release=0.0" rb
 rm -rf RPMS.2017
 cp -a RPMS{,.2017}
 rb4b
