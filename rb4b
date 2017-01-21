@@ -3,7 +3,8 @@ if ! grep -q "^$(basename $(pwd))$" ~/reproducibleopensuse/exceptions.date ; the
     date --set="2018-03-03 11:11:11"
 fi
 hostname sles12b
-clean="--noinit --release=12.34" rb
+#clean="--noinit --release=12.34" rb
+clean="--clean --release=0.0" rb
 cp -a RPMS.2017 binaries
 compareone
 
