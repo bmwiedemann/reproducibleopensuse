@@ -6,7 +6,7 @@ export OSC_BUILD_ROOT
 
 #vmtype="--vm-type=kvm"
 rm -rf binaries $OSC_BUILD_ROOT/home/abuild/rpmbuild/RPMS/ $OSC_BUILD_ROOT/.mount/.build.packages/RPMS/ $OSC_BUILD_ROOT/.build.log
-osc build --noservice $vmtype $clean $(basename `pwd`).spec "$@"
+osc build --disable-debuginfo --noservice $vmtype $clean $(basename `pwd`).spec "$@"
 echo $? > .osc-build-retval
 ntpdate -p 1 ntp.zq1.de ntp.suse.de
 find -mtime -0 -print0 | xargs -0 touch
