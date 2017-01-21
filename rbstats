@@ -2,7 +2,8 @@
 echo -n "total-packages: "
 ls | wc -l
 buildtried=$(ls */.osc-build-retval | wc -l)
-buildfailed=$(grep '^1$' */.osc-build-retval | wc -l)
+grep '^1$' */.osc-build-retval | cut -d/ -f1 > /root/failed-builds.txt
+buildfailed=$(wc -l < /root/failed-builds.txt)
 buildfailedarch=$(grep "error: Architecture is not included" */.build.log | wc -l)
 buildna=$(grep '^[2-9]' */.osc-build-retval | wc -l)
 buildsucceeded=$(grep '^0$' */.osc-build-retval | wc -l)
