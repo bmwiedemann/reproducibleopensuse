@@ -1,9 +1,12 @@
 #!/bin/sh
+exec 3>&1
+exec > ~/tmp/rbstats.txt
+
 echo -n "total-packages: "
 ls | wc -l
 buildtried=$(ls */.osc-build-retval | wc -l)
-grep '^1$' */.osc-build-retval | cut -d/ -f1 > /root/failed-builds.txt
-buildfailed=$(wc -l < /root/failed-builds.txt)
+grep '^1$' */.osc-build-retval | cut -d/ -f1 > ~/tmp/failed-builds.txt
+buildfailed=$(wc -l < ~/tmp/failed-builds.txt)
 buildfailedarch=$(grep "error: Architecture is not included" */.build.log | wc -l)
 buildna=$(grep '^[2-9]' */.osc-build-retval | wc -l)
 buildsucceeded=$(grep '^0$' */.osc-build-retval | wc -l)
@@ -12,10 +15,18 @@ echo "build-failed: $((buildfailed-buildfailedarch))"
 echo "build-n-a: $((buildna+buildfailedarch))"
 echo "build-succeeded: $buildsucceeded"
 [[ $((buildfailed+buildna+buildsucceeded)) == $buildtried ]] || { echo sanity check failed ; exit 27; }
-#osc prjresults --csv --arch=x86_64 --repo=standard openSUSE:Factory > /tmp/oscpr
-echo -n "build-official-failed: "
-grep ";failed$" /tmp/oscpr|wc -l
+#osc prjresults --csv --arch=x86_64 --repo=standard openSUSE:Factory > ~/tmp/oscpr
+grep -e ';failed$' -e ';unresolvable$' -e ';disabled$' ~/tmp/oscpr > ~/tmp/oscpr.failed
+echo -n "build-official-failed+na: "
+wc -l < ~/tmp/oscpr.failed
 comparefailed=$(ls */RPMS/*.out | wc -l)
 echo "build-compare-failed: $comparefailed"
 echo "build-compare-succeeded: "$(($buildsucceeded-$comparefailed))
 echo "bit-by-bit-identical: 0" # until we use patched rpm and constant hostname
+
+
+for p in $(cat ~/tmp/failed-builds.txt) ; do (cd $p && ! cut -d\; -f1 ~/tmp/oscpr.failed | grep -q $p && ! egrep -q 'Architecture is (excluded|not included)' .build.log && ! grep -q "unresolvable: nothing provides " .build.log2 && echo $p ) ; done > ~/tmp/failchecklist 2>/dev/null
+
+exec 1>&3
+cat ~/tmp/rbstats.txt
+for p in * ; do (cd $p && test -e .osc-build-retval || echo "untracked dir $p" ) ; done
