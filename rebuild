@@ -2,6 +2,7 @@
 
 : ${OSC_BUILD_ROOT:="/var/tmp/build-root/standard-x86_64"}
 : ${clean:=--clean}
+: ${OUTDIR:=RPMS}
 export OSC_BUILD_ROOT
 if grep -q "^$(basename $(pwd))$" ~/reproducibleopensuse/exceptions.cleanbuild ; then
   clean=${clean/--noinit/--clean}
@@ -20,11 +21,11 @@ if [ `cat .osc-build-retval` -gt 0 ] ; then
     cp -a $OSC_BUILD_ROOT/.build.log .
     exit 1
 fi
-rm -rf RPMS
-mkdir -p RPMS
+rm -rf $OUTDIR
+mkdir -p $OUTDIR
 rpmdir="$OSC_BUILD_ROOT/home/abuild/rpmbuild/RPMS"
 [[ $rootforbuild ]] && rpmdir="$OSC_BUILD_ROOT/usr/src/packages/RPMS"
-cp -a $rpmdir/*/*.rpm $OSC_BUILD_ROOT/.mount/.build.packages/RPMS/*/*.rpm $OSC_BUILD_ROOT/.build.log RPMS/
-test -n "$(find RPMS/ -maxdepth 1 -name '*.rpm' -print -quit)" &&\
+cp -a $rpmdir/*/*.rpm $OSC_BUILD_ROOT/.mount/.build.packages/RPMS/*/*.rpm $OSC_BUILD_ROOT/.build.log $OUTDIR/
+test -n "$(find $OUTDIR/ -maxdepth 1 -name '*.rpm' -print -quit)" &&\
   ! test -e binaries &&\
   true #osc getbinaries standard x86_64
