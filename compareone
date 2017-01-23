@@ -1,11 +1,13 @@
 #!/bin/sh
 scriptdir=$(dirname $0)
 p=$(basename $(pwd))
-    if ! test -e binaries || test -z "$(find RPMS/ -maxdepth 1 -name '*.rpm' -print -quit)" ; then
+: ${dir1:=binaries}
+: ${dir2:=RPMS}
+    if ! test -e $dir1 || test -z "$(find $dir2/ -maxdepth 1 -name '*.rpm' -print -quit)" ; then
          echo "result:$p=notbuilt"
          exit 0
     fi
-    o=RPMS/$p-compare.out
+    o=$dir2/$p-compare.out
     $scriptdir/compare | tee $o
     ret=${PIPESTATUS[0]}
     [ $ret = 0 ] && rm -f $o

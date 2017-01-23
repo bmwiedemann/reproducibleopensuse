@@ -1,7 +1,9 @@
 #!/bin/sh
 #prereq: zypper -n in build-compare
+: ${dir1:=binaries}
+: ${dir2:=RPMS}
 
-pushd binaries
+pushd $dir1
 origrpms=$(ls *.rpm | grep -v "^::import::")
 popd
 
@@ -14,11 +16,13 @@ overalldiffered=0
 for f in $origrpms ; do
     # strip rebuild counter
     rpm=$(echo "$f" | sed 's/-[0-9.]*\(\.[a-z0-9_]*\.rpm\)$/-*\1/')
-    #ls -l binaries/$f RPMS/$rpm
-    cmp binaries/$f RPMS/$rpm
+    f1=$dir1/$f
+    f2=$dir2/$rpm
+    #ls -l $f1 $f2
+    cmp $f1 $f2
     compareresult=$?
     [[ $compareresult = 0 ]] || overalldiffered=$((overalldiffered+1))
-    $pkgdiff -a binaries/$f RPMS/$rpm
+    $pkgdiff -a $f1 $f2
     compareresult=$?
     [[ $compareresult = 0 ]] || overall=1
 done
