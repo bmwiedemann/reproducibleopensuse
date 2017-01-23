@@ -12,7 +12,7 @@ if grep -q "^$(basename $(pwd))$" ~/reproducibleopensuse/exceptions.rootforbuild
 fi
 
 #vmtype="--vm-type=kvm"
-rm -rf binaries $OSC_BUILD_ROOT/home/abuild/rpmbuild/RPMS/ $OSC_BUILD_ROOT/.mount/.build.packages/RPMS/ $OSC_BUILD_ROOT/.build.log
+rm -rf $OSC_BUILD_ROOT/home/abuild/rpmbuild/RPMS/ $OSC_BUILD_ROOT/.mount/.build.packages/RPMS/ $OSC_BUILD_ROOT/.build.log
 osc build --alternative-project home:bmwiedemann:reproducible --nopreinstallimage --disable-debuginfo --noservice$rootforbuild $vmtype $clean $(basename `pwd`).spec "$@" 2>&1 | tee .build.log2
 echo ${PIPESTATUS[0]} > .osc-build-retval
 ntpdate -p 1 ntp.zq1.de ntp.suse.de
@@ -26,6 +26,4 @@ mkdir -p $OUTDIR
 rpmdir="$OSC_BUILD_ROOT/home/abuild/rpmbuild/RPMS"
 [[ $rootforbuild ]] && rpmdir="$OSC_BUILD_ROOT/usr/src/packages/RPMS"
 cp -a $rpmdir/*/*.rpm $OSC_BUILD_ROOT/.mount/.build.packages/RPMS/*/*.rpm $OSC_BUILD_ROOT/.build.log $OUTDIR/
-test -n "$(find $OUTDIR/ -maxdepth 1 -name '*.rpm' -print -quit)" &&\
-  ! test -e binaries &&\
-  true #osc getbinaries standard x86_64
+test -n "$(find $OUTDIR/ -maxdepth 1 -name '*.rpm' -print -quit)"
