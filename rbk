@@ -2,14 +2,11 @@
 # rebuild with KVM mode
 export SOURCE_DATE_EPOCH=1482385409
 export vmtype="--vm-type=kvm"
-hostname sles12
 export OSC_BUILD_ROOT=/var/tmp/build-root.4/
 export VM_CUSTOMOPT="-rtc base=2017-01-23T01:02:03"
-OUTDIR=RPMS.2017 clean="--clean --release=0.0" rebuild &
-hostname sles12b
+HOST=sles12 OUTDIR=RPMS.2017 clean="--clean --release=0.0" rebuild &
 export VM_CUSTOMOPT="-rtc base=2018-02-03T11:22:33"
 export OSC_BUILD_ROOT=/var/tmp/build-root.4b/
-OUTDIR=RPMS clean="--clean --release=0.0" rebuild &
-hostname `cat /etc/hostname`
+HOST=sles12b OUTDIR=RPMS clean="--clean --release=0.0" rebuild &
 wait
 dir1=RPMS.2017 compareone
