@@ -13,16 +13,16 @@ fi
 
 #vmtype="--vm-type=kvm"
 rm -rf $OSC_BUILD_ROOT/home/abuild/rpmbuild/RPMS/ $OSC_BUILD_ROOT/.mount/.build.packages/RPMS/ $OSC_BUILD_ROOT/.build.log
-osc build --alternative-project home:bmwiedemann:reproducible --nopreinstallimage --disable-debuginfo --noservice$rootforbuild $vmtype $clean $(basename `pwd`).spec "$@" 2>&1 | tee .build.log2
-echo ${PIPESTATUS[0]} > .osc-build-retval
+rm -rf $OUTDIR
+mkdir -p $OUTDIR
+osc build --alternative-project home:bmwiedemann:reproducible --nopreinstallimage --disable-debuginfo --noservice$rootforbuild $vmtype $clean $(basename `pwd`).spec "$@" 2>&1 | tee $OUTDIR/.build.log2
+echo ${PIPESTATUS[0]} > $OUTDIR/.osc-build-retval
 ntpdate -p 1 ntp.zq1.de ntp.suse.de
-find -mtime -0 -print0 | xargs -0 touch
-if [ `cat .osc-build-retval` -gt 0 ] ; then
+find -mtime -0 -print0 | xargs --no-run-if-empty -0 touch
+if [ `cat $OUTDIR/.osc-build-retval` -gt 0 ] ; then
     cp -a $OSC_BUILD_ROOT/.build.log .
     exit 1
 fi
-rm -rf $OUTDIR
-mkdir -p $OUTDIR
 rpmdir="$OSC_BUILD_ROOT/home/abuild/rpmbuild/RPMS"
 [[ $rootforbuild ]] && rpmdir="$OSC_BUILD_ROOT/usr/src/packages/RPMS"
 cp -a $rpmdir/*/*.rpm $OSC_BUILD_ROOT/.mount/.build.packages/RPMS/*/*.rpm $OSC_BUILD_ROOT/.build.log $OUTDIR/
