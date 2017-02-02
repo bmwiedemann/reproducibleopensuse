@@ -4,11 +4,11 @@
 export SOURCE_DATE_EPOCH=1482385409
 export vmtype="--vm-type=kvm"
 export OSC_BUILD_ROOT=/var/tmp/build-root.${slot}/
-export VM_CUSTOMOPT="-rtc base=2017-01-23T01:02:03"
+export VM_CUSTOMOPT="-rtc base=2017-02-27T01:02:03"
 HOST=sles12 OUTDIR=RPMS.2017 clean="--clean --release=0.0 -j4" rebuild &
 pid=$!
-sleep 5
-export VM_CUSTOMOPT="-rtc base=2018-02-03T11:22:33"
+sleep 15
+export VM_CUSTOMOPT="-rtc base=2018-04-03T11:22:33"
 export OSC_BUILD_ROOT=/var/tmp/build-root.${slot}b/
 HOST=sles12b OUTDIR=RPMS clean="--clean --release=0.0 -j4" rebuild
 wait $pid
