@@ -6,6 +6,8 @@ echo -n "total-packages: "
 ls | wc -l
 buildtried=$(ls */.osc-build-retval | wc -l)
 grep '^1$' */.osc-build-retval | cut -d/ -f1 > ~/tmp/failed-builds.txt
+grep -v '^0$' */.build-differed | cut -d/ -f1 > ~/tmp/differed-builds.txt
+grep -v '^0$' */.build-compare-retval | cut -d/ -f1 > ~/tmp/build-compare-differed-builds.txt
 buildfailed=$(wc -l < ~/tmp/failed-builds.txt)
 buildfailedarch=$(grep "error: Architecture is not included" */.build.log | wc -l)
 buildna=$(grep '^[2-9]' */.osc-build-retval | wc -l)
@@ -24,11 +26,13 @@ bitidentical=$(grep '^0$' */.build-differed | wc -l)
 echo "build-compare-failed: $comparefailed"
 echo "build-compare-succeeded: "$(($buildsucceeded-$comparefailed))
 echo "bit-by-bit-identical: $bitidentical" # needs rpm patches
-echo "not-bit-by-bit-identical: $((buildsucceeded-bitidentical))"
+echo "not-bit-by-bit-identical: $(wc -l < ~/tmp/differed-builds.txt)"
+echo "not-bit-by-bit-identicalcheck: $((buildsucceeded-bitidentical))"
 
 
 for p in $(cat ~/tmp/failed-builds.txt) ; do (cd $p && ! cut -d\; -f1 ~/tmp/oscpr.failed | grep -q $p && ! egrep -q 'Architecture is (excluded|not included)' .build.log && ! grep -q "unresolvable: nothing provides " .build.log2 && echo $p ) ; done > ~/tmp/failchecklist 2>/dev/null
 
 exec 1>&3
 cat ~/tmp/rbstats.txt
+find */RPMS*/ -name \*.rpm |sort| xargs md5sum > ~/tmp/md5sums
 for p in * ; do (cd $p && test -e .osc-build-retval || echo "untracked dir $p" ) ; done
