@@ -13,7 +13,8 @@ sub find_version($)
     chomp($version);
     $version=~s/^Version:\s*//;
     if($version =~ /%/) {
-      die "cannot find version for package $name - got $version";
+      warn "cannot find version for package $name - got $version";
+      return "unknown";
     }
   }
   return $version;
@@ -47,6 +48,8 @@ sub find_status($)
   return "unknown";
 }
 
+sub get_status_for_one_dir($)
+{
 my $dir=shift||".";
 my $arch=(POSIX::uname())[4];
 my $project=getline("$dir/.osc/_project");
@@ -63,5 +66,11 @@ my $data={
   suite=>$project,
   build_date=>$date,
 };
-print encode_json($data);
+  return $data;
+}
 
+my $result=[];
+for my $dir (@ARGV) {
+  push(@$result, get_status_for_one_dir($dir));
+}
+print JSON->new->ascii->pretty->allow_nonref->canonical->encode($result);
