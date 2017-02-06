@@ -40,9 +40,9 @@ sub find_status($)
     if(($?>>8) == 0) { return "waitdep" }
     return "FTBFS";
   }
-  if($build == 0) {
+  if($build eq "0") {
     my $differed=getline("$dir/.build-differed");
-    if($differed == 0) { return "reproducible" }
+    if($differed eq "0") { return "reproducible" }
     return "unreproducible";
   }
   return "unknown";
