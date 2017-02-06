@@ -1,0 +1,66 @@
+#!/usr/bin/perl -w
+use strict;
+use XML::Simple;
+use JSON;
+use POSIX;
+
+sub find_version($)
+{
+  my $name=shift;
+  my $version=`rpmspec --query --srpm --queryformat="%{version}" $name.spec 2>/dev/null`;
+  if($version eq "") { # could not parse .spec file
+    $version=`grep '^Version:' $name.spec|head -1`;
+    chomp($version);
+    $version=~s/^Version:\s*//;
+    if($version =~ /%/) {
+      die "cannot find version for package $name - got $version";
+    }
+  }
+  return $version;
+}
+
+sub getline($)
+{  my $file=shift;
+   open(my $f, "<", $file) or die "error opening $file : $!";
+   my $line=<$f>;
+   chomp($line);
+   return $line;
+}
+
+sub find_status()
+{
+  my $build=getline(".osc-build-retval");
+  if($build == 2) { return "notforus" }
+  if($build == 1) {
+    #TODO: check .build.log for arch mismatch/unresolvable
+    system(qw(grep -q), "error: Architecture is not included", ".build.log");
+    if(($?>>8) == 0) { return "notforus" }
+    system(qw(grep -q), "^unresolvable: nothing provides", "RPMS/.build.log2");
+    if(($?>>8) == 0) { return "waitdep" }
+    return "FTBFS";
+  }
+  if($build == 0) {
+    my $differed=getline(".build-differed");
+    if($differed == 0) { return "reproducible" }
+    return "unreproducible";
+  }
+  return "unknown";
+}
+
+my $arch=(POSIX::uname())[4];
+my $project=getline(".osc/_project");
+my $oscdata=XMLin(".osc/_files");
+my $name=$oscdata->{name};
+my $status=find_status();
+my $date=(stat(".osc-build-retval"))[9];
+my $version=find_version($name);
+my $data={
+  package=>$name,
+  version=>"$version-$oscdata->{rev}",
+  architecture=>$arch,
+  status=>$status,
+  suite=>$project,
+  build_date=>$date,
+};
+print encode_json($data);
+
