@@ -27,33 +27,34 @@ sub getline($)
    return $line;
 }
 
-sub find_status()
-{
-  my $build=getline(".osc-build-retval");
+sub find_status($)
+{ my $dir=shift;
+  my $build=getline("$dir/.osc-build-retval");
   if($build == 2) { return "notforus" }
   if($build == 1) {
     #TODO: check .build.log for arch mismatch/unresolvable
-    system(qw(grep -q), "error: Architecture is not included", ".build.log");
+    system(qw(grep -q), "error: Architecture is not included", "$dir/.build.log");
     if(($?>>8) == 0) { return "notforus" }
-    system(qw(grep -q), "^unresolvable: nothing provides", "RPMS/.build.log2");
+    system(qw(grep -q), "^unresolvable: nothing provides", "$dir/RPMS/.build.log2");
     if(($?>>8) == 0) { return "waitdep" }
     return "FTBFS";
   }
   if($build == 0) {
-    my $differed=getline(".build-differed");
+    my $differed=getline("$dir/.build-differed");
     if($differed == 0) { return "reproducible" }
     return "unreproducible";
   }
   return "unknown";
 }
 
+my $dir=shift||".";
 my $arch=(POSIX::uname())[4];
-my $project=getline(".osc/_project");
-my $oscdata=XMLin(".osc/_files");
+my $project=getline("$dir/.osc/_project");
+my $oscdata=XMLin("$dir/.osc/_files");
 my $name=$oscdata->{name};
-my $status=find_status();
-my $date=(stat(".osc-build-retval"))[9];
-my $version=find_version($name);
+my $status=find_status($dir);
+my $date=(stat("$dir/.osc-build-retval"))[9];
+my $version=find_version("$dir/$name");
 my $data={
   package=>$name,
   version=>"$version-$oscdata->{rev}",
