@@ -52,7 +52,6 @@ sub find_status($)
     if($differed eq "0") { return "reproducible" }
     return "unreproducible";
   }
-  return "unknown";
 }
 
 sub get_status_for_one_dir($)
