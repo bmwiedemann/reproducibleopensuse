@@ -51,22 +51,22 @@ sub find_status($)
 
 sub get_status_for_one_dir($)
 {
-my $dir=shift||".";
-my $arch=(POSIX::uname())[4];
-my $project=getline("$dir/.osc/_project");
-my $oscdata=XMLin("$dir/.osc/_files");
-my $name=$oscdata->{name};
-my $status=find_status($dir);
-my $date=(stat("$dir/.osc-build-retval"))[9];
-my $version=find_version("$dir/$name");
-my $data={
-  package=>$name,
-  version=>"$version-$oscdata->{rev}",
-  architecture=>$arch,
-  status=>$status,
-  suite=>$project,
-  build_date=>$date,
-};
+  my $dir=shift||".";
+  my $arch=(POSIX::uname())[4];
+  my $project=getline("$dir/.osc/_project");
+  my $oscdata=XMLin("$dir/.osc/_files");
+  my $name=$oscdata->{name};
+  my $status=find_status($dir);
+  my $date=(stat("$dir/.osc-build-retval"))[9];
+  my $version=find_version("$dir/$name");
+  my $data={
+    package=>$name,
+    version=>"$version-$oscdata->{rev}",
+    architecture=>$arch,
+    status=>$status,
+    suite=>$project,
+    build_date=>$date,
+  };
   return $data;
 }
 
