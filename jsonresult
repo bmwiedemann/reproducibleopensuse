@@ -13,8 +13,9 @@ sub find_version($$)
     $version=`grep '^Version:' $name.spec|head -1`;
     chomp($version);
     $version=~s/^Version:\s*//;
+    $version=~s/\s+$//;
     if($version =~ /%/) {
-      my $line=`grep "Wrote: .*\.src\.rpm" $dir/.build.log`;
+      my $line=`grep "Wrote: .*\.src\.rpm" $dir/.build.log $dir/RPMS/.build.log`;
       if($line) {
         $line =~ /.*-([^-]+)-[^-]+\.src\.rpm/ && return $1;
       }
