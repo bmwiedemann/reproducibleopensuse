@@ -57,10 +57,12 @@ sub find_status($)
 sub get_status_for_one_dir($)
 {
   my $dir=shift;
+  print STDERR "processing $dir\n";
+  chdir $dir; $dir=".";
   my $oscdata=XMLin("$dir/.osc/_files");
   my $name=$oscdata->{name};
   my $version=find_version($dir, "$dir/$name");
-  return {
+  my $data = {
     package=>$name,
     version=>"$version-$oscdata->{rev}",
     architecture=>(POSIX::uname())[4],
@@ -68,6 +70,8 @@ sub get_status_for_one_dir($)
     suite=>getline("$dir/.osc/_project"),
     build_date=>(stat("$dir/.osc-build-retval"))[9],
   };
+  chdir "..";
+  return $data;
 }
 
 my $result=[];
