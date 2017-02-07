@@ -41,7 +41,8 @@ sub find_status($)
     return "FTBFS";
   }
   if($build eq "0") {
-    my $differed=getline("$dir/.build-differed");
+    my $differed=eval{getline("$dir/.build-differed")};
+    if($@) { return "nobinaries" } # i.e. testsuite
     if($differed eq "0") { return "reproducible" }
     return "unreproducible";
   }
