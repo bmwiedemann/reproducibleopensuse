@@ -58,6 +58,7 @@ sub get_status_for_one_dir($)
 {
   my $dir=shift;
   print STDERR "processing $dir\n";
+  if(! -e "$dir/.osc-build-retval") {return () } # skip unbuilt
   chdir $dir; $dir=".";
   my $oscdata=XMLin("$dir/.osc/_files");
   my $name=$oscdata->{name};
