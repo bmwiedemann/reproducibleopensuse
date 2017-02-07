@@ -38,7 +38,7 @@ sub find_status($)
 { my $dir=shift;
   my $build=getline("$dir/.osc-build-retval");
   if($build == 2) { return "notforus" }
-  if($build == 1) {
+  elsif($build ne "0") {
     #TODO: check .build.log for arch mismatch/unresolvable
     system(qw(grep -q), "error: Architecture is not included", "$dir/.build.log");
     if(($?>>8) == 0) { return "notforus" }
@@ -46,7 +46,7 @@ sub find_status($)
     if(($?>>8) == 0) { return "waitdep" }
     return "FTBFS";
   }
-  if($build eq "0") {
+  else {
     my $differed=eval{getline("$dir/.build-differed")};
     if($@) { return "nobinaries" } # i.e. testsuite
     if($differed eq "0") { return "reproducible" }
