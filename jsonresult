@@ -8,7 +8,7 @@ sub find_version($$)
 {
   my $dir=shift;
   my $name=shift;
-  my $version=`rpmspec --query --srpm --queryformat="%{version}" $name.spec 2>/dev/null`;
+  my $version=`sed -e '/^\(PreReq\|BuildRequires\|Requires\|Provides\|Recommends\|Suggests\):/d' $name.spec | rpmspec --query --srpm --queryformat="%{version}" /dev/stdin 2>/dev/null`;
   if($version eq "") { # could not parse .spec file
     $version=`grep '^Version:' $name.spec|head -1`;
     chomp($version);
