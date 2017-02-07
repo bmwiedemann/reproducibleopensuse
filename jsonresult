@@ -4,8 +4,9 @@ use XML::Simple;
 use JSON;
 use POSIX;
 
-sub find_version($)
+sub find_version($$)
 {
+  my $dir=shift;
   my $name=shift;
   my $version=`rpmspec --query --srpm --queryformat="%{version}" $name.spec 2>/dev/null`;
   if($version eq "") { # could not parse .spec file
@@ -13,6 +14,10 @@ sub find_version($)
     chomp($version);
     $version=~s/^Version:\s*//;
     if($version =~ /%/) {
+      my $line=`grep "Wrote: .*\.src\.rpm" $dir/.build.log`;
+      if($line) {
+        $line =~ /.*-([^-]+)-[^-]+\.src\.rpm/ && return $1;
+      }
       warn "cannot find version for package $name - got $version";
       return "unknown";
     }
@@ -54,7 +59,7 @@ sub get_status_for_one_dir($)
   my $dir=shift;
   my $oscdata=XMLin("$dir/.osc/_files");
   my $name=$oscdata->{name};
-  my $version=find_version("$dir/$name");
+  my $version=find_version($dir, "$dir/$name");
   return {
     package=>$name,
     version=>"$version-$oscdata->{rev}",
