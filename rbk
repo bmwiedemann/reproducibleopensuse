@@ -1,7 +1,6 @@
 #!/bin/sh -e
 # rebuild with KVM mode
 : ${slot:=4}
-export SOURCE_DATE_EPOCH=1482385409
 export vmtype="--vm-type=kvm"
 export OSC_BUILD_ROOT=/var/tmp/build-root.${slot}/
 export VM_CUSTOMOPT="-rtc base=2017-02-27T01:02:03"
