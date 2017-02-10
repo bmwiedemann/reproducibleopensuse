@@ -68,7 +68,7 @@ sub get_status_for_one_dir($)
     version=>"$version-$oscdata->{rev}",
     architecture=>(POSIX::uname())[4],
     status=>find_status($dir),
-    suite=>getline("$dir/.osc/_project"),
+    release=>getline("$dir/.osc/_project"),
     build_date=>(stat("$dir/.osc-build-retval"))[9],
   };
   chdir "..";
