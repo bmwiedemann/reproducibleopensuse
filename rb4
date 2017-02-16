@@ -1,4 +1,5 @@
 #!/bin/sh -e
+osc up
 date --set="2017-01-21"
 hostname sles12
 clean="--clean --release=0.0" rb

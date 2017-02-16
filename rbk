@@ -4,6 +4,7 @@
 export vmtype="--vm-type=kvm"
 export OSC_BUILD_ROOT=/var/tmp/build-root.${slot}/
 export VM_CUSTOMOPT="-rtc base=2017-02-27T01:02:03"
+osc up
 HOST=sles12 OUTDIR=RPMS.2017 clean="--clean --release=0.0 -j4" rebuild &
 pid=$!
 sleep 15
