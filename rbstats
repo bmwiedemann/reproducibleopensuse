@@ -1,4 +1,9 @@
 #!/bin/sh
+# sanity check
+bad=
+for p in * ; do test -e $p/.osc/_files || { echo $p ; bad=1 ; } ; done
+[[ $bad ]] && exit 32
+
 exec 3>&1
 exec > ~/tmp/rbstats.txt
 
