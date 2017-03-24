@@ -1,0 +1,8 @@
+#!/usr/bin/perl -w
+# take a list and give out slices in a way that workers
+# will be able to work on them independently
+# without always re-doing the work another does atm
+
+use strict;
+use List::Util qw/shuffle/;
+print join(" ",shuffle @ARGV);
