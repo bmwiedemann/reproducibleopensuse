@@ -1,0 +1,9 @@
+#!/bin/sh
+# parallel build of many rpms
+cd ~/f
+for slot in 1 2 3 ; do
+  export slot
+  rebuildmany $(slicelist *) 2>/dev/null &
+  sleep 50
+done
+wait

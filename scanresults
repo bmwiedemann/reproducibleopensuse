@@ -1,0 +1,34 @@
+#!/bin/sh
+p1="unresolvable: nothing provides librpm.so.3"
+p2="Kernel panic"
+p3="error: unpacking of archive failed on file"
+pssl="SSL Error: unexpected eof"
+p400="Server returned an error: HTTP Error 400: Bad Request"
+p503="Server returned an error: HTTP Error 503: Service Temporarily Unavailable"
+w1="W: python-bytecode-inconsistent-mtime"
+grep -e "$p1" -e "$p2" -e "$p3" -e "$pssl" -e "$p400" -e "$p503" */.build.log */RPMS*/.build.log2
+#post-process with
+#grep python-bytecode-inconsistent-mtime | grep -o "/usr/lib[^ ]*" /root/tmp/bytecode-inconsistent.txt|sort -u > /root/tmp/bytecode-inconsistent2.txt
+
+# compare results for failed build
+if true ; then
+for p in * ; do (
+    cd $p &&\
+    test -e .osc-build-retval &&\
+    grep -q -v '^0$' .osc-build-retval &&\
+    ( test -e .build-compare-retval || test -e .build-differed ) &&\
+    rm -f .build-compare-retval .build-differed
+  )
+done
+fi
+
+# notify about successful build without compare results - might have half-failed
+for p in * ; do (
+    ! echo $p | grep -q -e '-testsuite$' -e perl-PAR-Packer-test -e rpmlint-tests &&\
+    cd $p &&\
+    test -e .osc-build-retval &&\
+    grep -q '^0$' .osc-build-retval &&\
+    ( ! test -e .build-compare-retval || ! test -e .build-differed ) &&\
+    echo $p
+  )
+done

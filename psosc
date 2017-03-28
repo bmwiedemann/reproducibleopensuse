@@ -1,0 +1,2 @@
+#!/bin/sh
+ps ax|grep osc.build.*spec$
