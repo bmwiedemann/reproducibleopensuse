@@ -3,10 +3,11 @@ p1="unresolvable: nothing provides librpm.so.3"
 p2="Kernel panic"
 p3="error: unpacking of archive failed on file"
 pssl="SSL Error: unexpected eof"
+emem="Out of memory: Kill process"
 p400="Server returned an error: HTTP Error 400: Bad Request"
 p503="Server returned an error: HTTP Error 503: Service Temporarily Unavailable"
 w1="W: python-bytecode-inconsistent-mtime"
-grep -e "$p1" -e "$p2" -e "$p3" -e "$pssl" -e "$p400" -e "$p503" */.build.log */RPMS*/.build.log2
+grep -e "$p1" -e "$p2" -e "$p3" -e "$pssl" -e "$p400" -e "$p503" -e "$emem" */.build.log */RPMS*/.build.log2
 #post-process with
 #grep python-bytecode-inconsistent-mtime | grep -o "/usr/lib[^ ]*" /root/tmp/bytecode-inconsistent.txt|sort -u > /root/tmp/bytecode-inconsistent2.txt
 
