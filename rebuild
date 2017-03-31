@@ -5,11 +5,18 @@
 : ${OUTDIR:=RPMS}
 export OSC_BUILD_ROOT
 pkg=$(basename $(pwd))
+debuginfo=--disable-debuginfo
 if grep -q "^$pkg$" ~/reproducibleopensuse/exceptions.cleanbuild ; then
   clean=${clean/--noinit/--clean}
 fi
 if grep -q "^$pkg$" ~/reproducibleopensuse/exceptions.rootforbuild ; then
   rootforbuild=" --userootforbuild"
+fi
+if grep -q "^$pkg$" ~/reproducibleopensuse/exceptions.debuginfo ; then
+  debuginfo="--debuginfo"
+fi
+if grep -q "^$pkg$" ~/reproducibleopensuse/exceptions.date ; then
+  VM_CUSTOMOPT=""
 fi
 
 #vmtype="--vm-type=kvm"
@@ -19,7 +26,7 @@ rm -rf $OUTDIR
 mkdir -p $OUTDIR
 echo in-progress > $OUTDIR/.osc-build-retval
 hostname > $OUTDIR/buildhost
-osc build --alternative-project "$project" --nopreinstallimage --disable-debuginfo --noservice$rootforbuild $vmtype $clean $(basename `pwd`).spec "$@" 2>&1 | tee $OUTDIR/.build.log2
+osc build --alternative-project "$project" --nopreinstallimage $debuginfo --noservice$rootforbuild $vmtype $clean $(basename `pwd`).spec "$@" 2>&1 | tee $OUTDIR/.build.log2
 echo ${PIPESTATUS[0]} > $OUTDIR/.osc-build-retval
 cp -a $OUTDIR/.osc-build-retval .
 cp -a $OSC_BUILD_ROOT/.build.log $OUTDIR/
