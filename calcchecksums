@@ -1,0 +1,3 @@
+#!/bin/sh
+md5sum "$@"
+sha256sum "$@"

@@ -4,10 +4,11 @@
 : ${clean:=--clean}
 : ${OUTDIR:=RPMS}
 export OSC_BUILD_ROOT
-if grep -q "^$(basename $(pwd))$" ~/reproducibleopensuse/exceptions.cleanbuild ; then
+pkg=$(basename $(pwd))
+if grep -q "^$pkg$" ~/reproducibleopensuse/exceptions.cleanbuild ; then
   clean=${clean/--noinit/--clean}
 fi
-if grep -q "^$(basename $(pwd))$" ~/reproducibleopensuse/exceptions.rootforbuild ; then
+if grep -q "^$pkg$" ~/reproducibleopensuse/exceptions.rootforbuild ; then
   rootforbuild=" --userootforbuild"
 fi
 
@@ -31,4 +32,5 @@ fi
 rpmdir="$OSC_BUILD_ROOT/home/abuild/rpmbuild/RPMS"
 [[ $rootforbuild ]] && rpmdir="$OSC_BUILD_ROOT/usr/src/packages/RPMS"
 cp -a $rpmdir/*/*.rpm $OSC_BUILD_ROOT/.mount/.build.packages/RPMS/*/*.rpm $OUTDIR/
+calcchecksums ../$pkg/$OUTDIR/*.rpm | sed -e 's!\.\./!!' > $OUTDIR/checksums
 test -n "$(find $OUTDIR/ -maxdepth 1 -name '*.rpm' -print -quit)"
