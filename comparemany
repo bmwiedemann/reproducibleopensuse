@@ -1,5 +1,5 @@
 #!/bin/sh
-scriptdir=$(dirname $0)
+scriptdir=$(dirname $BASH_SOURCE)
 for p in "$@" ; do
     popd > /dev/null
     if ! pushd $p > /dev/null ; then

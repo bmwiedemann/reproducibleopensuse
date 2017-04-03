@@ -1,5 +1,5 @@
 #!/bin/sh
-scriptdir=$(dirname $0)
+scriptdir=$(dirname $BASH_SOURCE)
 p=$(basename $(pwd))
 : ${dir1:=binaries}
 : ${dir2:=RPMS}
