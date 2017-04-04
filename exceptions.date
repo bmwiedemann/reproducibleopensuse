@@ -1,2 +1,6 @@
+# https://bugzilla.opensuse.org/show_bug.cgi?id=1031549
 libserf
+# https://bugzilla.opensuse.org/show_bug.cgi?id=1031548
 python-pyOpenSSL
+# https://bugzilla.opensuse.org/show_bug.cgi?id=1032257
+strace
