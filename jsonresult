@@ -54,6 +54,14 @@ sub find_status($)
   }
 }
 
+sub find_build_compare_status($)
+{ my $dir=shift;
+  my $differed=eval{getline("$dir/.build-compare-retval")};
+  if($@) { return "nobinaries" } # i.e. testsuite
+  if($differed eq "0") { return "reproducible" }
+  return "unreproducible";
+}
+
 sub get_status_for_one_dir($)
 {
   my $dir=shift;
@@ -71,6 +79,9 @@ sub get_status_for_one_dir($)
     release=>getline("$dir/.osc/_project"),
     build_date=>(stat("$dir/.osc-build-retval"))[9],
   };
+  if($data->{status} eq "unreproducible") {
+    $data->{build_compare_status}=find_build_compare_status($dir);
+  }
   chdir "..";
   return $data;
 }
