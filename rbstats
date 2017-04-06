@@ -10,12 +10,12 @@ exec > ~/tmp/rbstats.txt
 echo -n "total-packages: "
 ls | wc -l
 buildtried=$(ls */.osc-build-retval | wc -l)
-grep '^1$' */.osc-build-retval | cut -d/ -f1 > ~/tmp/failed-builds.txt
+grep -v '^[02]$' */.osc-build-retval | cut -d/ -f1 > ~/tmp/failed-builds.txt
 grep -v '^0$' */.build-differed | cut -d/ -f1 > ~/tmp/differed-builds.txt
 grep -v '^0$' */.build-compare-retval | cut -d/ -f1 > ~/tmp/build-compare-differed-builds.txt
 buildfailed=$(wc -l < ~/tmp/failed-builds.txt)
 buildfailedarch=$(grep "error: Architecture is not included" */.build.log | wc -l)
-buildna=$(grep '^[2-9]' */.osc-build-retval | wc -l)
+buildna=$(grep '^[2]$' */.osc-build-retval | wc -l)
 buildsucceeded=$(grep '^0$' */.osc-build-retval | wc -l)
 echo "build-tried: $buildtried"
 echo "build-failed: $((buildfailed-buildfailedarch))"
