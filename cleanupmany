@@ -1,0 +1,4 @@
+#!/bin/sh
+for p in "$@" ; do
+    cleanupone "$p"
+done
