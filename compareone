@@ -12,4 +12,3 @@ p=$(basename $(pwd))
     ret=${PIPESTATUS[0]}
     [ $ret = 0 ] && rm -f $o
     echo "result:$p=$ret"
-    echo $ret > .build-compare-retval

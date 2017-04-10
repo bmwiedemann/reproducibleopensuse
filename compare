@@ -22,7 +22,7 @@ for f in $origrpms ; do
     cmp $f1 $f2
     compareresult=$?
     [[ $compareresult = 0 ]] || overalldiffered=$((overalldiffered+1))
-    $pkgdiff -a $f1 $f2
+    [[ $compareresult = 0 ]] || $pkgdiff -a $f1 $f2
     compareresult=$?
     [[ $compareresult = 0 ]] || overall=1
 done
@@ -30,4 +30,5 @@ done
 echo $overalldiffered > .build-differed
 echo "overalldiffered=$overalldiffered (not bit-by-bit identical)"
 echo overall=$overall
-exit $overall
+echo $overall > .build-compare-retval
+exit $overalldiffered

@@ -26,7 +26,7 @@ echo "build-succeeded: $buildsucceeded"
 grep -e ';failed$' -e ';unresolvable$' -e ';disabled$' ~/tmp/oscpr > ~/tmp/oscpr.failed
 echo -n "build-official-failed+na: "
 wc -l < ~/tmp/oscpr.failed
-comparefailed=$(ls */RPMS/*.out | wc -l)
+comparefailed=$(grep -v '^0$' */.build-compare-retval | wc -l)
 bitidentical=$(grep '^0$' */.build-differed | wc -l)
 echo "build-compare-failed: $comparefailed"
 echo "build-compare-succeeded: "$(($buildsucceeded-$comparefailed))
