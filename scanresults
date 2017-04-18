@@ -5,13 +5,14 @@ p3="error: unpacking of archive failed on file"
 pssl="SSL Error: unexpected eof"
 emem="Out of memory: Kill process"
 eswi="Failed to start Switch Root"
+estruc=" failed: Structure needs cleaning"
 p400="Server returned an error: HTTP Error 400: Bad Request"
 p500="Server returned an error: HTTP Error 500: Internal Server Error"
 p502="Server returned an error: HTTP Error 502: Bad Gateway"
 p503="Server returned an error: HTTP Error 503: Service Temporarily Unavailable"
 w1="W: python-bytecode-inconsistent-mtime"
 fgrep "[Errno 2] No such file or directory: '/var/tmp/osbuild-packagecache/home:bmwiedemann:reproducible/_pubkey" */RPMS*/.build.log2
-fgrep -e "$p1" -e "$p2" -e "$p3" -e "$pssl" -e "$eswi" -e "$p400" -e "$p500" -e "$p502" -e "$p503" -e "$emem" */.build.log */RPMS*/.build.log2
+fgrep -e "$p1" -e "$p2" -e "$p3" -e "$pssl" -e "$eswi" -e "$estruc" -e "$p400" -e "$p500" -e "$p502" -e "$p503" -e "$emem" */.build.log */RPMS*/.build.log2
 grep "in-progress" */RPMS*/.osc-build-retval
 #post-process with
 #grep python-bytecode-inconsistent-mtime | grep -o "/usr/lib[^ ]*" /root/tmp/bytecode-inconsistent.txt|sort -u > /root/tmp/bytecode-inconsistent2.txt
