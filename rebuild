@@ -18,6 +18,10 @@ fi
 if grep -q "^$pkg$" ~/reproducibleopensuse/exceptions.date ; then
   VM_CUSTOMOPT=""
 fi
+if [[ $VM_CUSTOMOPT ]] && osc build --help | grep -q build-opt ; then
+  oscopts=("--build-opt=--vm-custom-opt=$VM_CUSTOMOPT")
+  unset VM_CUSTOMOPT
+fi
 
 #vmtype="--vm-type=kvm"
 : ${project:=home:bmwiedemann:reproducible}
@@ -26,7 +30,7 @@ rm -rf $OUTDIR
 mkdir -p $OUTDIR
 echo in-progress > $OUTDIR/.osc-build-retval
 hostname > $OUTDIR/buildhost
-osc build --keep-pkg=$OUTDIR/ --alternative-project "$project" --nopreinstallimage $debuginfo --noservice$rootforbuild $vmtype $clean $(basename `pwd`).spec "$@" 2>&1 | tee $OUTDIR/.build.log2
+osc build --keep-pkg=$OUTDIR/ --alternative-project "$project" --nopreinstallimage $debuginfo --noservice$rootforbuild $vmtype $clean "${oscopts[@]}" $(basename `pwd`).spec "$@" 2>&1 | tee $OUTDIR/.build.log2
 echo ${PIPESTATUS[0]} > $OUTDIR/.osc-build-retval
 cp -a $OUTDIR/.osc-build-retval .
 cp -a $OSC_BUILD_ROOT/.build.log $OUTDIR/
