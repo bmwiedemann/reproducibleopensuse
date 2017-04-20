@@ -19,9 +19,10 @@ if grep -q "^$pkg$" ~/reproducibleopensuse/exceptions.date ; then
   VM_CUSTOMOPT=""
 fi
 if [[ $VM_CUSTOMOPT ]] && osc build --help | grep -q build-opt ; then
-  oscopts=("--build-opt=--vm-custom-opt=$VM_CUSTOMOPT")
+  oscopts+=("--build-opt=--vm-custom-opt=$VM_CUSTOMOPT")
   unset VM_CUSTOMOPT
 fi
+oscopts+=(--define='%source_date_epoch_from_changelog Y' --define='%_buildhost reproducible' --define='%clamp_mtime_to_source_date_epoch Y')
 
 #vmtype="--vm-type=kvm"
 : ${project:=home:bmwiedemann:reproducible}
