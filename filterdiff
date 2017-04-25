@@ -1,0 +1,3 @@
+#!/bin/bash
+filter=$1
+diff -u <($filter "$2") <($filter "$3")

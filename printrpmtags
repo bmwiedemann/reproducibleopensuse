@@ -1,0 +1,4 @@
+#!/bin/bash
+formatstr=""
+for tag in `rpm --querytags` ; do formatstr+="$tag=%{$tag}\n" ; done
+exec rpm -qp --qf "$formatstr" "$1"
