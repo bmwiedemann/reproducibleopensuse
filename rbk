@@ -1,17 +1,20 @@
 #!/bin/sh -e
 # rebuild with KVM mode
 : ${slot:=4}
+: ${clean:=--clean}
 now=$(date +%s)
 later=$(date --date=@$((now+((401*24+13)*60+17)*60)) -u "+%FT%T")
 export vmtype="--vm-type=kvm"
 export OSC_BUILD_ROOT=/var/tmp/build-root.${slot}/
 export VM_CUSTOMOPT=""
 osc up
-HOST=sles12 OUTDIR=RPMS.2017 clean="--clean --release=0.0 -j4" rebuild &
+clean+=" --release=0.0 -j4"
+export clean
+HOST=sles12 OUTDIR=RPMS.2017 rebuild &
 pid=$!
 sleep 15
 export VM_CUSTOMOPT="-rtc base=$later"
 export OSC_BUILD_ROOT=/var/tmp/build-root.${slot}b/
-HOST=sles12b OUTDIR=RPMS clean="--clean --release=0.0 -j4" rebuild
+HOST=sles12b OUTDIR=RPMS rebuild
 wait $pid
 dir1=RPMS.2017 compareone
