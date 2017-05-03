@@ -5,3 +5,18 @@ for this, we rebuild locally from source
 and compare the results with published binaries
 using the build-compare script that abstracts away
 some unavoidable (or unimportant) differences like rpm timestamps
+
+Usage:
+
+You can rebuild one package using
+rbk
+in the package checkout dir
+and you can rebuild a whole distribution using
+rebuildmany *
+or
+rebuildmanyp
+in the project checkout dir
+
+You need an osc version that understands the --build-opt param
+and a "build" version, that understands the --vm-custom-opt param
+to pass the modified base clock time to kvm.
