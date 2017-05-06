@@ -1,0 +1,7 @@
+#!/bin/sh
+d=${1:-.}
+[[ -e $d/.osc-build-retval ]] || exit 5 # not yet tried to build
+if [[ -e $d/.build-jsonresult ]] ; then
+    find "$d" -maxdepth 1 -newer "$d/.build-jsonresult" | grep -q . || exit 0 # already done
+fi
+jsonresult "$d" > "$d/.build-jsonresult"

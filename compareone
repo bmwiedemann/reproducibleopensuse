@@ -11,4 +11,5 @@ p=$(basename $(pwd))
     $scriptdir/compare | tee $o
     ret=${PIPESTATUS[0]}
     [ $ret = 0 ] && rm -f $o
+    jsonresultcache .
     echo "result:$p=$ret"

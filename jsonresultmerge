@@ -1,0 +1,14 @@
+#!/usr/bin/perl -w
+use strict;
+use JSON;
+my @result = ();
+undef $/;
+for my $dir (@ARGV) {
+    my $f = "$dir/.build-jsonresult";
+    open(my $fd, "<", $f) or die "error with $f: $!";
+    my $jsonin = <$fd>;
+    my $oneresult = eval {decode_json($jsonin)};
+    if($@) { die "$@ in $dir" }
+    push(@result, @$oneresult);
+}
+print JSON->new->ascii->pretty->allow_nonref->canonical->encode(\@result);
