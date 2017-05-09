@@ -32,6 +32,10 @@ but how do we know that the binaries dont contain extra backdoors added by build
 
 * Reduced load on build-service from rebuilds
 
+* Smaller delta-rpms in update repos
+
+* Find other bugs that corrupt data during build time (e.g. [boo#1021353](https://bugzilla.opensuse.org/show_bug.cgi?id=1021353), [boo#1021335](https://bugzilla.opensuse.org/show_bug.cgi?id=1021335))
+
 <!--
 
 two use-cases with overlap
@@ -60,13 +64,16 @@ compile-time CPU detection libatlas3
 
 ## Work done
 
-* 71 submit-requests
+* 2016: 71 submit-requests
+* 2017: +77 submit-requests
 
-* 6 bugs filed
+* 2016: 6 bugs filed
+* 2017: +4 bugs filed: 1016848, 1017666, 1017667, 1020147
 
-* 4 upstream fixes merged
+* 2016: 4 upstream fixes merged
+* 2017: +31 upstream fixes submitted - ~22 merged
 
-* some build-compare filters added (e.g. for javadoc)
+* 2017: patches for build-compare to disable filters
 
 
 ## rebuild-test-scripts
@@ -77,18 +84,16 @@ compile-time CPU detection libatlas3
 
 ## How reproducible can we get?
 
-* bit-identical with rpm+build from home:bmwiedemann:reproducible repo and effort
-
-* * https://build.opensuse.org/package/rdiff/home:bmwiedemann:reproducible/build?linkrev=base&rev=2
+* bit-identical with factory rpm and `osc build --define='%_buildhost reproducible' --define='%clamp_mtime_to_source_date_epoch Y'`
 
 ## Where do we want to go?
 
 * fix all build-compare issues
 
-* not yet produce fully bit-identical rpms
+* produce bit-identical rpms
 
 <!--
 fully bit-identical rpms is hard - e.g. python .pyc and .elc timestamps
-always hiding real build hostname would make debugging reproducibility-issues harder - would need extra metadata about it
+always hiding real build hostname would make debugging reproducibility-issues harder - would need extra metadata about it e.g. in OBS or _buildenv file
 
 -->
