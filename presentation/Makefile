@@ -16,7 +16,7 @@ PNG :=  $(DIA_PNG) $(SVG_PNG)
 all: reproducible.odp
 
 img/%.png: img/%.svg
-	convert -density 200 $< $@
+	convert -density 200 -transparent white $< $@
 
 # ugly, but will do
 img/%.PNG: img/%.dia
