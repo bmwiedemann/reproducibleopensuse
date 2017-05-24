@@ -79,13 +79,13 @@ compile-time CPU detection libatlas3
 ## Work done
 
 * 2016: 71 submit-requests
-* 2017: +77 submit-requests
+* 2017: +92 submit-requests
 
 * 2016: 6 bugs filed
 * 2017: +4 bugs filed: 1016848, 1017666, 1017667, 1020147
 
 * 2016: 4 upstream fixes merged
-* 2017: +31 upstream fixes submitted - ~22 merged
+* 2017: +51 upstream fixes submitted - ~34 merged
 
 * 2017: patches for build-compare to disable filters
 
