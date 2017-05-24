@@ -60,6 +60,20 @@ compile-time CPU detection libatlas3
 
 -->
 
+## new sources of randomness discovered
+
+* `%if 0%{?do_profiling}` in .spec files
+
+* `%ghost` and `%dir` have (semi-random) sizes visible in rpm -qp --dump
+
+* unsorted globs in make, python, bam, boost/jam
+
+* * `$(wildcard *.c)` => `$(sort $(wildcard ...))`
+
+* * `glob.glob("*.c")` => `sorted(...)`
+
+* * jam see https://github.com/boostorg/container/pull/50
+
 # Current state
 
 ## Work done
