@@ -1,3 +1,5 @@
 #!/bin/bash
-filter=$1
-diff -u <($filter "$2") <($filter "$3")
+filter=$1 ; shift
+in1=$1 ; shift
+in2=$1 ; shift
+diff -u <($filter "$in1") <($filter "$in2") "$@"
