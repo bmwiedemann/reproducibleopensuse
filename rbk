@@ -10,7 +10,7 @@ export VM_CUSTOMOPT=""
 osc up
 clean+=" --release=0.0 -j4"
 export clean
-HOST=sles12 OUTDIR=RPMS.2017 rebuild &
+HOST=sles12a OUTDIR=RPMS.2017 rebuild &
 pid=$!
 sleep 15
 export VM_CUSTOMOPT="-rtc base=$later"
