@@ -62,6 +62,14 @@ sub find_build_compare_status($)
   return "unreproducible";
 }
 
+sub get_build_duration($)
+{ my $in=shift;
+  if(! -e $in) { return undef }
+  my $duration=int(getline($in));
+  if(!$duration) {$duration=undef};
+  return $duration;
+}
+
 sub get_status_for_one_dir($)
 {
   my $dir=shift;
@@ -78,6 +86,7 @@ sub get_status_for_one_dir($)
     status=>find_status($dir),
     release=>getline("$dir/.osc/_project"),
     build_date=>(stat("$dir/.osc-build-retval"))[9],
+    build_duration=>get_build_duration("$dir/RPMS/build-time"),
   };
   if($data->{status} eq "unreproducible") {
     $data->{build_compare_status}=find_build_compare_status($dir);
