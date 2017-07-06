@@ -7,6 +7,11 @@ pushd $dir1
 origrpms=$(ls *.rpm | grep -v "^::import::")
 popd
 
+if ! [[ $origrpms ]] ; then
+    rm -f .build-differed .build-compare-retval
+    exit 102
+fi
+
 pkgdiff=~/build-compare/pkg-diff.sh
 test -e $pkgdiff || pkgdiff=/usr/lib/build/pkg-diff.sh
 test -e $pkgdiff || exit 75
