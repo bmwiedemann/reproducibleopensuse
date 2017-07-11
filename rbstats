@@ -39,8 +39,8 @@ for p in $(cat ~/tmp/failed-builds.txt) ; do (cd $p && ! cut -d\; -f1 ~/tmp/oscp
 
 exec 1>&3
 cat ~/tmp/rbstats.txt
-cat */RPMS*/checksums > ~/tmp/checksums.txt
 if [[ $final = 1 ]] ; then
+    cat */RPMS*/checksums > ~/tmp/checksums.txt
     for p in * ; do jsonresultcache "$p" ; done
     jsonresultmerge * > ~/tmp/reproducible.json
 fi
