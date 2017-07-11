@@ -1,0 +1,20 @@
+#!/bin/bash
+if [[ $1 ]] ; then
+    cd "$1" || exit 4
+fi
+cd .osc || exit 5
+
+maxt=0
+for f in * ; do
+    case "$f" in
+        _files|_meta|_buildconfig-*|_buildinfo-*)
+		true
+		;;
+	*)
+		t=$(stat -c %Y "$f")
+		[[ $t -gt $maxt ]] && maxt=$t
+		;;
+    esac
+done
+touch -d@$maxt _files _meta
+

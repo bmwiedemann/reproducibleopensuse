@@ -1,0 +1,12 @@
+#!/bin/sh
+p=${1:-.}
+cd "$p"
+cp -a .osc/_files .rb.osc.files.bak
+osc up
+cmp .osc/_files .rb.osc.files.bak && mv .rb.osc.files.bak .osc/_files # restore timestamp to not trigger new make run on this package
+rm -f .rb.osc.files.bak
+
+# drop packages that were removed from openSUSE:
+test -e .osc/_files || cleanupone .
+cd ..
+rmdir "$p" 2>/dev/null
