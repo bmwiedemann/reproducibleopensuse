@@ -1,6 +1,6 @@
 #!/bin/sh
-for p in * ; do
-    echo "updating $p"
-    updateone "$p"
-done
+osc up
+# drop packages that were removed from openSUSE:
+for p in * ; do test -e $p/.osc/_files || cleanupone $p ; fixuposcmtime $p ; done
+rmdir * 2>/dev/null
 osc prjresults --csv --arch=x86_64 --repo=standard openSUSE:Factory > ~/tmp/oscpr
