@@ -3,8 +3,9 @@
 : ${slot:=4}
 : ${clean:=--clean --offline}
 : ${project:=home:bmwiedemann:reproducible}
+: ${datediff:=$((((401*24+13)*60+17)*60))}
 now=$(date +%s)
-later=$(date --date=@$((now+((401*24+13)*60+17)*60)) -u "+%FT%T")
+later=$(date --date=@$((now+datediff)) -u "+%FT%T")
 export vmtype="--vm-type=kvm"
 export OSC_BUILD_ROOT=/var/tmp/build-root.${slot}/
 export VM_CUSTOMOPT=""
