@@ -12,7 +12,7 @@ export vmtype="--vm-type=kvm"
 export OSC_BUILD_ROOT=/var/tmp/build-root.${slot}/
 export VM_CUSTOMOPT=""
 osc up
-osc build --preload --nopreinstallimage --noservice --vm-type=kvm --alternative-project=$project
+osc build ${oscbuildextrapkg} --preload --nopreinstallimage --noservice --vm-type=kvm --alternative-project=$project
 clean+=" --release=0.0 -j4"
 export clean
 HOST=$host1 OUTDIR=RPMS.2017 rebuild &
