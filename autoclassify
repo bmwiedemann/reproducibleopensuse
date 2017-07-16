@@ -13,7 +13,7 @@ sub rbk(@)
     local $ENV{oscbuildextrapkg};
     my @extrapkg=();
     if($nextclean) { $ENV{clean}="--clean --offline"} else { $ENV{clean}="--offline" }
-    if(shift) { $ENV{datediff}=60 }
+    if(shift) { $ENV{datediff}=100 }
     if(shift) { $ENV{host2}="sles12a" }
     if(shift) { push(@extrapkg, "reproducible-faketools-filesys") }
     if(shift) { push(@extrapkg, "reproducible-faketools-date") }
