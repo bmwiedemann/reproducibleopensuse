@@ -10,11 +10,16 @@ sub rbk(@)
     local $ENV{rbsnd};
     local $ENV{project};
     local $ENV{clean};
-    if($nextclean) { $ENV{clean}=""} else { $ENV{clean}="--offline" }
+    local $ENV{oscbuildextrapkg};
+    my @extrapkg=();
+    if($nextclean) { $ENV{clean}="--clean --offline"} else { $ENV{clean}="--offline" }
     if(shift) { $ENV{datediff}=60 }
     if(shift) { $ENV{host2}="sles12a" }
+    if(shift) { push(@extrapkg, "reproducible-faketools-filesys") }
+    if(shift) { push(@extrapkg, "reproducible-faketools-date") }
     if(shift) { $ENV{rbsnd}=1 }
     if(shift) { $ENV{project}="home:bmwiedemann:reproducible:prjconf" ; $nextclean=1 }
+    if(@extrapkg) { $ENV{oscbuildextrapkg}=join " ", map {"--extra-pkgs=$_"} @extrapkg }
     system("rbk");
     open(my $resultfd, "<.build-differed") || die $!;
     my $result=<$resultfd>;chomp($result);
@@ -52,5 +57,5 @@ sub stupid_bisect($$)
     return @cur;
 }
 
-stupid_bisect([0,0,0,0],[1,1,1,1]);
+stupid_bisect([0,0,0,0,0,0],[1,1,1,1,1,1]);
 
