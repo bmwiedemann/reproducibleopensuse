@@ -1,0 +1,56 @@
+#!/usr/bin/perl -w
+use strict;
+my $slot=$ENV{slot}||4;
+
+our $nextclean=1;
+sub rbk(@)
+{
+    local $ENV{datediff};
+    local $ENV{host2};
+    local $ENV{rbsnd};
+    local $ENV{project};
+    local $ENV{clean};
+    if($nextclean) { $ENV{clean}=""} else { $ENV{clean}="--offline" }
+    if(shift) { $ENV{datediff}=60 }
+    if(shift) { $ENV{host2}="sles12a" }
+    if(shift) { $ENV{rbsnd}=1 }
+    if(shift) { $ENV{project}="home:bmwiedemann:reproducible:prjconf" ; $nextclean=1 }
+    system("rbk");
+    open(my $resultfd, "<.build-differed") || die $!;
+    my $result=<$resultfd>;chomp($result);
+    return $result;
+}
+sub debugtry(@)
+{
+    my $result=<STDIN>;chomp($result);
+    return $result;
+}
+
+sub run(@)
+{
+    print "trying @_\n";
+    rbk(@_);
+    #debugtry(@_);
+}
+
+sub stupid_bisect($$)
+{
+    my $min=shift;
+    my $max=shift;
+    if($#$max != $#$min) {die "need same size"}
+    my @cur=@$max;
+    for(my $i=$#cur; $i>=0; $i--) {
+        next if($min->[$i] == $cur[$i]);
+        $cur[$i]=$min->[$i];
+        if(run(@cur)) {
+            $cur[$i]=$max->[$i];
+        }
+    }
+    print "cur: @cur\n";
+    open(my $outfd, ">.rb.autoclassify") or die $!;
+    print $outfd "@cur\n";
+    return @cur;
+}
+
+stupid_bisect([0,0,0,0],[1,1,1,1]);
+
