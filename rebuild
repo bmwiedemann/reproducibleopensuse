@@ -5,7 +5,7 @@
 : ${OUTDIR:=RPMS}
 export OSC_BUILD_ROOT
 pkg=$(basename $(pwd))
-debuginfo=--disable-debuginfo
+: ${debuginfo:=--disable-debuginfo}
 if grep -q "^$pkg$" ~/reproducibleopensuse/exceptions.cleanbuild ; then
   clean=${clean/--noinit/--clean}
 fi
