@@ -6,6 +6,7 @@
 : ${datediff:=$((((401*24+13)*60+17)*60))}
 : ${host1:=sles12a}
 : ${host2:=sles12b}
+: ${parallelism:=4}
 now=$(date +%s)
 later=$(date --date=@$((now+datediff)) -u "+%FT%T")
 export vmtype="--vm-type=kvm"
@@ -13,7 +14,7 @@ export OSC_BUILD_ROOT=/var/tmp/build-root.${slot}/
 export VM_CUSTOMOPT=""
 osc up
 osc build ${oscbuildextrapkg} --preload --nopreinstallimage --noservice --vm-type=kvm --alternative-project=$project
-clean+=" --release=0.0 -j4"
+clean+=" --release=0.0 -j${parallelism}"
 export clean
 HOST=$host1 OUTDIR=RPMS.2017 rebuild &
 pid=$!
