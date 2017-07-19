@@ -44,4 +44,5 @@ if [[ $final = 1 ]] ; then
     for p in * ; do jsonresultcache "$p" ; done
     jsonresultmerge * > ~/tmp/reproducible.json
 fi
-for p in * ; do (cd $p && test -e .osc-build-retval || echo "untracked dir $p" ) ; done
+echo "untracked dirs:"
+for p in * ; do (cd $p && test -e .osc-build-retval || echo -n "$p " ) ; done
