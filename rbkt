@@ -1,0 +1,28 @@
+#!/usr/bin/perl -w
+use strict;
+sub rbk(@)
+{
+    my @extrapkg=();
+    if($ENV{CLEAN}) { $ENV{clean}="--clean --offline"} else { $ENV{clean}="--offline" }
+    if(shift) { $ENV{datediff}=100 }
+    if(shift) { $ENV{host2}="sles12a" }
+    if(shift) { push(@extrapkg, "reproducible-faketools-filesys") }
+    if(shift) { push(@extrapkg, "reproducible-faketools-date") }
+    if(shift) { $ENV{rbsnd}=1 }
+    if(shift) { $ENV{project}="home:bmwiedemann:reproducible:test" }
+    if(shift) { push(@extrapkg, "reproducible-faketools-faketime") }
+    if(shift) { $ENV{parallelism}=1 }
+    if(@extrapkg) { $ENV{oscbuildextrapkg}=join " ", map {"--extra-pkgs=$_"} @extrapkg }
+    system("rbk");
+    open(my $resultfd, "<.build-differed") || die $!;
+    my $result=<$resultfd>;chomp($result);
+    return $result;
+}
+
+sub run(@)
+{
+    #print "trying @_\n";
+    rbk(@_);
+}
+
+exit run(@ARGV);
