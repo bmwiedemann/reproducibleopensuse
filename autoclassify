@@ -19,6 +19,7 @@ sub rbk(@)
     if(shift) { push(@extrapkg, "reproducible-faketools-date") }
     if(shift) { $ENV{rbsnd}=1 }
     if(shift) { $ENV{project}="home:bmwiedemann:reproducible:test" ; $nextclean=1 }
+    if(shift) { push(@extrapkg, "reproducible-faketools-faketime") }
     if(@extrapkg) { $ENV{oscbuildextrapkg}=join " ", map {"--extra-pkgs=$_"} @extrapkg }
     system("rbk");
     open(my $resultfd, "<.build-differed") || die $!;
@@ -57,5 +58,5 @@ sub stupid_bisect($$)
     return @cur;
 }
 
-stupid_bisect([0,0,0,0,0,0],[1,1,1,1,1,1]);
+stupid_bisect([0,0,0,0,0,0,0],[1,1,1,1,1,1,1]);
 
