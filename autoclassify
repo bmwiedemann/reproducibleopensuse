@@ -41,5 +41,10 @@ sub stupid_bisect($$)
     return @cur;
 }
 
-stupid_bisect([0,0,0,0,0,0,0,0],[1,1,1,1,1,1,1,1]);
+my @min=(0,0,0,0,0,0,0,0);
+my @max=@ARGV;
+for(my $i=$#min; $i>=0; $i--) {
+    $max[$i]=1 unless defined $max[$i];
+}
+stupid_bisect(\@min, \@max);
 
