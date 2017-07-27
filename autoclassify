@@ -1,12 +1,13 @@
 #!/usr/bin/perl -w
 use strict;
-my $slot=$ENV{slot}||4;
-
 our $nextclean=1;
+our $rpmversion=0;
 sub rbk(@)
 {
-    $ENV{CLEAN}=$nextclean;
-    #$nextclean=$_[2]||$_[5]; # FIXME: cleanup after disorderfs hack or when switching rpm versions between main and test repos
+    # FIXME: cleanup after disorderfs hack or when switching rpm versions between main and test repos
+    $ENV{CLEAN}=(1 || $nextclean || ($rpmversion != $_[5]));
+    $nextclean=$_[2];
+    $rpmversion=$_[5];
     return system("rbkt", @_);
 }
 sub debugtry(@)
