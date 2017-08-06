@@ -12,6 +12,7 @@ sub rbk(@)
     if(shift) { $ENV{project}="home:bmwiedemann:reproducible:test" }
     if(shift) { push(@extrapkg, "reproducible-faketools-tar") }
     if(shift) { $ENV{parallelism}=1 }
+    if(shift) { push(@extrapkg, "reproducible-faketools-aslr") }
     if(shift) { push(@extrapkg, "reproducible-faketools-faketime") }
     if(shift) { push(@extrapkg, "reproducible-faketools-strace") } # get extra r-b debug info
     if(@extrapkg) { $ENV{oscbuildextrapkg}=join " ", map {"--extra-pkgs=$_"} @extrapkg }
