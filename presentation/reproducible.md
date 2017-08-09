@@ -63,6 +63,8 @@ compile-time CPU detection libatlas3
 ## new sources of randomness discovered
 
 * `%if 0%{?do_profiling}` in .spec files
+* * can be fixed by [always doing the same](https://build.opensuse.org/request/show/499887) in the profiling run
+* * or by [removing differing .gcda files](https://build.opensuse.org/request/show/498391) losing some of the optimizations, but not all
 
 * `%ghost` and `%dir` have (semi-random) sizes visible in rpm -qp --dump
 
