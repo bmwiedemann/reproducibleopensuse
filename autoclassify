@@ -44,7 +44,8 @@ sub stupid_bisect($$)
     for(my $i=$#cur; $i>=0; $i--) {
         next if($min->[$i] == $cur[$i]);
         $cur[$i]=$min->[$i];
-        if(run(@cur)) {
+        my $res=run(@cur);
+        if($res == (1<<8)) {
             $cur[$i]=$max->[$i];
         }
     }
@@ -53,11 +54,13 @@ sub stupid_bisect($$)
     return @cur;
 }
 
-my @min=(0,0,0,0,0,0,0,0,0,0);
+# tweaks that may trigger build failures in some packages:
+my @unstable=(0,0,1,1,1,1,1,0,0,0);
+my @min=     (0,0,0,0,0,0,0,0,0,0);
 my @max=@ARGV;
 for(my $i=$#min; $i>=0; $i--) {
     $max[$i]=1 unless defined $max[$i];
 }
-if(rbk(@max)) { printclassify(@max, 99); exit 0; }
+if(rbk(@max) == (1<<8)) { printclassify(@max, 99); exit 0; }
 stupid_bisect(\@min, \@max);
 

@@ -14,5 +14,5 @@ sub test1($$)
 test1("0bit", "0 0 0 0 0 0 0 0 0 0");
 test1("1bit", "0 0 1 0 0 0 0 0 0 0");
 test1("3bit", "1 0 1 0 0 0 0 1 0 0");
-test1("nonbuilding", "1 1 1 1 1 1 1 1 1 1 99"); # FIXME
+test1("nonbuilding", "0 0 1 0 0 0 0 0 0 0");
 test1("unreproducible", "1 1 1 1 1 1 1 1 1 1 99");

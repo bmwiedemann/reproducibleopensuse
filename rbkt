@@ -31,6 +31,7 @@ sub rbk(@)
     system("echo @tweakbits > .build-rbkt");
     open(my $resultfd, "<.build-differed") || die $!;
     my $result=<$resultfd>;chomp($result);
+    if($result>1) {$result=1}
     return $result;
 }
 
