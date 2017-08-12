@@ -86,6 +86,7 @@ sub get_status_for_one_dir($)
     status=>find_status($dir),
     release=>getline("$dir/.osc/_project"),
     opensusetweaks=>eval{getline("$dir/.build-rbkt")}||undef,
+    opensuseautoclassify=>eval{getline("$dir/.rb.autoclassify")}||undef,
     build_date=>(stat("$dir/.osc-build-retval"))[9],
     build_duration=>get_build_duration("$dir/RPMS/build-time"),
   };
