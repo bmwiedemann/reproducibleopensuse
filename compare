@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 #prereq: zypper -n in build-compare
 : ${dir1:=binaries}
 : ${dir2:=RPMS}

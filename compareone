@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 scriptdir=$(dirname $BASH_SOURCE)
 p=$(basename $(pwd))
 : ${dir1:=binaries}

@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 : ${OSC_BUILD_ROOT:="/var/tmp/build-root/standard-x86_64"}
 : ${clean:=--clean}
