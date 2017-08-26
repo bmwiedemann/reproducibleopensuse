@@ -1,0 +1,13 @@
+#!/bin/sh
+: ${slot:=4}
+for x in "" b ; do
+    b=/var/tmp/build-root.$slot$x
+    mount -o loop $b/img $b/.mount/
+done
+[[ $rbdebug ]] && bash -i
+diff -ruN /var/tmp/build-root.${slot}{,b}/.mount/home/abuild/rpmbuild/ > .rb.buildroot.diff
+
+for x in "" b ; do
+    b=/var/tmp/build-root.$slot$x
+    umount $b/.mount/
+done

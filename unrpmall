@@ -1,0 +1,6 @@
+#!/bin/sh
+for d in RPMS* ; do
+    (   cd $d &&
+        unrpm *.rpm
+    )
+done
