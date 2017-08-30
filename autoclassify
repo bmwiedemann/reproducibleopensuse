@@ -22,6 +22,12 @@ sub run(@)
     #debugtry(@_);
 }
 
+sub printclassify(@)
+{
+    open(my $outfd, ">.rb.autoclassify") or die $!;
+    print $outfd "@_\n";
+}
+
 sub stupid_bisect($$)
 {
     my $min=shift;
@@ -36,8 +42,7 @@ sub stupid_bisect($$)
         }
     }
     print "cur: @cur\n";
-    open(my $outfd, ">.rb.autoclassify") or die $!;
-    print $outfd "@cur\n";
+    printclassify(@cur);
     return @cur;
 }
 
@@ -46,5 +51,6 @@ my @max=@ARGV;
 for(my $i=$#min; $i>=0; $i--) {
     $max[$i]=1 unless defined $max[$i];
 }
+if(rbk(@max)) { printclassify(@max, 99); exit 0; }
 stupid_bisect(\@min, \@max);
 
