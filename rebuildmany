@@ -1,9 +1,2 @@
 #!/bin/sh
-scriptdir=$(dirname $BASH_SOURCE)
-rm -f /tmp/stoprebuild
-for p in "$@" ; do
-    test -e /tmp/stoprebuild && break
-    pushd $p && rb5
-    popd
-done
-
+exec rbmany rb5 "$@"

@@ -1,0 +1,13 @@
+#!/bin/sh
+script=$1 ; shift
+rm -f /tmp/stoprebuild
+for p in "$@" ; do
+    test -e /tmp/stoprebuild && break
+    if pushd $p ; then
+        "$script"
+        popd
+    else
+        echo "Error: could not find $p"
+        continue
+    fi
+done

@@ -1,0 +1,2 @@
+#!/bin/sh
+test -e .rb.autoclassify || exec autoclassify

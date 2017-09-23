@@ -1,0 +1,2 @@
+#!/bin/sh
+exec rbmany autoclassifynew `cat ~/tmp/differed-builds.txt`
