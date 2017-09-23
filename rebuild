@@ -40,7 +40,7 @@ echo ${PIPESTATUS[0]} > $OUTDIR/.osc-build-retval
 cp -a $OUTDIR/.osc-build-retval .
 cp -a $OSC_BUILD_ROOT/.build.log $OUTDIR/
 cp -a $OUTDIR/.build.log .
-test -e .build.log && tail -1 .build.log | perl -ne '/\[\s*(\d+)s\]/ && print $1' > $OUTDIR/build-time
+test -e $OUTDIR/.build.log && tail -1 $OUTDIR/.build.log | perl -ne '/\[\s*(\d+)s\]/ && print $1' > $OUTDIR/build-time
 ntpdate -p 1 ntp.zq1.de ntp.suse.de
 find -mtime -0 -print0 | xargs --no-run-if-empty -0 touch
 if [ `cat $OUTDIR/.osc-build-retval` -gt 0 ] ; then
