@@ -1,7 +1,8 @@
 #!/usr/bin/perl
 use strict;
-use Test::More tests => 8;
+use Test::More tests => 9;
 $ENV{PATH}="tests.d/bin:$ENV{PATH}";
+unlink "tests.d/.randseed";
 
 sub test1($$)
 {
@@ -13,6 +14,7 @@ sub test1($$)
 
 test1("0bit", "0 0 0 0 0 0 0 0 0 0");
 test1("1bit", "0 0 1 0 0 0 0 0 0 0");
+{local $ENV{rbretries}=5 ; test1("random2bit", "0 0 0 0 0 1 1 0 0 0");}
 test1("3bit", "1 0 1 0 0 0 0 1 0 0");
 test1("nonbuilding", "0 0 1 0 0 0 0 0 0 0");
 test1("nonbuilding2", "0 0 0 1 0 0 0 0 0 0");

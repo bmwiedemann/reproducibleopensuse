@@ -7,8 +7,22 @@ sub myexit($)
     exit $ret;
 }
 
+my $seed=111;
+my $seedfile="tests.d/.randseed";
+if(open(RAND, $seedfile)) {
+    $seed=<RAND>;
+    close(RAND);
+}
+$seed++;
+open(RAND, ">", $seedfile) or die "writing $seedfile: $!";
+print RAND $seed;
+close RAND;
+print "using seed $seed\n";
+srand($seed);
 if($ENV{PKG} eq "0bit") {
     myexit 0;
+} elsif($ENV{PKG} eq "random2bit") {
+    myexit (!(($ARGV[5] || int(rand(4))) && ($ARGV[6] || int(rand(4)))));
 } elsif($ENV{PKG} eq "1bit") {
     myexit (!$ARGV[2]);
 } elsif($ENV{PKG} eq "3bit") {
