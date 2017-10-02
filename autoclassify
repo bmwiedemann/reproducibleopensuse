@@ -35,17 +35,20 @@ sub printclassify(@)
     print $outfd "@_\n";
 }
 
-sub stupid_bisect($$)
+sub isunreproducible($) {$_[0] == (1<<8)}
+
+sub stupid_bisect($$&)
 {
     my $min=shift;
     my $max=shift;
+    my $isbadfunc=shift;
     if($#$max != $#$min) {die "need same size"}
     my @cur=@$max;
     for(my $i=$#cur; $i>=0; $i--) {
         next if($min->[$i] == $cur[$i]);
         $cur[$i]=$min->[$i];
         my $res=run(@cur);
-        if($res == (1<<8)) {
+        if(&$isbadfunc($res)) {
             $cur[$i]=$max->[$i];
         }
     }
@@ -61,6 +64,7 @@ my @max=@ARGV;
 for(my $i=$#min; $i>=0; $i--) {
     $max[$i]=1 unless defined $max[$i];
 }
-if(rbk(@max) == (1<<8)) { printclassify(@max, 99); exit 0; }
-stupid_bisect(\@min, \@max);
+my $res=run(@max);
+if(isunreproducible($res)) { printclassify(@max, 99); exit 0; }
+stupid_bisect(\@min, \@max, \&isunreproducible);
 
