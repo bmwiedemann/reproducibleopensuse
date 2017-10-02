@@ -6,6 +6,16 @@ and compare the results with published binaries
 using the build-compare script that abstracts away
 some unavoidable (or unimportant) differences like rpm timestamps
 
+
+Setup:
+1. git clone this repo
+
+2. `export PATH=$PATH:/path/to/reproducibleopensuse`
+
+3. make sure you can build a package with `osc build --vm-type=kvm`
+You might need to adjust your `~/.oscrc` - especially `build-vmdisk-rootsize` and `build-memory` values.
+
+
 Usage:
 
 You can rebuild one package using
