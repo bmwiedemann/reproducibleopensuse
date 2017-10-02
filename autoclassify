@@ -1,4 +1,10 @@
 #!/usr/bin/perl -w
+# for packages that do not build reproducibly, this script tries to find the
+# source of indeterminism by reducing various parts of it one by one
+# and writing the bitmask to .rb.autoclassify
+# see the rbkt script for the meaning of individual bits
+
+
 use strict;
 my $slot=$ENV{slot}||4;
 
