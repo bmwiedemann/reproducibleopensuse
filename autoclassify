@@ -37,6 +37,8 @@ sub printclassify(@)
 
 sub isunreproducible($) {$_[0] == (1<<8)}
 
+sub isnonbuilding($) {$_[0] == (255<<8)}
+
 sub stupid_bisect($$&)
 {
     my $min=shift;
@@ -65,6 +67,18 @@ for(my $i=$#min; $i>=0; $i--) {
     $max[$i]=1 unless defined $max[$i];
 }
 my $res=run(@max);
+if($res == (255<<8)) {
+    print "build failed => analyzing build failure reason...\n";
+    my @stablemin=@max;
+    for(my $i=$#unstable; $i>=0; $i--) {
+        if($unstable[$i]) {$stablemin[$i]=0}
+    }
+    $res=run(@stablemin);
+    if(isnonbuilding($res)) { printclassify(@stablemin, 98); exit 0; }
+    @max=stupid_bisect(\@max, \@stablemin, \&isnonbuilding);
+    print "found it builds with @max\n";
+    $res=run(@max);
+}
 if(isunreproducible($res)) { printclassify(@max, 99); exit 0; }
 stupid_bisect(\@min, \@max, \&isunreproducible);
 
