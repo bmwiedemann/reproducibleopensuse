@@ -30,6 +30,7 @@ sub run(@)
 
 sub printclassify(@)
 {
+    print "classified as @_\n";
     open(my $outfd, ">.rb.autoclassify") or die $!;
     print $outfd "@_\n";
 }

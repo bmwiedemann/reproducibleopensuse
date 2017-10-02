@@ -1,0 +1,18 @@
+#!/usr/bin/perl -w
+use strict;
+
+if($ENV{PKG} eq "0bit") {
+   exit 0;
+} elsif($ENV{PKG} eq "1bit") {
+   exit (!$ARGV[2]);
+} elsif($ENV{PKG} eq "3bit") {
+   exit (!($ARGV[0] && $ARGV[2] && $ARGV[7]));
+} elsif($ENV{PKG} eq "unreproducible") {
+   exit 1;
+} elsif($ENV{PKG} eq "nonbuilding") {
+   exit 255 if($ARGV[3]);
+   exit (!$ARGV[2]);
+} else {
+   print "FIXME: not implemented";
+   exit 55;
+}
