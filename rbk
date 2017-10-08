@@ -24,3 +24,4 @@ export OSC_BUILD_ROOT=/var/tmp/build-root.${slot}b/
 HOST=$host2 OUTDIR=RPMS rebuild
 wait $pid
 dir1=RPMS.2017 compareone
+grep '^0$' .build-differed || oscmount
