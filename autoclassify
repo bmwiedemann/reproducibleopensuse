@@ -7,13 +7,19 @@
 
 use strict;
 my $slot=$ENV{slot}||4;
+my $rbretries=$ENV{rbretries}||1;
 
 our $nextclean=1;
 sub rbk(@)
 {
     $ENV{CLEAN}=$nextclean;
     #$nextclean=$_[2]||$_[5]; # FIXME: cleanup after disorderfs hack or when switching rpm versions between main and test repos
-    return system("rbkt", @_);
+    my $ret;
+    for(1..$rbretries) {
+        $ret=system("rbkt", @_);
+        return $ret if $ret;
+    }
+    return $ret;
 }
 sub debugtry(@)
 {
