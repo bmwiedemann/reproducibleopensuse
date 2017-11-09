@@ -2,7 +2,7 @@
 if [[ $1 ]] ; then
     cd "$1" || exit 4
 fi
-cd .osc || exit 5
+cd .osc || { echo "^^ $1 ^^" ; exit 5 ; }
 
 maxt=0
 for f in * ; do
