@@ -24,6 +24,7 @@ sub rbk(@)
     if(shift) { $ENV{parallelism}=1 }
     if(shift) { push(@extrapkg, "reproducible-faketools-aslr") }
     if(shift) { push(@extrapkg, "reproducible-faketools-pid") }
+    if(shift) { push(@extrapkg, "reproducible-faketools-random") }
     if(shift) { push(@extrapkg, "reproducible-faketools-faketime") }
     if(shift) { push(@extrapkg, "reproducible-faketools-strace") } # get extra r-b debug info
     if(@extrapkg) { $ENV{oscbuildextrapkg}=join " ", map {"--extra-pkgs=$_"} @extrapkg }
