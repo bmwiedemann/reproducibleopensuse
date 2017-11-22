@@ -7,6 +7,7 @@
 : ${host1:=sles12a}
 : ${host2:=sles12b}
 : ${parallelism:=4}
+: ${parallelism2:=2}
 now=$(date +%s)
 later=$(date --date=@$((now+datediff)) -u "+%FT%T")
 export vmtype="--vm-type=kvm"
@@ -15,13 +16,13 @@ export VM_CUSTOMOPT=""
 osc up
 osc build ${oscbuildextrapkg} --preload --nopreinstallimage --noservice --vm-type=kvm --alternative-project=$project
 rm -f .build-differed .build-rbkt
-clean+=" --release=0.0 -j${parallelism}"
+clean+=" --release=0.0"
 export clean
-HOST=$host1 OUTDIR=RPMS.2017 rebuild &
+clean="$clean -j${parallelism}" HOST=$host1 OUTDIR=RPMS.2017 rebuild &
 pid=$!
 export VM_CUSTOMOPT="-rtc base=$later"
 export OSC_BUILD_ROOT=/var/tmp/build-root.${slot}b/
-HOST=$host2 OUTDIR=RPMS rebuild
+clean="$clean -j${parallelism2}" HOST=$host2 OUTDIR=RPMS rebuild
 wait $pid
 dir1=RPMS.2017 compareone
 grep '^0$' .build-differed || oscmount

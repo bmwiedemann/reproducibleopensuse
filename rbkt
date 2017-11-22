@@ -21,7 +21,7 @@ sub rbk(@)
     if(shift) { $ENV{rbsnd}=1 }
     if(shift) { $ENV{project}="home:bmwiedemann:reproducible:test" }
     if(shift) { push(@extrapkg, "reproducible-faketools-tar") }
-    if(shift) { $ENV{parallelism}=1 }
+    if(shift) { $ENV{parallelism}=1; $ENV{parallelism2}=1 }
     if(shift) { push(@extrapkg, "reproducible-faketools-aslr") }
     if(shift) { push(@extrapkg, "reproducible-faketools-pid") }
     if(shift) { push(@extrapkg, "reproducible-faketools-random") }
