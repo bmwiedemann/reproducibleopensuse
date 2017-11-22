@@ -13,7 +13,7 @@ later=$(date --date=@$((now+datediff)) -u "+%FT%T")
 export vmtype="--vm-type=kvm"
 export OSC_BUILD_ROOT=/var/tmp/build-root.${slot}/
 export VM_CUSTOMOPT=""
-osc up
+osc up -S
 osc build ${oscbuildextrapkg} --preload --nopreinstallimage --noservice --vm-type=kvm --alternative-project=$project
 rm -f .build-differed .build-rbkt
 clean+=" --release=0.0"
