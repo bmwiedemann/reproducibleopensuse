@@ -30,6 +30,7 @@ sub rbk(@)
     if(@extrapkg) { $ENV{oscbuildextrapkg}=join " ", map {"--extra-pkgs=$_"} @extrapkg }
     system("rbk");
     system("echo @tweakbits > .build-rbkt");
+    system("jsonresultcache ."); # update with tweakbits
     open(my $resultfd, "<.build-differed") || die $!;
     my $result=<$resultfd>;chomp($result);
     if($result>1) {$result=1}
