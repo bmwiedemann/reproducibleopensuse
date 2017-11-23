@@ -15,7 +15,9 @@ sub rbk(@)
     my @extrapkg=();
     if($ENV{CLEAN}) { $ENV{clean}="--clean --offline"} else { $ENV{clean}="--offline" }
     if(shift) { $ENV{datediff}=100 }
-    if(shift) { $ENV{host2}="sles12a" }
+    my $hosttweak=shift||0;
+    if($hosttweak&1) { $ENV{host2}="sles12a" }
+    if($hosttweak&2) { push(@extrapkg, "reproducible-faketools-hostname") }
     if(shift) { push(@extrapkg, "reproducible-faketools-filesys") }
     if(shift) { push(@extrapkg, "reproducible-faketools-date") }
     if(shift) { $ENV{rbsnd}=1 }
