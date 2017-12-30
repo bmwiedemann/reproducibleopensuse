@@ -2,11 +2,11 @@
 scriptdir=$(dirname $0)
 for p in "$@" ; do
     popd > /dev/null
-    if ! pushd $p > /dev/null || ! [ -e binaries ] ; then
-        echo "could not find $p/binaries"
+    if ! pushd $p > /dev/null ; then
+        echo "could not find $p"
         exit 21
     fi
-    if test -z "$(find RPMS/ -maxdepth 1 -name '*.rpm' -print -quit)" ; then
+    if ! test -e binaries || test -z "$(find RPMS/ -maxdepth 1 -name '*.rpm' -print -quit)" ; then
          echo "result:$p=notbuilt"
          continue
     fi
