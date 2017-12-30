@@ -1,7 +1,7 @@
 #!/bin/sh
 scriptdir=$(dirname $0)
 for p in "$@" ; do
-    pushd $p && ! [ -e binaries ] && $scriptdir/rebuild
+    pushd $p && ! [ -e RPMS ] && $scriptdir/rebuild
     popd
 done
 
