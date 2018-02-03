@@ -66,7 +66,7 @@ sub stupid_bisect($$&)
 }
 
 # tweaks that may trigger build failures in some packages:
-my @unstable=(0,0,1,1,1,1,1,0,0,0,0);
+my @unstable=(0,0,1,1,1,1,1,0,0,0,1);
 my @min=     (0,0,0,0,0,0,0,0,0,0,0);
 my @max=@ARGV;
 for(my $i=$#min; $i>=0; $i--) {
