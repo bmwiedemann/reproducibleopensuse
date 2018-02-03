@@ -10,6 +10,7 @@ osc build --noservice $vmtype $clean $(basename `pwd`).spec "$@"
 echo $? > .osc-build-retval
 if [ `cat .osc-build-retval` -gt 0 ] ; then
     cp -a $OSC_BUILD_ROOT/.build.log .
+    exit 1
 fi
 rm -rf RPMS
 mkdir -p RPMS
