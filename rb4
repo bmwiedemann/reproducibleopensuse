@@ -1,4 +1,5 @@
 #!/bin/sh -e
+export SOURCE_DATE_EPOCH=1482385409
 date --set="2017-01-01"
 hostname sles12
 rb
