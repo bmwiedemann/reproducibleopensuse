@@ -5,7 +5,7 @@ my @result = ();
 undef $/;
 for my $dir (@ARGV) {
     my $f = "$dir/.build-jsonresult";
-    open(my $fd, "<", $f) or die "error with $f: $!";
+    open(my $fd, "<", $f) or next;
     my $jsonin = <$fd>;
     my $oneresult = eval {decode_json($jsonin)};
     if($@) { die "$@ in $dir" }
