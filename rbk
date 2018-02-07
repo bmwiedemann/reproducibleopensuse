@@ -3,7 +3,7 @@
 : ${slot:=4}
 : ${clean:=--clean --offline}
 : ${project:=home:bmwiedemann:reproducible}
-: ${datediff:=$((((401*24+13)*60+17)*60))}
+: ${datediff:=$(((((365*15+36)*24+13)*60+17)*60))}
 : ${host1:=sles12a}
 : ${host2:=sles12b}
 : ${parallelism:=4}
