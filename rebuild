@@ -35,7 +35,8 @@ rm -rf $OUTDIR
 mkdir -p $OUTDIR
 echo in-progress > $OUTDIR/.osc-build-retval
 hostname > $OUTDIR/buildhost
-osc build --keep-pkg=$OUTDIR/ --alternative-project "$project" --nopreinstallimage $debuginfo --noservice$rootforbuild $vmtype $clean "${oscopts[@]}" $repo $(basename `pwd`).spec "$@" 2>&1 | tee $OUTDIR/.build.log2
+set -x
+osc build --keep-pkg=$OUTDIR/ --alternative-project "$project" --nopreinstallimage $debuginfo --noservice$rootforbuild ${oscbuildparams} $vmtype $clean "${oscopts[@]}" $repo $(basename `pwd`).spec "$@" 2>&1 | tee $OUTDIR/.build.log2
 echo ${PIPESTATUS[0]} > $OUTDIR/.osc-build-retval
 cp -a $OUTDIR/.osc-build-retval .
 cp -a $OSC_BUILD_ROOT/.build.log $OUTDIR/
