@@ -14,7 +14,16 @@ export vmtype="--vm-type=kvm"
 export OSC_BUILD_ROOT=/var/tmp/build-root.${slot}/
 export VM_CUSTOMOPT=""
 osc up -S
-osc build ${oscbuildextrapkg} --preload --nopreinstallimage --noservice --vm-type=kvm --alternative-project=$project ${oscbuildparams} $(basename `pwd`).spec
+mkdir -p RPMS
+osc build ${oscbuildextrapkg} --preload --nopreinstallimage --noservice --vm-type=kvm --alternative-project=$project ${oscbuildparams} $(basename `pwd`).spec 2>&1 | tee RPMS/.build.log2
+if (( ${PIPESTATUS[0]} )) ; then
+    if grep -q "Error: build description file named '.*does not exist" RPMS/.build.log2 ; then
+        echo 2
+    else
+        echo 33
+    fi > .osc-build-retval
+    exit 33
+fi
 rm -f .build-differed .build-rbkt
 clean+=" --release=0.0"
 export clean
