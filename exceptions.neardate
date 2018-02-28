@@ -1,0 +1,14 @@
+chromium
+gnutls
+libressl
+neon
+perl-IO-Socket-SSL
+python
+python3
+python3-base
+python-M2Crypto
+python-oslo.service
+python-pyOpenSSL
+python-trollius
+python-urllib3
+python-vcrpy
