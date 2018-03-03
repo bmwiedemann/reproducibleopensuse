@@ -1,0 +1,19 @@
+#!/bin/sh
+echo -n "total-packages: "
+ls | wc -l
+buildtried=$(ls */.osc-build-retval | wc -l)
+buildfailed=$(grep '^1$' */.osc-build-retval | wc -l)
+buildna=$(grep '^[2-9]' */.osc-build-retval | wc -l)
+buildsucceeded=$(grep '^0$' */.osc-build-retval | wc -l)
+echo "build-tried: $buildtried"
+echo "build-failed: $buildfailed"
+echo "build-n-a: $buildna"
+echo "build-succeeded: $buildsucceeded"
+[[ $((buildfailed+buildna+buildsucceeded)) == $buildtried ]] || { echo sanity check failed ; exit 27; }
+#osc prjresults --csv --arch=x86_64 --repo=standard openSUSE:Factory > /tmp/oscpr
+echo -n "build-official-failed: "
+grep ";failed$" /tmp/oscpr|wc -l
+comparefailed=$(ls */RPMS/*.out | wc -l)
+echo "build-compare-failed: $comparefailed"
+echo "build-compare-succeeded: "$(($buildsucceeded-$comparefailed))
+echo "bit-by-bit-identical: 0" # until we use patched rpm and constant hostname
