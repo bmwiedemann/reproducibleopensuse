@@ -1,0 +1,3 @@
+#!/bin/sh
+rm -f */.build* */.osc-build-retval
+rm -rf */RPMS* */binaries
