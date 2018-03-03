@@ -20,9 +20,11 @@ grep -e ';failed$' -e ';unresolvable$' -e ';disabled$' ~/tmp/oscpr > ~/tmp/oscpr
 echo -n "build-official-failed+na: "
 wc -l < ~/tmp/oscpr.failed
 comparefailed=$(ls */RPMS/*.out | wc -l)
+bitidentical=$(grep '^0$' */.build-differed | wc -l)
 echo "build-compare-failed: $comparefailed"
 echo "build-compare-succeeded: "$(($buildsucceeded-$comparefailed))
-echo "bit-by-bit-identical: 0" # until we use patched rpm and constant hostname
+echo "bit-by-bit-identical: $bitidentical" # needs rpm patches
+echo "not-bit-by-bit-identical: $((buildsucceeded-bitidentical))"
 
 
 for p in $(cat ~/tmp/failed-builds.txt) ; do (cd $p && ! cut -d\; -f1 ~/tmp/oscpr.failed | grep -q $p && ! egrep -q 'Architecture is (excluded|not included)' .build.log && ! grep -q "unresolvable: nothing provides " .build.log2 && echo $p ) ; done > ~/tmp/failchecklist 2>/dev/null
