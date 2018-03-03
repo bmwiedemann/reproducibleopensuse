@@ -10,14 +10,20 @@ test -e $pkgdiff || pkgdiff=/usr/lib/build/pkg-diff.sh
 test -e $pkgdiff || exit 75
 
 overall=0
+overalldiffered=0
 for f in $origrpms ; do
     # strip rebuild counter
     rpm=$(echo "$f" | sed 's/-[0-9.]*\(\.[a-z0-9_]*\.rpm\)$/-*\1/')
     #ls -l binaries/$f RPMS/$rpm
+    cmp binaries/$f RPMS/$rpm
+    compareresult=$?
+    [[ $compareresult = 0 ]] || overalldiffered=$((overalldiffered+1))
     $pkgdiff -a binaries/$f RPMS/$rpm
     compareresult=$?
     [[ $compareresult = 0 ]] || overall=1
 done
 
+echo $overalldiffered > .build-differed
+echo "overalldiffered=$overalldiffered (not bit-by-bit identical)"
 echo overall=$overall
 exit $overall
