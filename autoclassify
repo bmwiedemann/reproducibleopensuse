@@ -69,6 +69,9 @@ sub stupid_bisect($$&)
 my @unstable=(0,0,1,1,1,1,1,0,0,0,1);
 my @min=     (0,0,0,0,0,0,0,0,0,0,0);
 my @max=@ARGV;
+for(my $i=$#min+1; $i<=$#max; $i++) {
+    $min[$i]=0 unless defined $min[$i];
+}
 for(my $i=$#min; $i>=0; $i--) {
     $max[$i]=1 unless defined $max[$i];
 }
