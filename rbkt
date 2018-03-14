@@ -14,17 +14,23 @@ sub rbk(@)
     my @tweakbits=@_;
     my @extrapkg=();
     if($ENV{CLEAN}) { $ENV{clean}="--clean --offline"} else { $ENV{clean}="--offline" }
+    # bit 1
     if(shift) { $ENV{datediff}=100 }
+    # bit 2
     my $hosttweak=shift||0;
     if($hosttweak&1) { $ENV{host2}="sles12a" }
     if($hosttweak&2) { push(@extrapkg, "reproducible-faketools-hostname") }
+    # bit 3
     if(shift) { push(@extrapkg, "reproducible-faketools-filesys") }
     if(shift) { push(@extrapkg, "reproducible-faketools-date") }
-    if(shift) { $ENV{rbsnd}=1 }
+    if(shift) { $ENV{rbsnd}=1 } # use strip-nondeterminism
+    # bit 6
     if(shift) { $ENV{project}="home:bmwiedemann:reproducible:test" }
     if(shift) { push(@extrapkg, "reproducible-faketools-tar") }
+    # bit 8
     if(shift) { $ENV{parallelism}=1; $ENV{parallelism2}=1 }
     if(shift) { push(@extrapkg, "reproducible-faketools-aslr") }
+    # bit 10
     if(shift) { push(@extrapkg, "reproducible-faketools-pid") }
     if(shift) { push(@extrapkg, "reproducible-faketools-random") }
     if(shift) { push(@extrapkg, "reproducible-faketools-faketime") }
