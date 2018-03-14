@@ -29,6 +29,9 @@ build-memory = 4096
 build-vmdisk-rootsize = 40960
 ```
 
+Also to build as non-root user (recommended), without having to type passwords, you need to do
+`echo 'YOURUSERNAME ALL=(ALL) NOPASSWD:/usr/bin/build' > /etc/sudoers.d/oscbuild` (or `/usr/bin/obs-build` on Debian)
+
 Usage:
 
 You can rebuild one package using
