@@ -25,7 +25,7 @@ fi
 [[ $rbsnd ]] && oscopts+=(--define='%__spec_build_post [ -e /usr/bin/strip-nondeterminism ] && find -type f -print0 | xargs -0 --no-run-if-empty strip-nondeterminism --timestamp=${SOURCE_DATE_EPOCH:-1494270000} --clamp-timestamp ; exit 0')
 oscopts+=("--build-opt=--vm-disk-filesystem=ext4")
 getent passwd qemu >/dev/null || oscopts+=("--build-opt=--vm-user=nobody")
-oscopts+=(--define='%source_date_epoch_from_changelog Y' --define='%_buildhost reproducible' --define='%clamp_mtime_to_source_date_epoch Y')
+oscopts+=(--define='%source_date_epoch_from_changelog Y' --define='%_buildhost reproducible' --define='%clamp_mtime_to_source_date_epoch Y' --define='%use_source_date_epoch_as_buildtime Y')
 
 #vmtype="--vm-type=kvm"
 : ${project:=home:bmwiedemann:reproducible}
