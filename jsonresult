@@ -96,6 +96,7 @@ sub get_status_for_one_dir($)
 }
 
 my $result=[];
+if($#ARGV == -1) {@ARGV=(".")}
 for my $dir (@ARGV) {
   push(@$result, get_status_for_one_dir($dir));
 }
