@@ -14,9 +14,11 @@ some unavoidable (or unimportant) differences.
 Setup:
 1. git clone this repo. Some parts of the code assume that it is available in ~/reproducibleopensuse
 
-2. `export PATH=$PATH:/path/to/reproducibleopensuse`
+2. install dependencies with `zypper install osc build build-compare kvm perl-JSON`
 
-3. make sure you can build a package with `osc build --vm-type=kvm`
+3. `export PATH=$PATH:/path/to/reproducibleopensuse`
+
+4. make sure you can build a package with `osc build --vm-type=kvm`
 You probably need to adjust your `~/.oscrc`
 
 This config is known to work (except for huge packages like chromium that work with 8GB RAM):
