@@ -8,6 +8,7 @@
 use strict;
 my $slot=$ENV{slot}||4;
 my $rbretries=$ENV{rbretries}||1;
+$ENV{rbminor}||="";
 
 our $nextclean=1;
 sub rbk(@)
@@ -38,7 +39,7 @@ sub printclassify(@)
 {
     print "classified as @_\n";
     open(my $outfd, ">.rb.autoclassify") or die $!;
-    print $outfd "@_\n";
+    print $outfd "@_ $ENV{rbminor}\n";
 }
 
 sub isunreproducible($) {$_[0] == (1<<8)}
