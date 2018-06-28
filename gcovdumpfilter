@@ -1,0 +1,2 @@
+#!/bin/sh
+gcov-dump -l $1 | perl -pe 's/^[^:]+://'
