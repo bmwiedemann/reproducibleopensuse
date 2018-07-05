@@ -34,6 +34,8 @@ but how do we know that the binaries dont contain extra backdoors added by build
 
 * Smaller delta-rpms in update repos
 
+* Save bandwidth (by building locally)
+
 * Find other bugs that corrupt data during build time (e.g. [boo#1021353](https://bugzilla.opensuse.org/show_bug.cgi?id=1021353), [boo#1021335](https://bugzilla.opensuse.org/show_bug.cgi?id=1021335))
 
 <!--
@@ -62,15 +64,17 @@ compile-time CPU detection libatlas3
 
 ## new sources of randomness discovered
 
-* `%if 0%{?do_profiling}` in .spec files
+* gcc profile-guided optimizations
 * * can be fixed by [always doing the same](https://build.opensuse.org/request/show/499887) in the profiling run
 * * or by [removing differing .gcda files](https://build.opensuse.org/request/show/498391) losing some of the optimizations, but not all
 
-* `%ghost` and `%dir` have (semi-random) sizes visible in rpm -qp --dump
+* `%ghost` files have (semi-random) sizes visible in `rpm -qp --dump`
 
-* unsorted globs in make, python, bam, boost/jam
+* [ASLR](https://github.com/bmwiedemann/theunreproduciblepackage/tree/master/aslr)
 
-* * `$(wildcard *.c)` => `$(sort $(wildcard ...))`
+## new sources of randomness discovered #2
+
+* unsorted globs in python, bam, boost/jam
 
 * * `glob.glob("*.c")` => `sorted(...)`
 
@@ -82,12 +86,17 @@ compile-time CPU detection libatlas3
 
 * 2016: 71 submit-requests
 * 2017: +92 submit-requests
+* 2018: +71 submit-requests
 
 * 2016: 6 bugs filed
 * 2017: +4 bugs filed: 1016848, 1017666, 1017667, 1020147
+* 2018: +13 bugs filed
+
+## Work done #2
 
 * 2016: 4 upstream fixes merged
 * 2017: +51 upstream fixes submitted - ~34 merged
+* 2018: +270 upstream submissions - 162 merged
 
 * 2017: patches for build-compare to disable filters
 
@@ -100,7 +109,7 @@ compile-time CPU detection libatlas3
 
 ## How reproducible can we get?
 
-* bit-identical with factory rpm and `osc build --define='%_buildhost reproducible' --define='%clamp_mtime_to_source_date_epoch Y'`
+* bit-identical with factory rpm and `osc build --define='%_buildhost reproducible' --define='%clamp_mtime_to_source_date_epoch Y' --define='%use_source_date_epoch_as_buildtime Y'`
 
 ## Where do we want to go?
 
