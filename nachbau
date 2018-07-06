@@ -1,0 +1,33 @@
+#!/bin/sh
+# 'nachbau' is the German word for a copy/clone of something
+#
+# this script fetches a package from OBS and tries to do a local build that matches it
+
+: ${repo:=standard}
+export project=$(cat .osc/_project)
+export repo
+export arch=x86_64
+
+export OUTDIR=binaries.nachbau
+rm -rf binaries $OUTDIR
+osc getbinaries $repo $arch || exit 16
+for bin in binaries/*rpm ; do rpm --delsign $bin ; done
+p=$(basename $(pwd))
+origrpm=$(ls binaries/*.rpm | head -1)
+[ -n "$origrpm" ] || exit 17
+export buildhost=$(rpm -qp --qf "%{BUILDHOST}" $origrpm)
+export DISTURL=$(rpm -qp --qf "%{DISTURL}" $origrpm)
+export release=$(rpm -qp --qf "%{release}" $origrpm)
+# dummy value to use the repo default
+export debuginfo=--clean
+export vmtype="--vm-type=kvm -j4"
+export OSC_BUILD_ROOT=/var/tmp/build-root.${slot}/
+rebuild
+dir2=$OUTDIR compareone
+
+ret=$(cat .build-compare-retval)
+mv .build-compare-retval .build-compare-retval-nachbau
+mv .build-differed .build-differed-nachbau
+# restore rbk result status
+dir1=RPMS.2017 compareone
+exit $ret

@@ -1,3 +1,6 @@
 all: RPMS/.osc-build-retval
 RPMS/.osc-build-retval: .osc/_files
-	multibuildrbk
+	-multibuildrbk
+
+.build-differed-nachbau: .osc/_files
+	-nachbau
