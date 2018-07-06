@@ -31,7 +31,6 @@ if (( ${PIPESTATUS[0]} )) ; then
     exit 33
 fi
 rm -f .build-differed .build-rbkt
-clean+=" --release=0.0"
 export clean
 clean="$clean -j${parallelism}" HOST=$host1 OUTDIR=RPMS.2017 rebuild &
 pid=$!

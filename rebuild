@@ -3,9 +3,11 @@
 : ${OSC_BUILD_ROOT:="/var/tmp/build-root/standard-x86_64"}
 : ${clean:=--clean}
 : ${OUTDIR:=RPMS}
+: ${release:=0.0}
 export OSC_BUILD_ROOT
 pkg=$(basename $(pwd))
 : ${debuginfo:=--disable-debuginfo}
+clean+=" --release=$release"
 if grep -q "^$pkg$" ~/reproducibleopensuse/exceptions.cleanbuild ; then
   clean=${clean/--noinit/--clean}
 fi
