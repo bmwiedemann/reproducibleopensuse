@@ -111,6 +111,13 @@ compile-time CPU detection libatlas3
 
 * bit-identical with factory rpm and `osc build --define='%_buildhost reproducible' --define='%clamp_mtime_to_source_date_epoch Y' --define='%use_source_date_epoch_as_buildtime Y'`
 
+## No panacea
+
+* backdoors in source
+* buffer overflows and other bugs
+* bad crypto
+* volkswagen testing-mode
+
 ## Where do we want to go?
 
 * fix all build-compare issues
