@@ -54,6 +54,13 @@ sub find_status($)
   }
 }
 
+sub find_verified($)
+{ my $dir=shift;
+  my $differed=eval{getline("$dir/.build-differed-nachbau")} //1;
+  my $filtered=eval{getline("$dir/.build-compare-retval-nachbau")} //1;
+  return (($differed==0?1:0) + ($filtered==0?1:0));
+}
+
 sub find_build_compare_status($)
 { my $dir=shift;
   my $differed=eval{getline("$dir/.build-compare-retval")};
@@ -83,6 +90,7 @@ sub get_status_for_one_dir($)
     version=>"$version-$oscdata->{rev}",
     architecture=>(POSIX::uname())[4],
     status=>find_status($dir),
+    verified=>find_verified($dir),
     release=>getline("$dir/.osc/_project"),
     opensusetweaks=>eval{getline("$dir/.build-rbkt")}||undef,
     opensuseautoclassify=>eval{getline("$dir/.rb.autoclassify")}||undef,
