@@ -10,14 +10,15 @@ detect_repo()
 }
 
 : ${repo:=`detect_repo`}
+: ${fast:=false}
 export project=$(cat .osc/_project)
 export repo
 export arch=x86_64
 
 export OUTDIR=binaries.nachbau
-rm -rf binaries $OUTDIR
-osc getbinaries $repo $arch || exit 16
-for bin in binaries/*rpm ; do rpm -qpi $bin | grep "^Signature.*:" ; rpm --delsign $bin ; done > binaries/signature
+$fast || rm -rf binaries $OUTDIR
+$fast || osc getbinaries $repo $arch || exit 16
+$fast || for bin in binaries/*rpm ; do rpm -qpi $bin | grep "^Signature.*:" ; rpm --delsign $bin ; done > binaries/signature
 p=$(basename $(pwd))
 origrpm=$(ls binaries/[a-zA-Z0-9]*.rpm | head -1)
 [ -n "$origrpm" ] || exit 17
@@ -28,6 +29,7 @@ export release=$(rpm -qp --qf "%{release}" $origrpm)
 export debuginfo=--clean
 export vmtype="--vm-type=kvm -j4"
 export OSC_BUILD_ROOT=/var/tmp/build-root.${slot}/
+$fast || osc up
 rm -f .build-*-nachbau
 rebuild
 dir2=$OUTDIR compareone
