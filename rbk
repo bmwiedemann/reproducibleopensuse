@@ -34,7 +34,7 @@ rm -f .build-differed .build-rbkt
 export clean
 clean="$clean -j${parallelism}" HOST=$host1 OUTDIR=RPMS.2017 rebuild &
 pid=$!
-export VM_CUSTOMOPT="-rtc base=$later"
+export VM_CUSTOMOPT="-rtc base=$later -cpu qemu64,l3-cache=on"
 export OSC_BUILD_ROOT=/var/tmp/build-root.${slot}b/
 clean="$clean -j${parallelism2}" HOST=$host2 OUTDIR=RPMS rebuild
 wait $pid
