@@ -1,2 +1,4 @@
 #!/bin/sh
-filterdiff 'cut -c9-' RPMS*/.build.log
+: ${d1:=RPMS}
+: ${d2:=RPMS.*}
+filterdiff 'cut -c9-' {$d1,$d2}/.build.log
