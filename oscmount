@@ -2,7 +2,8 @@
 : ${slot:=4}
 for x in "" b ; do
     b=/var/tmp/build-root.$slot$x
-    mount -o loop $b/img $b/.mount/
+    mkdir -p $b/.mount/
+    mount -o loop $b/img $b/.mount/ || mount --bind $b/ $b/.mount/
     for m in proc sys dev ; do mount --bind /$m $b/.mount/$m ; done
 done
 echo mounted $b/.mount

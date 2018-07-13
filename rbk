@@ -15,9 +15,10 @@ fi
 : ${parallelism:=4}
 : ${parallelism2:=1}
 : ${cputype2:=qemu64}
+: ${vmtype:=--vm-type=kvm}
+export vmtype
 now=$(date +%s)
 later=$(date --date=@$((now+datediff)) -u "+%FT%T")
-export vmtype="--vm-type=kvm"
 export OSC_BUILD_ROOT=/var/tmp/build-root.${slot}/
 export VM_CUSTOMOPT=""
 osc up -S
@@ -33,7 +34,7 @@ if (( ${PIPESTATUS[0]} )) ; then
 fi
 rm -f .build-differed .build-rbkt
 export clean
-clean="$clean -j${parallelism}" HOST=$host1 OUTDIR=RPMS.2017 rebuild &
+vmtype="--vm-type=kvm" clean="$clean -j${parallelism}" HOST=$host1 OUTDIR=RPMS.2017 rebuild &
 pid=$!
 export VM_CUSTOMOPT="-rtc base=$later -cpu $cputype2,l3-cache=on"
 export OSC_BUILD_ROOT=/var/tmp/build-root.${slot}b/
