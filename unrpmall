@@ -1,5 +1,5 @@
 #!/bin/sh
-for d in RPMS* ; do
+for d in binaries* RPMS* ; do
     (   cd $d &&
         unrpm *.rpm
     )

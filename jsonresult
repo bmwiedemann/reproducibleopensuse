@@ -96,7 +96,7 @@ sub get_status_for_one_dir($)
     opensusetweaks=>eval{getline("$dir/.build-rbkt")}||undef,
     opensuseautoclassify=>eval{getline("$dir/.rb.autoclassify")}||undef,
     build_date=>(stat("$dir/.osc-build-retval"))[9],
-    build_duration=>get_build_duration("$dir/RPMS/build-time"),
+    build_duration=>get_build_duration("$dir/RPMS/build-time")||get_build_duration("$dir/binaries.nachbau/build-time"),
   };
   if($data->{status} eq "unreproducible") {
     $data->{build_compare_status}=find_build_compare_status($dir);

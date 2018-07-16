@@ -1,4 +1,4 @@
 #!/bin/sh
 cd "$1" || exit 55
 rm -f .build* .osc-build-retval
-rm -rf RPMS* binaries
+rm -rf RPMS* binaries binaries.nachbau

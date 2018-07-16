@@ -13,6 +13,8 @@ buildtried=$(ls */.osc-build-retval | wc -l)
 grep -v '^[02]$' */.osc-build-retval | cut -d/ -f1 > ~/tmp/failed-builds.txt
 grep -v '^0$' */.build-differed | cut -d/ -f1 > ~/tmp/differed-builds.txt
 grep -v '^0$' */.build-compare-retval | cut -d/ -f1 > ~/tmp/build-compare-differed-builds.txt
+grep -v '^0$' */.build-differed-nachbau | cut -d/ -f1 > ~/tmp/differed-builds-nachbau.txt
+grep -v '^0$' */.build-compare-retval-nachbau | cut -d/ -f1 > ~/tmp/build-compare-differed-builds-nachbau.txt
 buildfailed=$(wc -l < ~/tmp/failed-builds.txt)
 buildfailedarch=$(grep "error: Architecture is not included" */.build.log | wc -l)
 buildna=$(grep '^[2]$' */.osc-build-retval | wc -l)
