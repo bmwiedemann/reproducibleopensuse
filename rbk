@@ -14,6 +14,7 @@ fi
 : ${host2:=sles12b}
 : ${parallelism:=4}
 : ${parallelism2:=2}
+: ${cputype2:=qemu64}
 now=$(date +%s)
 later=$(date --date=@$((now+datediff)) -u "+%FT%T")
 export vmtype="--vm-type=kvm"
@@ -34,7 +35,7 @@ rm -f .build-differed .build-rbkt
 export clean
 clean="$clean -j${parallelism}" HOST=$host1 OUTDIR=RPMS.2017 rebuild &
 pid=$!
-export VM_CUSTOMOPT="-rtc base=$later -cpu qemu64,l3-cache=on"
+export VM_CUSTOMOPT="-rtc base=$later -cpu $cputype2,l3-cache=on"
 export OSC_BUILD_ROOT=/var/tmp/build-root.${slot}b/
 clean="$clean -j${parallelism2}" HOST=$host2 OUTDIR=RPMS rebuild
 wait $pid
