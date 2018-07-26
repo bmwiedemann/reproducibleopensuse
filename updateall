@@ -1,5 +1,5 @@
 #!/bin/sh
-osc up
+osc up || exit 25
 # drop packages that were removed from openSUSE:
 for p in * ; do test -e $p/.osc/_files || cleanupone $p ; fixuposcmtime $p ; done
 rmdir * 2>/dev/null
