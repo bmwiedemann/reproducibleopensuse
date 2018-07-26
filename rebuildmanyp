@@ -1,6 +1,5 @@
 #!/bin/sh
 # parallel build of many rpms
-cd ~/f
 for slot in 1 2 ; do
   export slot
   rebuildmany $(slicelist *) 2>/dev/null &
