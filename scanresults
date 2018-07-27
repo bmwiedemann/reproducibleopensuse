@@ -1,4 +1,5 @@
 #!/bin/sh
+unset CDPATH
 p1="unresolvable: nothing provides librpm.so.3"
 p2="Kernel panic"
 p3="error: unpacking of archive failed on file"
