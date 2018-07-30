@@ -1,7 +1,10 @@
 #!/bin/sh
+cut -c10- "$@" |
 sed -e "s/0x[0-9a-f][0-9a-f]*/xxxxy/g" \
-    -e "s/^[0-9][0-9]*//" \
+    -e 's/^[0-9][0-9]*//' \
+    -e "s/\\[pid  *[0-9][0-9]*\\]/pid NNNN/" \
     -e "s/si_pid=[0-9][0-9]*/si_pid=NNNN/" \
+    -e 's/\(strace: Process \)[0-9][0-9]* attached/\1NNNN attached/' \
     -e 's/\(vfork.* = \)[0-9][0-9]*$/\1NNNN/' \
     -e 's/\(wait4.* = \)[0-9][0-9]*$/\1NNNN/' \
     -e 's/\(clone.* = \)[0-9][0-9]*$/\1NNNN/' \
@@ -10,4 +13,4 @@ sed -e "s/0x[0-9a-f][0-9a-f]*/xxxxy/g" \
     -e 's/\(getpgrp.* = \)[0-9][0-9]*$/\1NNNN/' \
     -e 's/\(rt_sigreturn.* = \)[0-9][0-9]*$/\1NNNN/' \
     -e 's/\(wait4(\)[0-9][0-9]*/\1NNNN/' \
-    "$@"
+    
