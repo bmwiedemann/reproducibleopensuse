@@ -3,7 +3,13 @@
 #
 # this script fetches a package from OBS and tries to do a local build that matches it
 
-: ${repo:=standard}
+detect_repo()
+{
+    osc buildinfo |
+        perl -ne '/^<buildinfo.*repository="([^"]*)"/ && print $1'
+}
+
+: ${repo:=`detect_repo`}
 export project=$(cat .osc/_project)
 export repo
 export arch=x86_64
