@@ -2,7 +2,7 @@
 # rebuild with KVM mode
 pkg=$(basename `pwd`)
 years=15
-if grep -q "^$pkg$" ~/reproducibleopensuse/exceptions.neardate ; then
+if grep -q "^$pkg$" "$(dirname $BASH_SOURCE)"/exceptions/neardate ; then
     years=1
 fi
 : ${slot:=4}
