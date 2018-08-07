@@ -1,5 +1,6 @@
 #!/bin/bash
 
+EXCEPTIONS_DIR="$(dirname $BASH_SOURCE)/exceptions"
 : ${OSC_BUILD_ROOT:="/var/tmp/build-root/standard-x86_64"}
 : ${clean:=--clean}
 : ${OUTDIR:=RPMS}
@@ -8,16 +9,16 @@ export OSC_BUILD_ROOT
 pkg=$(basename $(pwd))
 : ${debuginfo:=--disable-debuginfo}
 clean+=" --release=$release"
-if grep -q "^$pkg$" ~/reproducibleopensuse/exceptions.cleanbuild ; then
+if grep -q "^$pkg$" $EXCEPTIONS_DIR/cleanbuild ; then
   clean=${clean/--noinit/--clean}
 fi
-if grep -q "^$pkg$" ~/reproducibleopensuse/exceptions.rootforbuild ; then
+if grep -q "^$pkg$" $EXCEPTIONS_DIR/rootforbuild ; then
   rootforbuild=" --userootforbuild"
 fi
-if grep -q "^$pkg$" ~/reproducibleopensuse/exceptions.debuginfo ; then
+if grep -q "^$pkg$" $EXCEPTIONS_DIR/debuginfo ; then
   debuginfo="--debuginfo"
 fi
-if grep -q "^$pkg$" ~/reproducibleopensuse/exceptions.date ; then
+if grep -q "^$pkg$" $EXCEPTIONS_DIR/date ; then
   VM_CUSTOMOPT=""
 fi
 if [[ $VM_CUSTOMOPT ]] && osc build --help | grep -q build-opt ; then
