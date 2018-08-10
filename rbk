@@ -22,12 +22,16 @@ fi
 export vmtype
 now=$(date +%s)
 later=$(date --date=@$((now+datediff)) -u "+%FT%T")
+alternativeproject="--alternative-project=$project"
+if [[ $oscbuildparams =~ -M ]] ; then
+    alternativeproject=
+fi
 export OSC_BUILD_ROOT=/var/tmp/build-root.${slot}/
 export VM_CUSTOMOPT=""
 osc up -S
 fixuposcmtime
 mkdir -p RPMS
-osc build ${oscbuildextrapkg} --preload --nopreinstallimage --noservice --vm-type=kvm --alternative-project=$project ${oscbuildparams} $repo $pkg.spec 2>&1 | tee RPMS/.build.log2
+osc build ${oscbuildextrapkg} --preload --nopreinstallimage --noservice --vm-type=kvm $alternativeproject ${oscbuildparams} $repo $pkg.spec 2>&1 | tee RPMS/.build.log2
 if (( ${PIPESTATUS[0]} )) ; then
     if grep -q "Error: build description file named '.*does not exist" RPMS/.build.log2 ; then
         echo 2
