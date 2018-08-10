@@ -13,7 +13,7 @@ fi
 : ${host1:=sles12a}
 : ${host2:=sles12b}
 : ${parallelism:=4}
-: ${parallelism2:=2}
+: ${parallelism2:=1}
 : ${cputype2:=qemu64}
 now=$(date +%s)
 later=$(date --date=@$((now+datediff)) -u "+%FT%T")
