@@ -1,12 +1,18 @@
+# https://github.com/bitcoin/bitcoin/issues/13086 https://github.com/bitcoin/bitcoin/pull/13061
+bitcoin
 chromium
 gnutls
+icu
 java-1_8_0-openjdk
 java-9-openjdk
 java-10-openjdk
 java-11-openjdk
 libressl
 libvirt
+llvm4
+llvm5
 llvm6
+mariadb
 mbedtls
 neon
 openssl-1_0_0
@@ -15,6 +21,7 @@ perl-IO-Socket-SSL
 python
 python3
 python3-base
+python-Django
 python-M2Crypto
 python-botocore
 python-keystoneauth1
