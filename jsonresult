@@ -57,7 +57,8 @@ sub find_status($)
 sub find_verified($)
 { my $dir=shift;
   my $differed=eval{getline("$dir/.build-differed-nachbau")} //1;
-  my $filtered=eval{getline("$dir/.build-compare-retval-nachbau")} //1;
+  my $filtered=eval{getline("$dir/.build-compare-retval-nachbau")};
+  return undef unless defined $filtered;
   return (($differed==0?1:0) + ($filtered==0?1:0));
 }
 
