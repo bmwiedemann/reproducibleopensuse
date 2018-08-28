@@ -1,6 +1,14 @@
 #!/bin/bash -e
 # rebuild with KVM mode
 pkg=$(basename `pwd`)
+
+mem=$(awk -e '/^build-memory/ {print $3}' ~/.oscrc | grep . || echo 128)
+# TODO: parse _constraints
+if grep -q "^$pkg$" ~/reproducibleopensuse/exceptions/memory && [[ $mem -lt 6000 ]] ; then
+    echo "skipping package '$pkg' because of too low build-memory value in ~/.oscrc"
+    exit 37
+fi
+
 years=15
 if grep -q "^$pkg$" "$(dirname $BASH_SOURCE)"/exceptions/neardate ; then
     years=1

@@ -1,0 +1,6 @@
+#need>4GB RAM to build
+ceph
+chromium
+libqt5-qtwebkit
+kubernetes
+telegram-desktop
