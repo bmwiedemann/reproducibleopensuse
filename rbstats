@@ -45,6 +45,7 @@ if [[ $final = 1 ]] ; then
     cat */RPMS*/checksums > ~/tmp/checksums.txt
     for p in * ; do jsonresultcache "$p" ; done
     jsonresultmerge * > ~/tmp/reproducible.json
+    grep . */RPMS/build-time | sort -n -t: -k2 | perl -pe 's{/.*:}{:}' > ~/tmp/build-time.txt
 fi
 echo "untracked dirs:"
 for p in * ; do test -d $p && test -e $p/.osc-build-retval || echo -n "$p " ; done
