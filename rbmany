@@ -4,6 +4,9 @@ unset rbdebug
 rm -f /tmp/stoprebuild
 for p in "$@" ; do
     test -e /tmp/stoprebuild && break
+    if grep -q "^$p$" "$(dirname $BASH_SOURCE)"/exceptions/skip* ; then
+        continue
+    fi
     if pushd $p ; then
         "$script"
         popd

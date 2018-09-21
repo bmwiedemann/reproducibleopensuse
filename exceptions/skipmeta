@@ -1,0 +1,15 @@
+000openSUSE-release
+000product
+cross-aarch64-binutils
+libqca2
+preinstallimage-base
+preinstallimage-gtk2-devel
+preinstallimage-gtk3-devel
+preinstallimage-libkde4-devel
+preinstallimage-libqt4
+preinstallimage-libqt5
+preinstallimage-libX11-devel
+preinstallimage-minimal
+preinstallimage-texlive-basics
+python-pycryptodomex
+Test-DVD-x86_64
