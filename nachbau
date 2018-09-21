@@ -19,7 +19,7 @@ rm -rf binaries $OUTDIR
 osc getbinaries $repo $arch || exit 16
 for bin in binaries/*rpm ; do rpm -qpi $bin | grep "^Signature.*:" ; rpm --delsign $bin ; done > binaries/signature
 p=$(basename $(pwd))
-origrpm=$(ls binaries/*.rpm | head -1)
+origrpm=$(ls binaries/[a-zA-Z0-9]*.rpm | head -1)
 [ -n "$origrpm" ] || exit 17
 export buildhost=$(rpm -qp --qf "%{BUILDHOST}" $origrpm)
 export DISTURL=$(rpm -qp --qf "%{DISTURL}" $origrpm)
