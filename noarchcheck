@@ -1,0 +1,35 @@
+#!/bin/sh
+
+detect_repo()
+{
+    osc buildinfo |
+        perl -ne '/^<buildinfo.*repository="([^"]*)"/ && print $1'
+}
+
+: ${repo:=`detect_repo`}
+
+if rpm_is_noarch ; then
+    foundnum=0
+    found=
+    for arch in x86_64 i586 s390x aarch64 ; do
+        # clean
+        rm -rf binaries.$arch
+
+        g="osc getbinaries --sources"
+        $g -d binaries.$arch $repo $arch
+        if [ -e binaries.$arch/*.src.rpm ] ; then
+            found="$found binaries.$arch"
+            let foundnum++
+            [ $foundnum = 2 ] && break
+        fi
+    done
+
+    echo "$foundnum $found"
+    [ $foundnum != 2 ] || bash ~/reproducibleopensuse/build-compare/same-build-result.sh -a $found > .rb.noarchcheck.diff
+    ret=$?
+else
+    ret=0
+fi
+echo $ret > .rb.noarchcheck
+echo "ret=$ret"
+exit $ret

@@ -4,3 +4,6 @@ RPMS/.osc-build-retval: .osc/_files
 
 .build-differed-nachbau: .osc/_files
 	-nachbau
+
+.rb.noarchcheck:
+	-noarchcheck

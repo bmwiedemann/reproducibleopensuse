@@ -1,0 +1,3 @@
+#!/bin/sh
+arch=$(rpmspec --query --srpm --queryformat="%{arch}" $(basename $(pwd)).spec)
+[ "$arch" = noarch ]
