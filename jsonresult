@@ -58,7 +58,11 @@ sub find_verified($)
 { my $dir=shift;
   my $differed=eval{getline("$dir/.build-differed-nachbau")} //1;
   my $filtered=eval{getline("$dir/.build-compare-retval-nachbau")};
+  $::sigdate=undef;
   return undef unless defined $filtered;
+  $_=eval{getline("$dir/binaries/signature")} // "unknown"; # grep -o "[^ ]* UTC" $dir/binaries/signature|head -1
+  m/\S+ UTC/ and $_=$&;
+  $::sigdate=$_;
   return (($differed==0?1:0) + ($filtered==0?1:0));
 }
 
@@ -98,6 +102,7 @@ sub get_status_for_one_dir($)
     build_date=>(stat("$dir/.osc-build-retval"))[9],
     build_duration=>get_build_duration("$dir/RPMS/build-time")||get_build_duration("$dir/binaries.nachbau/build-time"),
   };
+  if($::sigdate) {$data->{opensusesigdate}=$::sigdate}
   if($data->{status} eq "unreproducible") {
     $data->{build_compare_status}=find_build_compare_status($dir);
   }
