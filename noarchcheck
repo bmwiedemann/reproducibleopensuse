@@ -1,4 +1,9 @@
 #!/bin/sh
+# Verifies that noarch packages in different architectures do not differ
+#
+# Run this in any package checkout dir
+# Returns 0 (success) if no significant diff was reported by build-compare
+# Writes status and diff to .rb.noarchcheck*
 
 detect_repo()
 {
