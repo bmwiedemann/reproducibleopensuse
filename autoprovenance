@@ -1,0 +1,64 @@
+#!/usr/bin/perl -w
+# report on where a file is created during a build
+# Requires output of something like https://github.com/bmwiedemann/reproducible-faketools/blob/master/bin/rpmbuild-strace
+use strict;
+my $stracefile=".rb.build.log.strace";
+open(STRACE, "<", $stracefile) or die "error opening $stracefile: $! ; you need to run stracebuild first";
+my $searchfile=shift or die "need filename to search for";
+our %piddata=();
+
+#sub diag {print STDERR @_,"\n"}
+sub diag {}
+
+sub pidinfo($);
+sub pidinfo($)
+{ my $pid=shift;
+    return "" unless $pid;
+    my $exec=$piddata{$pid}{exec}||"";
+    if($exec) {$exec=" exec=$exec"}
+    my $dir=$piddata{$pid}{dir}||"";
+    if($dir) {$dir=" dir=$dir"}
+    "\n    by pid=$pid$dir$exec - started".pidinfo($piddata{$pid}{ppid});
+}
+
+sub did_chdir($$)
+{ my ($pid,$chdir)=@_;
+    my $newdir=".";
+    if($chdir=~m{^/}) { $newdir=$chdir }
+    elsif($piddata{$pid}{dir}) {
+        $newdir=$piddata{$pid}{dir}."/".$chdir;
+    }
+    $piddata{$pid}{dir}=$newdir;
+}
+
+my $pidre=qr(^(?:\[ *[0-9]+s\] )?\[pid +(\d+)\]); # ignores build timestamp
+my $forkre=qr(vfork|fork|clone);
+while(<STRACE>) {
+    if(m/$pidre open(?:at)?\((.*$searchfile.*)(?:O_WRONLY|O_RDWR)/o) {
+        #[pid  8096] openat(AT_FDCWD, "/tmp/cczAkoQ7.s", O_WRONLY|O_CREAT|O_TRUNC, 0666 <unfinished ...>
+        my ($pid, $file)=($1,$2);
+        $file=~s/^AT_FDCWD, //;
+        $file=~s/, $//;
+        diag "$pid found $file";
+        print "$file written".pidinfo($pid)."\n\n";
+    }
+    elsif(m/$pidre $forkre\(.* = (\d+)$/o ||
+       m/$pidre <\.\.\. $forkre resumed>.* = (\d+)/o)
+    {
+        #[pid  8059] clone(child_stack=NULL, flags=CLONE_CHILD_CLEARTID|CLONE_CHILD_SETTID|SIGCHLD, child_tidptr=0x7f2a0a75ae50) = 8060
+        #[pid 13528] <... vfork resumed> )       = 13529
+        diag "$1 spawned $2";
+        $piddata{$2}{ppid}=$1;
+        $piddata{$2}{dir}=$piddata{$1}{dir}||".";
+    }
+    elsif(m/$pidre execve\((.*]),/o) {
+        #[pid  8059] execve("/bin/sh", ["/bin/sh", "-e", "/var/tmp/rpm-tmp.36xbBy"]
+        diag "$1 exec $2";
+        $piddata{$1}{exec}=$2;
+    }
+    elsif(m/$pidre chdir\("([^"]*)"\) = 0/o) {
+        #[pid 25512] chdir("/home/abuild/rpmbuild/BUILD") = 0
+        my ($pid, $dir)=($1,$2);
+        did_chdir($pid, $dir);
+    }
+}

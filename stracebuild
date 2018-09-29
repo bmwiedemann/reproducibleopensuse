@@ -1,0 +1,3 @@
+#!/bin/sh
+osc build --clean --noservice --alternative-project home:bmwiedemann:reproducible -x reproducible-faketools-strace "$@"
+cp -a /var/tmp/build-root/openSUSE_Tumbleweed-x86_64/.build.log .rb.build.log.strace
