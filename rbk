@@ -20,6 +20,8 @@ fi
 : ${clean:=--clean --offline}
 : ${project:=home:bmwiedemann:reproducible}
 : ${repo:=openSUSE_Tumbleweed}
+: ${arch:=x86_64}
+: ${arch2:=x86_64}
 : ${datediff:=$(((((365*$years+36)*24+13)*60+17)*60))}
 : ${host1:=sles12a}
 : ${host2:=sles12b}
@@ -27,6 +29,7 @@ fi
 : ${parallelism2:=1}
 : ${cputype2:=qemu64}
 : ${vmtype:=--vm-type=kvm}
+export arch
 export vmtype
 now=$(date +%s)
 later=$(date --date=@$((now+datediff)) -u "+%FT%T")
@@ -39,7 +42,10 @@ export VM_CUSTOMOPT=""
 osc up -S
 fixuposcmtime
 mkdir -p RPMS
-osc build ${oscbuildextrapkg} --preload --nopreinstallimage --noservice --vm-type=kvm $alternativeproject ${oscbuildparams} $repo $pkg.spec 2>&1 | tee RPMS/.build.log2
+[[ $arch = $arch2 ]] && a= || a=$arch
+for a in $a $arch2 ; do
+    osc build ${oscbuildextrapkg} --preload --nopreinstallimage --noservice --vm-type=kvm $alternativeproject ${oscbuildparams} $repo $a $pkg.spec 2>&1 | tee RPMS/.build.log2
+done
 if (( ${PIPESTATUS[0]} )) ; then
     if grep -q "Error: build description file named '.*does not exist" RPMS/.build.log2 ; then
         echo 2
@@ -54,7 +60,7 @@ vmtype="--vm-type=kvm" clean="$clean -j${parallelism}" HOST=$host1 OUTDIR=RPMS.2
 pid=$!
 export VM_CUSTOMOPT="-rtc base=$later -cpu $cputype2,l3-cache=on"
 export OSC_BUILD_ROOT=/var/tmp/build-root.${slot}b/
-clean="$clean -j${parallelism2}" HOST=$host2 OUTDIR=RPMS rebuild
+clean="$clean -j${parallelism2}" arch=$arch2 HOST=$host2 OUTDIR=RPMS rebuild
 wait $pid
 dir1=RPMS.2017 compareone
 grep '^0$' .build-differed || oscmount
