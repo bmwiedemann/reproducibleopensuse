@@ -5,10 +5,42 @@ use strict;
 my $stracefile=".rb.build.log.strace";
 open(STRACE, "<", $stracefile) or die "error opening $stracefile: $! ; you need to run stracebuild first";
 my $searchfile=shift or die "need filename to search for";
+my $dotfile=$ENV{DOTFILE}||"provenance.dot";
+open(DOT, ">", $dotfile) or die $!;
+print DOT "digraph G {\n";
 our %piddata=();
 
 #sub diag {print STDERR @_,"\n"}
 sub diag {}
+
+sub escape($)
+{ $_[0]=~s{[^a-zA-Z0-9._/+-]}{\\$&}g }
+
+my %edge_seen;
+my %node_seen;
+sub add_node($)
+{ my $pid=shift;
+    return if $edge_seen{$pid}++;
+    my $details="";
+    my $exec=$piddata{$pid}{exec}||"";
+    if($exec) {
+        if($exec=~m{^"[^ ]*/([^/ ]+)"}) {
+            $details.=qq{ label="$1"};
+        }
+        escape $exec;
+        $details.=qq{ tooltip="$exec"};
+    }
+    print DOT qq!$pid [$details]\n!;
+}
+
+sub add_edge($$)
+{ my($pid1,$pid2)=@_;
+    return if $edge_seen{$pid1."-".$pid2}++;
+    foreach my $pid (@_) {
+        add_node($pid);
+    }
+    print DOT "$pid2 -> $pid1\n";
+}
 
 sub pidinfo($);
 sub pidinfo($)
@@ -18,6 +50,7 @@ sub pidinfo($)
     if($exec) {$exec=" exec=$exec"}
     my $dir=$piddata{$pid}{dir}||"";
     if($dir) {$dir=" dir=$dir"}
+    add_edge($pid, $piddata{$pid}{ppid}||0);
     "\n    by pid=$pid$dir$exec - started".pidinfo($piddata{$pid}{ppid});
 }
 
@@ -41,6 +74,9 @@ while(<STRACE>) {
         $file=~s/, $//;
         diag "$pid found $file";
         print "$file written".pidinfo($pid)."\n\n";
+        $file=~s/"([^"]*)"/$1/;
+        my $shortfile=$file; $shortfile=~s{.*/}{};
+        print DOT qq{$pid -> "$file"\n  "$file" [shape="rectangle" label="$shortfile" tooltip="$file"]\n};
     }
     elsif(m/$pidre $forkre\(.* = (\d+)$/o ||
        m/$pidre <\.\.\. $forkre resumed>.* = (\d+)/o)
@@ -64,3 +100,5 @@ while(<STRACE>) {
         did_chdir($pid, $dir);
     }
 }
+print DOT "}\n"; close(DOT);
+system(qw"dot -O -T svg", $dotfile) if -x "/usr/bin/dot";
