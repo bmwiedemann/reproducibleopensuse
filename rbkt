@@ -6,6 +6,7 @@
 # usage:
 #  CLEAN=1 rbkt 0 0 1 0 0 0 # to build with sorted filesystem
 #  CLEAN=1 rbkt 1 1 1 1 1 1 1 1 1 1 # to build with as little indeterminism as possible
+#  rbkt 12 is decoded as hex for 0 1 0 0 1
 
 
 use strict;
@@ -49,6 +50,9 @@ sub rbk(@)
 
 sub run(@)
 {
+    if(@_==1) { # decode hex
+         @_=reverse(split("", sprintf("%b", hex(shift))));
+    }
     #print "trying @_\n";
     rbk(@_);
 }
