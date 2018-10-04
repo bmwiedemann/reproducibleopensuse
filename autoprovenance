@@ -55,8 +55,10 @@ while(<STRACE>) {
         #[pid  8059] execve("/bin/sh", ["/bin/sh", "-e", "/var/tmp/rpm-tmp.36xbBy"]
         diag "$1 exec $2";
         $piddata{$1}{exec}=$2;
-    }
-    elsif(m/$pidre chdir\("([^"]*)"\) = 0/o) {
+    } elsif(m/$pidre \+\+\+ exited with \d+ \+\+\+/o) {
+        #[pid  1464] +++ exited with 0 +++
+        delete $piddata{$1}; # avoid spill with PID rollovers
+    } elsif(m/$pidre chdir\("([^"]*)"\) = 0/o) {
         #[pid 25512] chdir("/home/abuild/rpmbuild/BUILD") = 0
         my ($pid, $dir)=($1,$2);
         did_chdir($pid, $dir);
