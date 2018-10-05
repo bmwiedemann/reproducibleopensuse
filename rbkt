@@ -14,7 +14,7 @@ sub rbk(@)
 {
     my @tweakbits=@_;
     my @extrapkg=();
-    if($ENV{CLEAN}) { $ENV{clean}="--clean --offline"} else { $ENV{clean}="--offline" }
+    if($ENV{CLEAN} || $_[2]) { $ENV{clean}="--clean --offline"} else { $ENV{clean}="--offline" }
     # bit 1
     if(shift) { $ENV{datediff}=100 }
     # bit 2
