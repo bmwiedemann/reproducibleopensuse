@@ -7,7 +7,7 @@ open(STRACE, "<", $stracefile) or die "error opening $stracefile: $! ; you need 
 my $searchfile=shift or die "need filename to search for";
 my $dotfile=$ENV{DOTFILE}||"provenance.dot";
 open(DOT, ">", $dotfile) or die $!;
-print DOT "digraph G {\n";
+print DOT qq!digraph G {\n graph[rankdir=RL]\n!;
 our %piddata=();
 
 #sub diag {print STDERR @_,"\n"}
