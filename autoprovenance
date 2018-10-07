@@ -14,12 +14,12 @@ our %piddata=();
 sub diag {}
 
 sub escape($)
-{ $_[0]=~s{[^a-zA-Z0-9._/+-]}{\\$&}g }
+{ my $x=shift;$x=~s{[^a-zA-Z0-9._/+-]}{\\$&}g; return $x }
 
 sub dot_label($)
 { my $extra=shift;
     return "" unless $extra;
-    return "[".join(" ", map{$_.'="'.$extra->{$_}.'"'} keys %$extra)."]";
+    return "[".join(" ", map{$_.'="'.escape($extra->{$_}).'"'} keys %$extra)."]";
 }
 
 my %edge_seen;
@@ -29,14 +29,15 @@ sub add_node($)
     return if $edge_seen{$pid}++;
     my $details="";
     my $exec=$piddata{$pid}{exec}||"";
+    my $node_extra={};
     if($exec) {
         if($exec=~m{^"[^ ]*/([^/ ]+)"}) {
-            $details.=qq{ label="$1"};
+            $node_extra->{label}=$1;
         }
-        escape $exec;
-        $details.=qq{ tooltip="$exec"};
+        $node_extra->{tooltip}=$exec;
     }
-    print DOT qq!$pid [$details]\n!;
+    $node_extra=dot_label($node_extra);
+    print DOT qq!$pid $node_extra\n!;
 }
 
 sub add_edge($$;$)
