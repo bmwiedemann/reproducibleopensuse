@@ -54,6 +54,16 @@ sub pidinfo($)
     "\n    by pid=$pid$dir$exec - started".pidinfo($piddata{$pid}{ppid});
 }
 
+sub add_file($$;$)
+{ my ($pid, $file, $extra)=@_;
+    $extra||="";
+    diag "$pid found $file";
+    print "$file$extra written".pidinfo($pid)."\n\n";
+    $file=~s/"([^"]*)"/$1/;
+    my $shortfile=$file; $shortfile=~s{.*/}{};
+    print DOT qq{$pid -> "$file"\n  "$file" [shape="rectangle" label="$shortfile" tooltip="$file$extra"]\n};
+}
+
 sub did_chdir($$)
 { my ($pid,$chdir)=@_;
     my $newdir=".";
@@ -65,18 +75,21 @@ sub did_chdir($$)
 }
 
 my $pidre=qr(^(?:\[ *[0-9]+s\] )?\[pid +(\d+)\]); # ignores build timestamp
+my $stringre=qr("([^"]*)");
 my $forkre=qr(vfork|fork|clone);
+my $file2re=qr(symlink|symlinkat|link|linkat|rename|renameat|renameat2); # 2-operand file syscalls
 while(<STRACE>) {
     if(m/$pidre open(?:at)?\((.*$searchfile.*)(?:O_WRONLY|O_RDWR)/o) {
         #[pid  8096] openat(AT_FDCWD, "/tmp/cczAkoQ7.s", O_WRONLY|O_CREAT|O_TRUNC, 0666 <unfinished ...>
         my ($pid, $file)=($1,$2);
         $file=~s/^AT_FDCWD, //;
         $file=~s/, $//;
-        diag "$pid found $file";
-        print "$file written".pidinfo($pid)."\n\n";
-        $file=~s/"([^"]*)"/$1/;
-        my $shortfile=$file; $shortfile=~s{.*/}{};
-        print DOT qq{$pid -> "$file"\n  "$file" [shape="rectangle" label="$shortfile" tooltip="$file"]\n};
+        add_file $pid, $file;
+    } elsif(m/$pidre ($file2re)\((?:AT_FDCWD, )?$stringre, (?:AT_FDCWD, )?"([^"]*${searchfile}[^"]*)"/o) {
+        #[pid 22994] renameat2(AT_FDCWD, "./confbvUCpB/out", AT_FDCWD, "pcp.lsm", RENAME_NOREPLACE) = 0
+        #[pid 18003] symlinkat("../pcp-pidstat.py", AT_FDCWD, "pcp-4.1.1/src/pcp/pidstat/test/pcp_pidstat.py") = 0
+        my ($pid, $syscall, $file1, $file2)=($1,$2,$3,$4);
+        add_file($pid, $file2, " by $syscall from $file1");
     }
     elsif(m/$pidre $forkre\(.* = (\d+)$/o ||
        m/$pidre <\.\.\. $forkre resumed>.* = (\d+)/o)
