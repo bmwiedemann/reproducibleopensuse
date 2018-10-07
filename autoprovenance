@@ -14,7 +14,7 @@ our %piddata=();
 sub diag {}
 
 sub escape($)
-{ my $x=shift;$x=~s{[^a-zA-Z0-9._/+-]}{\\$&}g; return $x }
+{ my $x=shift;$x=~s{[^a-zA-Z0-9._/#+-]}{\\$&}g; return $x }
 
 sub dot_label($)
 { my $extra=shift;
@@ -30,7 +30,7 @@ sub add_node($)
     my $details="";
     my $exec=$piddata{$pid}{exec}||"";
     my $dir=$piddata{$pid}{dir}||".";
-    my $node_extra={};
+    my $node_extra={shape=>"plaintext", style=>"filled", fillcolor=>"#bbeeff"};
     my $tip="pid=$pid dir=$dir ";
     if($exec) {
         if($exec=~m{^"[^ ]*/([^/ ]+)"}) {
@@ -39,7 +39,6 @@ sub add_node($)
         $tip.=$exec;
     }
     $node_extra->{tooltip}=$tip;
-    $node_extra->{shape}="plaintext";
     $node_extra=dot_label($node_extra);
     print DOT qq!$pid $node_extra\n!;
 }
@@ -74,7 +73,7 @@ sub add_file($$$;$)
     $file=~s/"([^"]*)"/$1/;
     my $shortfile=$file; $shortfile=~s{.*/}{};
     my $edge_extra=dot_label {label=>$syscall, color=>"darkgreen", fontcolor=>"darkgreen"};
-    my $node_extra=dot_label {shape=>"rectangle", label=>$shortfile, tooltip=>"$file$extra"};
+    my $node_extra=dot_label {shape=>"ellipse", style=>"filled", fillcolor=>"#ffddaa", label=>$shortfile, tooltip=>"$file$extra"};
     print DOT qq{$pid -> "$file" $edge_extra\n  "$file" $node_extra\n};
 }
 
