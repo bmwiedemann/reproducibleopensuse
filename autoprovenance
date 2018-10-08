@@ -14,7 +14,7 @@ our %piddata=();
 sub diag {}
 
 sub escape($)
-{ my $x=shift;$x=~s{[^a-zA-Z0-9._/#+-]}{\\$&}g; return $x }
+{ my $x=shift;$x=~s{[^a-zA-Z0-9 ()\[\]{}<>&|?';:.,_#=/*+-]}{\\$&}g; return $x }
 
 sub dot_label($)
 { my $extra=shift;
