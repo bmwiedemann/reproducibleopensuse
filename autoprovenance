@@ -68,11 +68,17 @@ sub pidinfo($;$)
 sub add_file($$$;$)
 { my ($pid, $syscall, $file, $extra)=@_;
     $extra||="";
+    my %edge_style=(
+        open=>[color=>"darkgreen"],
+        link=>[color=>"blue", style=>"dashed"],
+        syml=>[color=>"red", style=>"dashed"],
+        rena=>[color=>"blue"],
+    );
     diag "$pid found $file";
     print "$file$extra written per $syscall".pidinfo($pid)."\n\n";
     $file=~s/"([^"]*)"/$1/;
     my $shortfile=$file; $shortfile=~s{.*/}{};
-    my $edge_extra=dot_label {label=>$syscall, color=>"darkgreen", fontcolor=>"darkgreen"};
+    my $edge_extra=dot_label {label=>$syscall, penwidth=>4, @{$edge_style{substr($syscall,0,4)}}};
     my $node_extra=dot_label {shape=>"ellipse", style=>"filled", fillcolor=>"#ffddaa", label=>$shortfile, tooltip=>"$file$extra"};
     print DOT qq{$pid -> "$file" $edge_extra\n  "$file" $node_extra\n};
 }
