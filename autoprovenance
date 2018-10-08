@@ -75,8 +75,9 @@ sub add_file($$$;$)
         rena=>[color=>"blue"],
     );
     diag "$pid found $file";
-    print "$file$extra written per $syscall".pidinfo($pid)."\n\n";
     $file=~s/"([^"]*)"/$1/;
+    if($file!~m{^/}) {$file=($piddata{$pid}{dir}||".")."/".$file}
+    print "$file$extra written per $syscall".pidinfo($pid)."\n\n";
     my $shortfile=$file; $shortfile=~s{.*/}{};
     my $edge_extra=dot_label {label=>$syscall, penwidth=>4, @{$edge_style{substr($syscall,0,4)}}};
     my $node_extra=dot_label {shape=>"ellipse", style=>"filled", fillcolor=>"#ffddaa", label=>$shortfile, tooltip=>"$file$extra"};
