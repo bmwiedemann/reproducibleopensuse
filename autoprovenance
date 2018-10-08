@@ -85,11 +85,9 @@ sub add_file($$$;$)
 
 sub did_chdir($$)
 { my ($pid,$chdir)=@_;
-    my $newdir=".";
+    my $newdir;
     if($chdir=~m{^/}) { $newdir=$chdir }
-    elsif($piddata{$pid}{dir}) {
-        $newdir=$piddata{$pid}{dir}."/".$chdir;
-    }
+    else { $newdir=($piddata{$pid}{dir}||".")."/".$chdir }
     $piddata{$pid}{dir}=$newdir;
 }
 
