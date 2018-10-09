@@ -2,12 +2,14 @@
 # report on where a file is created during a build
 # Requires output of something like https://github.com/bmwiedemann/reproducible-faketools/blob/master/bin/rpmbuild-strace
 use strict;
+use Cwd;
+my $pkgname = getcwd; $pkgname=~s!.*/!!;
 my $stracefile=".rb.build.log.strace";
 open(STRACE, "<", $stracefile) or die "error opening $stracefile: $! ; you need to run stracebuild first";
 my $searchfile=shift or die "need filename to search for";
 my $dotfile=$ENV{DOTFILE}||"provenance.dot";
 open(DOT, ">", $dotfile) or die $!;
-print DOT qq!digraph G {\n graph[rankdir=RL]\n!;
+print DOT qq!digraph "$pkgname" {\n graph[rankdir=RL]\n!;
 our %piddata=();
 
 #sub diag {print STDERR @_,"\n"}
