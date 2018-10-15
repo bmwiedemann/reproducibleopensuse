@@ -22,7 +22,7 @@ sub rbk(@)
     if($hosttweak&1) { $ENV{host2}="sles12a" }
     if($hosttweak&2) { push(@extrapkg, "reproducible-faketools-hostname") }
     # bit 3
-    if(shift) { push(@extrapkg, "reproducible-faketools-filesys") }
+    if(shift) { push(@extrapkg, "reproducible-faketools-filesys"); $ENV{rbfilesys}="reproducible" }
     if(shift) { push(@extrapkg, "reproducible-faketools-date") }
     if(shift) { $ENV{rbsnd}=1 } # use strip-nondeterminism
     # bit 6

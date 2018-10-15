@@ -27,8 +27,10 @@ fi
 : ${host2:=sles12b}
 : ${parallelism:=4}
 : ${parallelism2:=1}
+: ${rbfilesys:=unreproducible}
 : ${cputype2:=qemu64}
 : ${vmtype:=--vm-type=kvm}
+export rbfilesys
 export arch
 export vmtype
 now=$(date +%s)
