@@ -1,4 +1,4 @@
 #!/bin/sh
 cd "$1" || exit 55
-rm -f .build* .osc-build-retval
-rm -rf RPMS* binaries binaries.nachbau
+rm -f .build* .osc-build-retval .rb.noarchcheck .rb.noarchcheck.diff
+rm -rf RPMS* binaries binaries.nachbau binaries.{i586,x86_64,aarch64,s390x}
