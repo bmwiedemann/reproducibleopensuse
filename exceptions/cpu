@@ -1,0 +1,3 @@
+# uses SSE2 via openMPI
+gromacs
+python-mpi4py

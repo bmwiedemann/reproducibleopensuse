@@ -5,6 +5,9 @@ years=15
 if grep -q "^$pkg$" "$(dirname $BASH_SOURCE)"/exceptions/neardate ; then
     years=1
 fi
+if grep -q "^$pkg$" "$(dirname $BASH_SOURCE)"/exceptions/cpu ; then
+    cputype2=host
+fi
 : ${slot:=4}
 : ${clean:=--clean --offline}
 : ${project:=home:bmwiedemann:reproducible}
