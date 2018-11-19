@@ -1,0 +1,6 @@
+#!/usr/bin/perl -w
+use strict;
+$ARGV[0] and open(STDIN, "<", $ARGV[0]);
+while(defined($_=getc(STDIN))) {
+    printf("%02X %s\n", ord($_), ord($_)>31?$_:"");
+}
