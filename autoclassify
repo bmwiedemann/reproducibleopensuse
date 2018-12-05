@@ -1,9 +1,16 @@
 #!/usr/bin/perl -w
 # for packages that do not build reproducibly, this script tries to find the
-# source of indeterminism by reducing various parts of it one by one
-# and writing the bitmask to .rb.autoclassify
-# see the rbkt script for the meaning of individual bits
+# source of indeterminism.
+# If you do not give it bits as CLI args,
+# it starts with maximally reduced indeterminism and if that is not enough,
+# the resulting bits have a 99 appended
+# If a build is still reproducible, it goes through the list of bits
+# and drops them one by one, thereby slowly increasing sources of indeterminism.
+# The resulting bitmask is written to .rb.autoclassify
+# See the rbkt script for the meaning of individual bits.
 
+# For low-entropy indeterminism such as two entries ordered correctly
+# 50% of the time, use rbretries=4 as environment variable
 
 use strict;
 my $slot=$ENV{slot}||4;
