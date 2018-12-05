@@ -15,6 +15,9 @@ llvm6
 mariadb
 mbedtls
 neon
+nodejs6
+nodejs8
+nodejs10
 openssl-1_0_0
 openssl-1_1
 perl-IO-Socket-SSL
