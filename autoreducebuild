@@ -1,0 +1,72 @@
+#!/usr/bin/perl -w
+# helper for autoreduce
+# to drops lines as long as the code still builds and remains unreproducible
+# exit codes:
+#    0 FTBR / unreproducible - was OK to drop
+#    1 FTBFS / broken build
+#    2 reproducible
+# expects build to produce one md5sum-like line on stdout and no stderr
+# expects reproducible builds to produce the same stdout every time
+
+use strict;
+use IO::Pipe;
+use IO::Select;
+our $loops = 5;
+our $debug = 0;
+our $info = 1;
+
+if(!@ARGV) {
+    die "usage: $0 BUILDCMD\n"
+}
+
+sub diag($)
+{
+    print STDERR "info: ", @_, "\n" if $info;
+}
+
+my $prevresult;
+
+for(1..$loops) {
+    my $outpipe = IO::Pipe->new();
+    my $errpipe = IO::Pipe->new();
+    my $pid = fork();
+    if($pid == 0) { # child
+        $outpipe->writer();
+        $errpipe->writer();
+        open(STDOUT, ">&", $outpipe) or die;
+        open(STDERR, ">&", $errpipe) or die;
+        exec(@ARGV);
+    } elsif ($pid > 0) { # parent
+        $outpipe->reader();
+        $errpipe->reader();
+        my $s = IO::Select->new($outpipe, $errpipe);
+        my @ready = $s->can_read();
+        foreach my $fh (@ready) {
+            if($fh == $errpipe) {
+                my @lines=<$errpipe>;
+                next unless @lines;
+                diag "FTBFS: build failed with @lines" if $debug;
+                exit 1; # FTBFS
+            } elsif($fh == $outpipe) {
+                my $line = <$fh>;
+                chomp $line;
+                $prevresult//=$line;
+                diag "debug: built with result $line";
+                if($prevresult ne $line) {
+                    diag "build was unreproducible";
+                    exit 0; # FTBR
+                }
+            } else {
+                die "unexpected"
+            }
+        }
+        waitpid($pid, 0);
+        if($?) {
+            exit 1; # FTBFS
+        }
+    } else {
+        die "fork failed";
+    }
+}
+diag "build was reproducible";
+exit 2;
