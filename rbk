@@ -26,8 +26,8 @@ fi
 : ${datediff:=$(((((365*$years+36)*24+13)*60+17)*60))}
 : ${host1:=sles12a}
 : ${host2:=sles12b}
-: ${parallelism:=4}
-: ${parallelism2:=1}
+: ${parallelism:=1}
+: ${parallelism2:=4}
 : ${rbfilesys:=unreproducible}
 : ${cputype2:=qemu64}
 : ${vmtype:=--vm-type=kvm}
