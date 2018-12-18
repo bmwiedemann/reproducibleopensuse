@@ -1,0 +1,63 @@
+#!/usr/bin/perl -w
+# drop lines from a source file to find a minimal reproducer for indeterminism
+# BUILDPROG should return 0 if a dropped line is good to keep dropped
+# see the autoreducebuild helper for an example
+use strict;
+our $file=shift;
+
+if(!@ARGV) {
+    die "usage: $0 FILE BUILDPROG\ne.g. $0 src/lib.rs autoreducebuild ./build.sh\n";
+}
+
+our @lines;
+{
+    open(my $fd, "<", $file) or die "could not read $file";
+    @lines=<$fd>;
+}
+sub revert()
+{
+    open(my $fd, ">", $file) or die;
+    print $fd @lines;
+}
+sub sighandler()
+{
+    print STDERR "canceled by signal - reverting file\n";
+    revert;
+    exit 1;
+}
+$SIG{'INT'} = $SIG{'TERM'} = \&sighandler;
+
+my $start=$ENV{start}||$#lines;
+my $maxdrop=$ENV{maxdrop}||2;
+my $workleft=1;
+while($workleft) {
+    $workleft=0;
+    LINESLOOP:
+    for(my $i=$start; $i>=0; --$i) {
+        for(my $drop=$maxdrop; $drop>=1; --$drop) {
+            next if $i+$drop > @lines;
+            print "trying to drop $drop lines at line $i:\n";
+            my @reducedlines=@lines;
+            splice(@reducedlines, $i+1-$drop, $drop);
+            next if $#reducedlines == $#lines;
+            open(my $fd, ">", $file) or die "could not write $file";
+            print $fd @reducedlines;
+            close $fd;
+            system(@ARGV);
+            my $ret = $?>>8;
+            revert;
+            #die "ret $ret";
+            if ($ret) {
+                # revert
+                next;
+            }
+            else {
+                # keep the reduced version
+                @lines = @reducedlines;
+                $workleft = 1;
+                next LINESLOOP;
+            }
+        }
+    }
+}
+revert;
