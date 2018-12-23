@@ -11,5 +11,4 @@ preinstallimage-libqt5
 preinstallimage-libX11-devel
 preinstallimage-minimal
 preinstallimage-texlive-basics
-python-pycryptodomex
 Test-DVD-x86_64
