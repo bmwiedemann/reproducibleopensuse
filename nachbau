@@ -11,9 +11,10 @@ detect_repo()
 
 : ${repo:=`detect_repo`}
 : ${fast:=false}
+: ${arch:=x86_64}
 export project=$(cat .osc/_project)
 export repo
-export arch=x86_64
+export arch
 
 export OUTDIR=binaries.nachbau
 $fast || rm -rf binaries $OUTDIR
