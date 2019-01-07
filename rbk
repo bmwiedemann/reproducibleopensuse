@@ -9,7 +9,7 @@ if grep -q "^$pkg$" ~/reproducibleopensuse/exceptions/memory && [[ $mem -lt 6000
     exit 37
 fi
 
-years=15
+: ${years:=15}
 if grep -q "^$pkg$" "$(dirname $BASH_SOURCE)"/exceptions/neardate ; then
     years=1
 fi
