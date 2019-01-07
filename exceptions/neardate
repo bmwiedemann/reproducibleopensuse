@@ -31,8 +31,10 @@ python-botocore
 python-keystoneauth1
 python-keystoneclient
 python-keystonemiddleware
+python-ldap
 python-oslo.service
 python-pyOpenSSL
+python-pysaml2
 python-requests
 python-trollius
 python-urllib3
