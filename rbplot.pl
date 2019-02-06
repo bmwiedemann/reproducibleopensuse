@@ -18,15 +18,17 @@ sub dumpstatus(@)
 {
     my @headers=(qw(datum reproducible FTBR FTBFS other));
     print join(",",@headers)."\n";
+    @headers = map {s/datum/mtime/; s/FTBR/unreproducible/; $_} @headers;
     foreach my $line (@_) {
         #foreach(sort(keys(%$line))) { print "$_ $line->{$_} " } # raw stat dump
-        foreach(qw(mtime reproducible unreproducible FTBFS other)) {
+        my @line;
+        foreach(@headers) {
             my $v = $line->{$_}||0;
             if($_ eq "mtime") { $v = strftime("%Y-%m-%d", gmtime($v)) }
             if($_ eq "other") { $v = ($line->{nobinaries}||0) + ($line->{waitdep}||0) } # ignoring notforus (other arch)
-            print "$v,"; # CSV out
+            push(@line, $v);
         }
-        print "\n";
+        print join(",", @line),"\n"; # CSV out
     }
 }
 
