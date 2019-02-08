@@ -25,6 +25,7 @@ later=$(date --date=@$((now+datediff)) -u "+%FT%T")
 export OSC_BUILD_ROOT=/var/tmp/build-root.${slot}/
 export VM_CUSTOMOPT=""
 osc up -S
+fixuposcmtime
 mkdir -p RPMS
 osc build ${oscbuildextrapkg} --preload --nopreinstallimage --noservice --vm-type=kvm --alternative-project=$project ${oscbuildparams} $repo $pkg.spec 2>&1 | tee RPMS/.build.log2
 if (( ${PIPESTATUS[0]} )) ; then
