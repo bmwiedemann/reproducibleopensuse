@@ -30,6 +30,7 @@ export debuginfo=--clean
 export vmtype="--vm-type=kvm -j4"
 export OSC_BUILD_ROOT=/var/tmp/build-root.${slot}/
 $fast || osc up
+fixuposcmtime
 rm -f .build-*-nachbau
 rebuild
 dir2=$OUTDIR compareone
