@@ -29,6 +29,7 @@ fi
 : ${parallelism:=1}
 : ${parallelism2:=4}
 : ${rbfilesys:=unreproducible}
+: ${cputype:=host}
 : ${cputype2:=qemu64}
 : ${vmtype:=--vm-type=kvm}
 export rbfilesys
@@ -59,6 +60,7 @@ if (( ${PIPESTATUS[0]} )) ; then
 fi
 rm -f .build-differed .build-rbkt
 export clean
+export VM_CUSTOMOPT="-cpu $cputype"
 vmtype="--vm-type=kvm" clean="$clean -j${parallelism}" HOST=$host1 OUTDIR=RPMS.2017 nice -n 7 rebuild &
 pid=$!
 export VM_CUSTOMOPT="-rtc base=$later -cpu $cputype2,l3-cache=on"
