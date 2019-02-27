@@ -1,3 +1,5 @@
-# uses SSE2 via openMPI
+# uses AVX2 via openMPI -> libpsm2
 gromacs
+lammps
+python3-espressomd
 python-mpi4py

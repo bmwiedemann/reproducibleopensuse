@@ -13,7 +13,6 @@ libvirt
 llvm4
 llvm5
 llvm6
-mariadb
 mbedtls
 neon
 nodejs6
@@ -22,12 +21,16 @@ nodejs10
 openssl-1_0_0
 openssl-1_1
 perl-IO-Socket-SSL
+perl-Net-SSLeay
 python
 python3
 python3-base
-python-Django
+# https://github.com/django/django/pull/10993 / 10994
+#python-Django
 python-M2Crypto
 python-botocore
+# SSL cert expired
+python-gevent
 python-keystoneauth1
 python-keystoneclient
 python-keystonemiddleware
