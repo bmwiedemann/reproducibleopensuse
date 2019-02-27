@@ -7,7 +7,7 @@ for x in "" b ; do
     for m in proc sys dev ; do mount --bind /$m $b/.mount/$m ; done
 done
 echo mounted $b/.mount
-[[ $rbdebug ]] && bash -i
+[ -n "$rbdebug" ] && bash -i
 diff -ruN /var/tmp/build-root.${slot}{,b}/.mount/home/abuild/rpmbuild/ > .rb.buildroot.diff
 
 for x in "" b ; do
