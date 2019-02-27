@@ -1,5 +1,6 @@
 #!/bin/sh
 : ${slot:=4}
+[ $(id -u) = 0 ] || exit 14
 for x in "" b ; do
     b=/var/tmp/build-root.$slot$x
     mkdir -p $b/.mount/
