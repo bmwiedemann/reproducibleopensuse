@@ -49,6 +49,7 @@ if [[ $final = 1 ]] ; then
     cat */RPMS*/checksums > ~/tmp/checksums.txt
     for p in * ; do jsonresultcache "$p" ; done
     jsonresultmerge * > ~/tmp/reproducible.json
+    showrings > ~/tmp/unreproduciblerings.txt
     grep . */RPMS/build-time | sort -n -t: -k2 | perl -pe 's{/.*:}{:}' > ~/tmp/build-time.txt
 fi
 echo "untracked dirs:"
