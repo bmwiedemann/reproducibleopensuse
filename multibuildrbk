@@ -1,7 +1,7 @@
 #!/bin/bash
 if [[ -e _multibuild ]] ; then
     [[ $multibuild ]] ||
-         multibuild=$(grep -m 1 package _multibuild | sed 's/.*>\([^<>]*\)<.*/\1/')
+         multibuild=$(fgrep -v i686 _multibuild | fgrep -m 1 package | sed 's/.*>\([^<>]*\)<.*/\1/')
     if ! [[ $multibuild =~ test ]] ; then
         export project=openSUSE:Factory
         export repo=standard
