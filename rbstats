@@ -34,9 +34,9 @@ comparefailed=$(grep -v '^0$' */.build-compare-retval | wc -l)
 bitidentical=$(grep '^0$' */.build-differed | wc -l)
 echo "build-compare-failed: $comparefailed"
 echo "build-compare-succeeded: "$(($buildsucceeded-$comparefailed))
-echo "bit-by-bit-identical: $bitidentical" # needs rpm patches
 echo "verified-semi-reproducible: $buildsemiverified"
 echo "verified-bit-identical: $buildverified"
+echo "bit-by-bit-identical: $bitidentical" # needs rpm patches
 echo "not-bit-by-bit-identical: $(wc -l < ~/tmp/differed-builds.txt)"
 echo "not-bit-by-bit-identicalcheck: $((buildsucceeded-bitidentical))"
 
