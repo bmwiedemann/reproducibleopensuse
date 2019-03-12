@@ -33,7 +33,7 @@ this script will tell you what command produced the file along with a call trace
 
 
 3. fix issues
-Once you know exactly which code line introduced non-determinism, fixing it can be pretty straighforward.
+Once you know exactly which code line introduced non-determinism, fixing it can be pretty straightforward.
 https://salsa.debian.org/reproducible-builds/reproducible-website/tree/master/_blog/posts numbers 100+ has 2 years worth of links to a large collection of Bernhard's patches along with short summaries like "date" or "readdir" or "ASLR" that map to one of the entries in
 https://github.com/bmwiedemann/theunreproduciblepackage
 
