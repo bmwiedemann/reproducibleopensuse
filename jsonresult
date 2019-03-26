@@ -56,7 +56,7 @@ sub find_status($)
 
 sub find_verified($)
 { my $dir=shift;
-  return undef unless eval{getline("$dir/binaries.nachbau/.osc-build-retval")} == 0;
+  return undef unless (eval{getline("$dir/binaries.nachbau/.osc-build-retval")}//1) == 0;
   my $differed=eval{getline("$dir/.build-differed-nachbau")} //1;
   my $filtered=eval{getline("$dir/.build-compare-retval-nachbau")};
   $::sigdate=undef;
