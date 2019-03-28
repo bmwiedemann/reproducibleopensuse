@@ -3,8 +3,6 @@ if [[ -e _multibuild ]] ; then
     [[ $multibuild ]] ||
          multibuild=$(fgrep -v i686 _multibuild | fgrep -m 1 package | sed 's/.*>\([^<>]*\)<.*/\1/')
     if ! [[ $multibuild =~ test ]] ; then
-        export project=openSUSE:Factory
-        export repo=standard
         export oscbuildparams="-M $multibuild"
     fi
 fi

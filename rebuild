@@ -38,9 +38,6 @@ oscopts+=(--define='%source_date_epoch_from_changelog Y' --define="%_buildhost $
 : ${project:=home:bmwiedemann:reproducible}
 : ${repo:=openSUSE_Tumbleweed}
 alternativeproject="--alternative-project=$project"
-if [[ $oscbuildparams =~ -M ]] ; then
-    alternativeproject=
-fi
 rm -rf $OSC_BUILD_ROOT/home/abuild/rpmbuild/RPMS/ $OSC_BUILD_ROOT/.mount/.build.packages/RPMS/ $OSC_BUILD_ROOT/.build.log
 rm -rf $OUTDIR
 mkdir -p $OUTDIR

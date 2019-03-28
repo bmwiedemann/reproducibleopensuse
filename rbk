@@ -38,9 +38,6 @@ export vmtype
 now=$(date +%s)
 later=$(date --date=@$((now+datediff)) -u "+%FT%T")
 alternativeproject="--alternative-project=$project"
-if [[ $oscbuildparams =~ -M ]] ; then
-    alternativeproject=
-fi
 export OSC_BUILD_ROOT=/var/tmp/build-root.${slot}/
 export VM_CUSTOMOPT=""
 $offline || osc up -S
