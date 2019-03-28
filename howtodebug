@@ -64,7 +64,7 @@ For patches that can not be upstreamed:
   sort lists (that usually varied from filesystem readdir order or ASLR)
   replace build date with fixed date (e.g. SOURCE_DATE_EPOCH or ChangeLog file mtime)
 
-3. fix bugs
+3.3 fix bugs
   sometimes unreproducible output is the result of actual bugs and then actual upstream bugfixes rather than downstream distribution workarounds are recommended.
   https://github.com/bmwiedemann/theunreproduciblepackage/tree/master/race has several examples
   https://github.com/projectM-visualizer/projectm/pull/176
