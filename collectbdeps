@@ -1,0 +1,30 @@
+#!/usr/bin/perl -w
+# collect the correct versions of build dependencies
+# input: a _buildenv file of an official build
+# implicit input: hdrmd5.db - index of packages
+# output: symlinks to relevant rpms all in one dir
+
+use strict;
+use DB_File;
+our $base = $ENV{PKGBASE}||"/ipfs/QmSo3QuXmMS5AZmSJswJvHVs7gzFtm5gbAUbVzmeyAQZyG";
+our $dbname = $ENV{DBFILE}||"$ENV{HOME}/reproducibleopensuse/data/hdrmd5.db";
+our %hdrdata;
+tie(%hdrdata, "DB_File", $dbname, O_RDONLY) or die "error opening DB: $!";
+my $infile = $ENV{IN} || "binaries/_buildenv";
+open(my $infd, "<", $infile) or die "error opening $infile: $!";
+system "rm -rf deps";
+mkdir "deps";
+while(<$infd>) {
+    if(m/^  <bdep/) {
+        next unless m/hdrmd5="([^"]+)"/;
+        my $pkgid = $1;
+        my $pkg = $hdrdata{$pkgid};
+        unless($pkg) {
+		print "missing $_";
+		next;
+	}
+        print "$pkg\n";
+        my $pkgbasename = $pkg ; $pkgbasename =~ s!.*/!!;
+        symlink "$base/$pkg", "deps/$pkgbasename";
+    }
+}
