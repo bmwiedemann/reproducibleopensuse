@@ -1,13 +1,13 @@
 #!/usr/bin/perl -w
 # collect the correct versions of build dependencies
 # input: a _buildenv file of an official build
-# implicit input: hdrmd5.db - index of packages
+# implicit input: hdrmd5cid.db - index of packages in IPFS
 # output: symlinks to relevant rpms all in one dir
 
 use strict;
 use DB_File;
-our $base = $ENV{PKGBASE}||"/ipfs/QmSo3QuXmMS5AZmSJswJvHVs7gzFtm5gbAUbVzmeyAQZyG";
-our $dbname = $ENV{DBFILE}||"$ENV{HOME}/reproducibleopensuse/data/hdrmd5.db";
+our $base = $ENV{PKGBASE}||"/ipfs";
+our $dbname = $ENV{DBFILE}||"$ENV{HOME}/reproducibleopensuse/data/hdrmd5cid.db";
 our %hdrdata;
 tie(%hdrdata, "DB_File", $dbname, O_RDONLY) or die "error opening DB: $!";
 my $infile = $ENV{IN} || "binaries/_buildenv";
@@ -16,15 +16,15 @@ system "rm -rf deps";
 mkdir "deps";
 while(<$infd>) {
     if(m/^  <bdep/) {
-        next unless m/hdrmd5="([^"]+)"/;
-        my $pkgid = $1;
+        next unless m/name="([^"]+)" hdrmd5="([^"]+)"/;
+        my ($pkgname, $pkgid) = ($1, $2);
         my $pkg = $hdrdata{$pkgid};
         unless($pkg) {
 		print "missing $_";
 		next;
 	}
-        print "$pkg\n";
+        print "$pkg $pkgname\n";
         my $pkgbasename = $pkg ; $pkgbasename =~ s!.*/!!;
-        symlink "$base/$pkg", "deps/$pkgbasename";
+        symlink "$base/$pkg", "deps/$pkgname.rpm";
     }
 }

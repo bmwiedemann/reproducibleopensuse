@@ -5,6 +5,7 @@ use strict;
 use DB_File;
 my $indb = shift;
 my $outdb = $indb.".db";
+$outdb =~ s/\.db\.txt\.db$/.db/;
 open(my $infd, "<", $indb) or die $!;
 our %hdrdata;
 tie(%hdrdata, "DB_File", $outdb, O_RDWR|O_CREAT) or die "error opening DB: $!";

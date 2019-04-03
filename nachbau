@@ -10,6 +10,7 @@ detect_repo()
 }
 
 : ${repo:=`detect_repo`}
+: ${olddeps:=true}
 : ${fast:=false}
 : ${arch:=x86_64}
 export project=$(cat .osc/_project)
@@ -19,7 +20,9 @@ export arch
 export OUTDIR=binaries.nachbau
 $fast || rm -rf binaries $OUTDIR
 $fast || osc getbinaries $repo $arch || exit 16
+$fast || rm -f binaries/*.{aarch64,ppc64le,s390x}.rpm # for syslinux importing other arch's binaries into x86_64
 $fast || for bin in binaries/*rpm ; do rpm -qpi $bin | grep "^Signature.*:" ; rpm --delsign $bin ; done > binaries/signature
+if $olddeps ; then collectbdeps ; oscbuildparams+=" -p deps " ; export oscbuildparams ; fi
 p=$(basename $(pwd))
 origrpm=$(ls binaries/[a-zA-Z0-9]*.rpm | head -1)
 [ -n "$origrpm" ] || exit 17
