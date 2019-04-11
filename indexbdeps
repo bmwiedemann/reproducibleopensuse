@@ -3,7 +3,7 @@
 # similar to postmap
 use strict;
 use DB_File;
-my $indb = shift;
+my $indb = shift or die "usage: input.txt";
 my $outdb = $indb.".db";
 $outdb =~ s/\.db\.txt\.db$/.db/;
 open(my $infd, "<", $indb) or die $!;
