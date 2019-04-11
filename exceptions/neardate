@@ -30,7 +30,13 @@ python3-base
 python-M2Crypto
 python-botocore
 # SSL cert expired
+python-distlib
+# SSL cert expired
+python-fedmsg
+# SSL cert expired
 python-gevent
+# SSL cert expired
+python-geventhttpclient
 python-keystoneauth1
 python-keystoneclient
 python-keystonemiddleware
