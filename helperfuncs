@@ -11,7 +11,7 @@ qs()
 {
     local fuzz=--fuzz=1
     quilt -v setup $fuzz $(basename $(pwd)).spec
-    d=$(find . -maxdepth 1 -type d | grep -v -e '/binaries' -e /RPMS -e '\.osc$' -e '^\.$'|head -1)
+    d=$(find . -maxdepth 1 -type d | grep -v -e '/binaries' -e /RPMS -e /deps -e '\.osc$' -e '^\.$'|head -1)
     if [[ $d ]] ; then
         cd $d
         touch series
