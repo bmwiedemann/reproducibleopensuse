@@ -22,7 +22,7 @@ digraph G {
   subgraph cluster_3 {
     color="#bbffbb";
     style=filled;
-    submit -> {github,gitlab,sf,gerrit,arc,ML};
+    submit -> find_repo -> {github,gitlab,sf,gerrit,arc,ML} -> keep_track;
     label = "How to submit the fix?";
   }
 }
