@@ -30,7 +30,7 @@ fi
 [[ $DISTURL ]] && oscopts+=("--build-opt=--disturl=$DISTURL")
 [[ $rbsnd ]] && oscopts+=(--define='%__spec_build_post [ -e /usr/bin/strip-nondeterminism ] && find -type f -print0 | xargs -0 --no-run-if-empty strip-nondeterminism --timestamp=${SOURCE_DATE_EPOCH:-1494270000} --clamp-timestamp || true ; exit 0')
 [[ $rbsnd ]] && oscopts+=(-x strip-nondeterminism --define='%__spec_install_post [ -e /usr/bin/strip-nondeterminism ] && find %buildroot -type f -print0 | xargs -0 --no-run-if-empty strip-nondeterminism --timestamp=${SOURCE_DATE_EPOCH:-1494270000} --clamp-timestamp ; %__os_install_post')
-oscopts+=("--build-opt=--vm-disk-filesystem=ext4")
+oscopts+=("--build-opt=--vm-disk-filesystem=ext4" --trust-all-projects)
 getent passwd qemu >/dev/null || oscopts+=("--build-opt=--vm-user=nobody")
 oscopts+=(--define='%source_date_epoch_from_changelog Y' --define="%_buildhost $buildhost" --define='%clamp_mtime_to_source_date_epoch Y' --define='%use_source_date_epoch_as_buildtime Y')
 
