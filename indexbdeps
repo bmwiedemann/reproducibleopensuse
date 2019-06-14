@@ -14,5 +14,6 @@ while(<$infd>) {
     my @a = split(" ", $_);
     chomp($a[1]);
 #    print "$a[0] : $a[1]\n";
+    next if $hdrdata{$a[0]};
     $hdrdata{$a[0]} = $a[1];
 }
