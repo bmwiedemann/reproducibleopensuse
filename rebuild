@@ -26,7 +26,7 @@ if [[ $VM_CUSTOMOPT ]] && osc build --help | grep -q build-opt ; then
   oscopts+=("--build-opt=--vm-custom-opt=$VM_CUSTOMOPT")
   unset VM_CUSTOMOPT
 fi
-[[ $rbfilesys = unreproducible ]] && oscopts+=("--build-opt=--vm-disk-dirindex")
+[[ $rbfilesys = unreproducible ]] && grep -q vm-disk-dirindex /usr/lib/build/build && oscopts+=("--build-opt=--vm-disk-dirindex")
 [[ $DISTURL ]] && oscopts+=("--build-opt=--disturl=$DISTURL")
 [[ $rbsnd ]] && oscopts+=(--define='%__spec_build_post [ -e /usr/bin/strip-nondeterminism ] && find -type f -print0 | xargs -0 --no-run-if-empty strip-nondeterminism --timestamp=${SOURCE_DATE_EPOCH:-1494270000} --clamp-timestamp || true ; exit 0')
 [[ $rbsnd ]] && oscopts+=(-x strip-nondeterminism --define='%__spec_install_post [ -e /usr/bin/strip-nondeterminism ] && find %buildroot -type f -print0 | xargs -0 --no-run-if-empty strip-nondeterminism --timestamp=${SOURCE_DATE_EPOCH:-1494270000} --clamp-timestamp ; %__os_install_post')
