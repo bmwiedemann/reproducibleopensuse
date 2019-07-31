@@ -38,7 +38,7 @@ srcmd5found=false
 for srcmd5 in $srcmd5s ; do
     echo "$DISTURL" | grep -q "$srcmd5" && srcmd5found=true
 done
-if ! $srcmd5found ; then
+if [ "$FORCE" != 1 ] && ! $srcmd5found ; then
     echo "skipping nachbau because binary was not built from this source"
     exit 0
 fi
