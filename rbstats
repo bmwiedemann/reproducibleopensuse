@@ -15,6 +15,7 @@ grep -v '^0$' */.build-differed | cut -d/ -f1 > ~/tmp/differed-builds.txt
 grep -v '^0$' */.build-compare-retval | cut -d/ -f1 > ~/tmp/build-compare-differed-builds.txt
 grep -v '^0$' */.build-differed-nachbau | cut -d/ -f1 > ~/tmp/differed-builds-nachbau.txt
 grep -v '^0$' */.build-compare-retval-nachbau | cut -d/ -f1 > ~/tmp/build-compare-differed-builds-nachbau.txt
+buildunverified=$(grep '"verified" : 0' */.build-jsonresult | wc -l)
 buildsemiverified=$(grep '"verified" : [12]' */.build-jsonresult | wc -l)
 buildverified=$(grep '"verified" : 2' */.build-jsonresult | wc -l)
 buildfailed=$(wc -l < ~/tmp/failed-builds.txt)
@@ -34,6 +35,7 @@ comparefailed=$(grep -v '^0$' */.build-compare-retval | wc -l)
 bitidentical=$(grep '^0$' */.build-differed | wc -l)
 echo "build-compare-failed: $comparefailed"
 echo "build-compare-succeeded: "$(($buildsucceeded-$comparefailed))
+echo "verify-failed: $buildunverified"
 echo "verified-semi-reproducible: $buildsemiverified"
 echo "verified-bit-identical: $buildverified"
 echo "bit-by-bit-identical: $bitidentical" # needs rpm patches
