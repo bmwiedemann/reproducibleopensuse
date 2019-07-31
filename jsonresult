@@ -102,6 +102,7 @@ sub get_status_for_one_dir($)
     opensuseautoclassify=>eval{getline("$dir/.rb.autoclassify")}||undef,
     build_date=>(stat("$dir/.osc-build-retval"))[9],
     build_duration=>get_build_duration("$dir/RPMS/build-time")||get_build_duration("$dir/binaries.nachbau/build-time"),
+    build_duration4=>get_build_duration("$dir/RPMS.2017/build-time")||get_build_duration("$dir/binaries.nachbau/build-time"),
   };
   if($::sigdate) {$data->{opensusesigdate}=$::sigdate}
   if($data->{status} eq "unreproducible") {
