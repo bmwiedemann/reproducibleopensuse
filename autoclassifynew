@@ -1,2 +1,2 @@
 #!/bin/sh
-test -e .rb.autoclassify || exec autoclassify
+test -e .rb.autoclassify || test -e _multibuild || exec autoclassify
