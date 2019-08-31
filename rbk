@@ -9,6 +9,7 @@ if grep -q "^$pkg$" ~/reproducibleopensuse/exceptions/memory && [[ $mem -lt 6000
     exit 37
 fi
 
+: ${buildrootbase:=/var/tmp}
 : ${years:=15}
 if grep -q "^$pkg$" "$(dirname $BASH_SOURCE)"/exceptions/neardate ; then
     years=1
@@ -38,7 +39,7 @@ export vmtype
 now=$(date +%s)
 later=$(date --date=@$((now+datediff)) -u "+%FT%T")
 alternativeproject="--alternative-project=$project"
-export OSC_BUILD_ROOT=/var/tmp/build-root.${slot}/
+export OSC_BUILD_ROOT=$buildrootbase/build-root.${slot}/
 export VM_CUSTOMOPT=""
 $offline || osc up -S
 fixuposcmtime
@@ -61,7 +62,7 @@ export VM_CUSTOMOPT="-cpu $cputype"
 vmtype="--vm-type=kvm" clean="$clean -j${parallelism}" HOST=$host1 OUTDIR=RPMS.2017 nice -n 7 rebuild &
 pid=$!
 export VM_CUSTOMOPT="-rtc base=$later -cpu $cputype2,l3-cache=on"
-export OSC_BUILD_ROOT=/var/tmp/build-root.${slot}b/
+export OSC_BUILD_ROOT=$buildrootbase/build-root.${slot}b/
 clean="$clean -j${parallelism2}" arch=$arch2 HOST=$host2 OUTDIR=RPMS rebuild
 wait $pid
 dir1=RPMS.2017 compareone
