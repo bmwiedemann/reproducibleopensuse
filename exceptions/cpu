@@ -1,5 +1,6 @@
 # uses AVX2 via openMPI -> libpsm2
 gromacs
 lammps
+llvm8
 python3-espressomd
 python-mpi4py

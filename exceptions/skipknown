@@ -1,3 +1,37 @@
 # known bad
 # needs newer CPU:
 ceph-test
+
+# test fail https://github.com/ipython/ipyparallel/issues/380
+python-ipyparallel
+
+# https://github.com/joblib/joblib/issues/870
+python-joblib
+
+# https://bugzilla.opensuse.org/show_bug.cgi?id=1136099
+python-nbconvert
+
+# random build errors from -j4 - FIXME report
+SHERPA-MC
+
+# known unreproducible from PGO, pch and others ; slow build
+cross-aarch64-gcc7
+cross-arm-gcc7
+cross-avr-gcc7
+cross-epiphany-gcc7
+cross-epiphany-gcc7-bootstrap
+cross-hppa-gcc7
+cross-i386-gcc7
+cross-m68k-gcc7
+cross-mips-gcc7
+cross-nvptx-gcc7
+cross-ppc64-gcc7
+cross-ppc64le-gcc7
+cross-rx-gcc7
+cross-rx-gcc7-bootstrap
+cross-s390x-gcc7
+cross-sparc64-gcc7
+cross-sparc-gcc7
+cross-x86_64-gcc7
+gcc7
+gcc7-testresults
