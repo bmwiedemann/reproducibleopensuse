@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 # sanity check
 bad=
 for p in * ; do test -e $p/.osc/_files || { echo $p ; bad=1 ; } ; done
