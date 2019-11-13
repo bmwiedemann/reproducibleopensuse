@@ -1,5 +1,7 @@
 This is a short guide on how to find, debug and fix reproducibility issues in openSUSE OBS package build results. Some of it will also apply to other subjects.
 
+0. Fetch this git repo, follow the setup instructions in the README.md file.
+
 1. find (detect) issues
 1.1. run 'rbk'
 1.2. for noarch packages run 'noarchcheck'
