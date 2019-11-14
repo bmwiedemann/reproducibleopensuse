@@ -1,7 +1,7 @@
 # https://github.com/bitcoin/bitcoin/issues/13086 https://github.com/bitcoin/bitcoin/pull/13061
 bitcoin
 chromium
-gnutls
+#gnutls
 httpie
 icu
 java-1_8_0-openjdk
@@ -9,15 +9,21 @@ java-9-openjdk
 java-10-openjdk
 java-11-openjdk
 libressl
+# SSL test fail
+libsoup
 libvirt
 llvm4
 llvm5
 llvm6
+llvm7
+llvm8
+llvm9
 mbedtls
 neon
 nodejs6
 nodejs8
 nodejs10
+nodejs12
 openssl-1_0_0
 openssl-1_1
 perl-IO-Socket-SSL
@@ -27,24 +33,30 @@ python3
 python3-base
 # https://github.com/django/django/pull/10993 / 10994
 #python-Django
-python-M2Crypto
-python-botocore
-# SSL cert expired
-python-distlib
-# SSL cert expired
+# SSL cert expired ; hard
 python-fedmsg
 # SSL cert expired
 python-gevent
 # SSL cert expired
-python-geventhttpclient
-python-keystoneauth1
+#python-geventhttpclient
+#python-keystoneauth1
 python-keystoneclient
-python-keystonemiddleware
-python-ldap
-python-oslo.service
-python-pyOpenSSL
-python-pysaml2
-python-requests
+#python-keystonemiddleware
+#python-ldap
+#python-oslo.service
+#python-pyOpenSSL
+# SSL cert expired
+#python-pysaml2
+# SSL https://github.com/csernazs/pytest-httpserver/issues/21
+#python-pytest-httpserver
+python-python3-saml
+#python-requests
+# https://github.com/requests/toolbelt/issues/270 SSL
+python-requests-toolbelt
+# SSL FTBFS-2022-11-13 ; archived ; hard to fix
 python-trollius
-python-urllib3
-python-vcrpy
+#python-urllib3
+# https://github.com/hashicorp/terraform/issues/21727  2030-01-01
+terraform
+# some cert tests?
+MozillaFirefox
