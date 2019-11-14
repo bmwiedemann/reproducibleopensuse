@@ -2,5 +2,6 @@
 gromacs
 lammps
 llvm8
+llvm9
 python3-espressomd
 python-mpi4py
