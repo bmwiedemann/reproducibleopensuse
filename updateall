@@ -1,6 +1,7 @@
 #!/bin/sh
 ls */.osc/_frozenlink 2>/dev/null && exit 26
 osc up || exit 25
+chown bernhard. ~/f/*
 # drop packages that were removed from openSUSE:
 for p in * ; do test -e $p/.osc/_files || cleanupone $p ; fixuposcmtime $p ; done
 rmdir * 2>/dev/null
