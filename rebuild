@@ -35,8 +35,6 @@ getent passwd qemu >/dev/null || oscopts+=("--build-opt=--vm-user=nobody")
 oscopts+=(--define='%source_date_epoch_from_changelog Y' --define="%_buildhost $buildhost" --define='%clamp_mtime_to_source_date_epoch Y' --define='%use_source_date_epoch_as_buildtime Y')
 if [[ $nolto ]] ; then
   oscopts+=(--define='%_lto_cflags %{nil}')
-else
-  oscopts+=(--define='%_lto_cflags -flto=auto')
 fi
 [[ $nopgo ]] && oscopts+=(--define='%do_profiling 0')
 
