@@ -1,0 +1,24 @@
+#!/bin/sh
+# This script tries to drop individual files as long as
+# the build script returns that results are still unreproducible
+# to find a minimal reproducer of a problem
+
+if [ "$#" = 0 ] ; then
+    echo "usage: $0 autoreducebuild FILES"
+fi
+
+buildscript=$1 ; shift
+
+for f in "$@" ; do
+    echo "trying to remove $f"
+    rm $f
+    $buildscript
+    ret=$?
+    if [ $ret = 0 ] ; then
+        echo "found that it was OK to remove $f because it did not matter"
+        git rm "$f"
+    else
+        echo "found that $f is required"
+        git checkout "$f"
+    fi
+done
