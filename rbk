@@ -60,6 +60,7 @@ rm -f .build-differed .build-rbkt
 export clean
 export VM_CUSTOMOPT="-cpu $cputype"
 vmtype="--vm-type=kvm" clean="$clean -j${parallelism}" HOST=$host1 OUTDIR=RPMS.2017 nice -n 7 rebuild &
+sleep 5 # avoid osc race around ./.osc/_last_buildroot.new and .osc/_last_buildroot
 pid=$!
 export VM_CUSTOMOPT="-rtc base=$later -cpu $cputype2,l3-cache=on"
 export OSC_BUILD_ROOT=$buildrootbase/build-root.${slot}b/
