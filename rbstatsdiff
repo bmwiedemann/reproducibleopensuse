@@ -1,0 +1,29 @@
+#!/usr/bin/perl -w
+use strict;
+
+# usage: ./rbstatsdiff < ~/f/.rbstats.ref
+
+sub readrbstats($)
+{ my $fd=shift;
+    my %data;
+    while(<$fd>) {
+        chomp;
+        my @a=split(": ");
+        #print "@a\n";
+        $data{$a[0]} = $a[1];
+        push(@{$data{keys}}, $a[0]);
+    }
+    return \%data;
+}
+
+# read reference:
+my $ref = readrbstats(\*STDIN);
+open(my $fd, "<", "$ENV{HOME}/tmp/rbstats.txt") or die "could not read rbstats.txt $!";
+my $other = readrbstats($fd);
+
+# diff both:
+for my $k (@{$other->{keys}}) {
+    my $d = $other->{$k} - $ref->{$k};
+    if($d >= 0) { $d = "+$d" }
+    print "$k: $other->{$k} ($d)\n";
+}
