@@ -19,7 +19,7 @@ buildunverified=$(grep '"verified" : 0' */.build-jsonresult | wc -l)
 buildsemiverified=$(grep '"verified" : [12]' */.build-jsonresult | wc -l)
 buildverified=$(grep '"verified" : 2' */.build-jsonresult | wc -l)
 buildfailed=$(wc -l < ~/tmp/failed-builds.txt)
-buildfailedarch=$(grep "error: Architecture is not included" */.build.log | wc -l)
+buildfailedarch=$(grep "\"status\" : \"notforus\"" */.build-jsonresult | wc -l)
 buildna=$(grep '^[2]$' */.osc-build-retval | wc -l)
 buildsucceeded=$(grep '^0$' */.osc-build-retval | wc -l)
 echo "build-tried: $buildtried"
@@ -43,7 +43,7 @@ echo "not-bit-by-bit-identical: $(wc -l < ~/tmp/differed-builds.txt)"
 echo "not-bit-by-bit-identicalcheck: $((buildsucceeded-bitidentical))"
 
 
-for p in $(cat ~/tmp/failed-builds.txt) ; do test -d $p && ! cut -d\; -f1 ~/tmp/oscpr.failed | grep -q "^$p$" && ! egrep -q 'Architecture is (excluded|not included)' $p/RPMS/.build.log && ! grep -q "unresolvable: nothing provides " $p/RPMS/.build.log2 && echo $p ; done > ~/tmp/failchecklist 2>/dev/null
+for p in $(cat ~/tmp/failed-builds.txt) ; do test -d $p && ! cut -d\; -f1 ~/tmp/oscpr.failed | grep -q "^$p$" && ! grep -q -e '"status" : "notforus"' -e '"status" : "waitdep"' $p/.build-jsonresult && echo $p ; done > ~/tmp/failchecklist 2>/dev/null
 
 exec 1>&3
 cat ~/tmp/rbstats.txt
