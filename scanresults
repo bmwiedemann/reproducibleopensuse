@@ -9,6 +9,7 @@ p6="unsupported package type. magic"
 p7="Starting Emergency Shell"
 p8='Failed to get "write" lock'
 pssl="SSL Error: unexpected eof"
+espc="echo: write error: No space left on device"
 emem="Out of memory: Kill process"
 emem2="out of memory allocating"
 eipfs1="Transport endpoint is not connected"
@@ -21,7 +22,7 @@ p502="Server returned an error: HTTP Error 502: Bad Gateway"
 p503="Server returned an error: HTTP Error 503: Service Temporarily Unavailable"
 w1="W: python-bytecode-inconsistent-mtime"
 fgrep "[Errno 2] No such file or directory: '/var/tmp/osbuild-packagecache/home:bmwiedemann:reproducible/_pubkey" */RPMS*/.build.log2
-fgrep -e "$p1" -e "$p2" -e "$p3" -e "$p4" -e "$p5" -e "$p6" -e "$p7" -e "$p8" -e "$pssl" -e "$eswi" -e "$estruc" -e "$epatch" -e "$p400" -e "$p500" -e "$p502" -e "$p503" -e "$emem" -e "$emem2" -e "$eipfs1" */RPMS*/.build.log2 */binaries.nachbau/.build.log2
+fgrep -e "$p1" -e "$p2" -e "$p3" -e "$p4" -e "$p5" -e "$p6" -e "$p7" -e "$p8" -e "$pssl" -e "$eswi" -e "$estruc" -e "$epatch" -e "$p400" -e "$p500" -e "$p502" -e "$p503" -e "$espc" -e "$emem" -e "$emem2" -e "$eipfs1" */RPMS*/.build.log2 */binaries.nachbau/.build.log2
 fgrep -l "can't open binaries" */binaries.nachbau/*-compare.out
 grep "in-progress" */RPMS*/.osc-build-retval
 #post-process with
