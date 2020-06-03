@@ -18,6 +18,7 @@ if grep -q "^$pkg$" "$(dirname $BASH_SOURCE)"/exceptions/cpu ; then
     cputype2=host
 fi
 : ${offline:=false}
+: ${noupdate:=false}
 : ${slot:=4}
 : ${clean:=--clean --offline}
 : ${project:=home:bmwiedemann:reproducible}
@@ -41,7 +42,7 @@ later=$(date --date=@$((now+datediff)) -u "+%FT%T")
 alternativeproject="--alternative-project=$project"
 export OSC_BUILD_ROOT=$buildrootbase/build-root.${slot}/
 export VM_CUSTOMOPT=""
-$offline || osc up -S
+$noupdate || $offline || osc up -S
 fixuposcmtime
 mkdir -p RPMS
 [[ $arch = $arch2 ]] && a= || a=$arch
