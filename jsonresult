@@ -42,7 +42,7 @@ sub find_status($)
     #TODO: check .build.log for arch mismatch/unresolvable
     system(qw(egrep -q), "error: Architecture is (excluded|not included)", "$dir/.build.log");
     if(($?>>8) == 0) { return "notforus" }
-    system(qw(grep -q), "^unresolvable: nothing provides", "$dir/RPMS/.build.log2");
+    system(qw(grep -q -e), "^unresolvable: nothing provides", "-e", "^unresolvable: have choice for", "$dir/RPMS/.build.log2");
     if(($?>>8) == 0) { return "waitdep" }
     return "FTBFS";
   }

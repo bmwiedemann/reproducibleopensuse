@@ -8,6 +8,7 @@ p=$(basename $(pwd))
          test -z "$(find $dir2/ -maxdepth 1 -name '*.rpm' -print -quit)"
     then
          echo "result:$p=notbuilt"
+         jsonresultcache .
          exit 0
     fi
     o=$dir2/$p-compare.out
