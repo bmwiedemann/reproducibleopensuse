@@ -1,5 +1,7 @@
 # https://github.com/bitcoin/bitcoin/issues/13086 https://github.com/bitcoin/bitcoin/pull/13061
 bitcoin
+# SSL expired
+breezy
 chromium
 #gnutls
 httpie
@@ -7,7 +9,13 @@ icu
 java-1_8_0-openjdk
 java-9-openjdk
 java-10-openjdk
+java-11-openj9
 java-11-openjdk
+java-14-openjdk
+java-15-openjdk
+java-16-openjdk
+# SSL test fail testInsertCertificate_PEM_ODT
+libreoffice
 libressl
 # SSL test fail
 libsoup
@@ -18,6 +26,7 @@ llvm6
 llvm7
 llvm8
 llvm9
+# SSL expiry ; TODO reopen https://github.com/ARMmbed/mbedtls/pull/2417 or file another
 mbedtls
 neon
 nodejs6
@@ -33,6 +42,10 @@ python3
 python3-base
 # https://github.com/django/django/pull/10993 / 10994
 #python-Django
+# SSL cert expired
+python-M2Crypto
+# https://github.com/astropy/astropy/issues/10228
+python-astropy
 # SSL cert expired ; hard
 python-fedmsg
 # SSL cert expired
@@ -40,7 +53,7 @@ python-gevent
 # SSL cert expired
 #python-geventhttpclient
 #python-keystoneauth1
-python-keystoneclient
+#python-keystoneclient
 #python-keystonemiddleware
 #python-ldap
 #python-oslo.service
@@ -57,6 +70,8 @@ python-requests-toolbelt
 python-trollius
 #python-urllib3
 # https://github.com/hashicorp/terraform/issues/21727  2030-01-01
+# SSL
+qpid-proton
 terraform
 # some cert tests?
 MozillaFirefox

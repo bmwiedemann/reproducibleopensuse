@@ -35,3 +35,12 @@ cross-sparc-gcc7
 cross-x86_64-gcc7
 gcc7
 gcc7-testresults
+
+# Build stuck -j1 (random) [perl-Image-Sane](https://bugzilla.opensuse.org/show_bug.cgi?id=1170639 report stuck build on 1-core-VM
+perl-Image-Sane
+
+# build gets stuck in -j1?
+python-i3ipc
+
+# build randomly gets stuck
+python-xyzpy
