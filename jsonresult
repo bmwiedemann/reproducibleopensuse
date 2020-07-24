@@ -109,9 +109,7 @@ sub get_status_for_one_dir($)
     $data->{verifiable} = 2;
   } elsif($data->{status} eq "unreproducible") {
     $data->{build_compare_status}=find_build_compare_status($dir);
-    if($data->{build_compare_status} eq "reproducible") {
-      $data->{verifiable} = 1;
-    }
+    $data->{verifiable} = ($data->{build_compare_status} eq "reproducible")?1:0
   } elsif($data->{status} eq "unreproducible") {
   }
   return $data;
