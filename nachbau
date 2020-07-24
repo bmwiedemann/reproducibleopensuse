@@ -30,6 +30,9 @@ export DISTURL=$(rpm -qp --qf "%{DISTURL}" $origrpm)
 export release=$(rpm -qp --qf "%{release}" $origrpm)
 # dummy value to use the repo default
 export debuginfo=--clean
+if [ -n "$offline" ] ; then
+    export clean="--clean --offline"
+fi
 export vmtype="--vm-type=kvm -j4"
 export OSC_BUILD_ROOT=/var/tmp/build-root.${slot}/
 $fast || osc up
