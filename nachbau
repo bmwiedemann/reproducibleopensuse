@@ -45,7 +45,7 @@ if [ "$FORCE" != 1 ] && ! $srcmd5found ; then
     echo "skipping nachbau because binary was not built from this source"
     exit 0
 fi
-if $olddeps ; then collectbdeps ; oscbuildparams+=" -p deps " ; export oscbuildparams ; fi
+if $olddeps ; then collectbdeps | tee .build.nachbau.collectbdeps.log ; oscbuildparams+=" -p deps " ; export oscbuildparams ; fi
 fixuposcmtime
 rm -f .build-*-nachbau
 rebuild
