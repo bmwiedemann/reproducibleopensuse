@@ -105,8 +105,14 @@ sub get_status_for_one_dir($)
     build_duration4=>get_build_duration("$dir/RPMS.2017/build-time")||get_build_duration("$dir/binaries.nachbau/build-time"),
   };
   if($::sigdate) {$data->{opensusesigdate}=$::sigdate}
-  if($data->{status} eq "unreproducible") {
+  if($data->{status} eq "reproducible") {
+    $data->{verifiable} = 2;
+  } elsif($data->{status} eq "unreproducible") {
     $data->{build_compare_status}=find_build_compare_status($dir);
+    if($data->{build_compare_status} eq "reproducible") {
+      $data->{verifiable} = 1;
+    }
+  } elsif($data->{status} eq "unreproducible") {
   }
   return $data;
 }
