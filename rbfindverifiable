@@ -1,4 +1,4 @@
 #!/bin/sh
 grep -B4 '"verified" : 0' */.build-jsonresult |
   grep -B3 "verifiable\" : [12]" |
-  perl -ne 'm/"package" : "([^"]+)"/ && ! (-e "$1/.build-rbkt") && system("grep -q ^$1\$ ~/reproducibleopensuse/exceptions/nachbau.pesign")!=0 && print "$1\n"'
+  perl -ne 'm/"package" : "([^"]+)"/ && ! (-e "$1/.build-rbkt") && system("grep -q ^$1\$ ~/reproducibleopensuse/exceptions/nachbau.*")!=0 && print "$1\n"'
