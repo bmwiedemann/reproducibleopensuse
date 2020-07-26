@@ -2,6 +2,7 @@
 filter=$1 ; shift
 in1=$1 ; shift
 in2=$1 ; shift
-echo "--- filter/$in1"
-echo "+++ filter/$in2"
-diff -u <($filter "$in1") <($filter "$in2") "$@" | tail -n +3
+diff -u \
+  --label "$filter $in1" <($filter "$in1") \
+  --label "$filter $in2" <($filter "$in2") \
+  "$@"
