@@ -1,5 +1,5 @@
 #!/bin/bash -e
-basedir=/var/tmp/x
+basedir=/var/tmp/autocheck
 export repo=standard
 export project=$1
 pkg=$2
@@ -15,6 +15,7 @@ fi
 mkdir -p $basedir
 cd $basedir
 find -ctime +7 -delete #cleanup
+#rm -rf `du -s *|grep ^"20[^0-9]"|cut -c4-`
 [[ -d $project/$pkg ]] || osc co $project $pkg
 cd $project/$pkg
 osc up
@@ -25,13 +26,19 @@ status=${status%,}
 status=${status#      }
 if [[ $status =~ " : \"reproducible" ]] ; then
   msg="GOOD: reproducibleopensuse scripts found this $pkg to have $status"
+elif fgrep -q '"build_compare_status" : "reproducible"' .build-jsonresult ; then
+  msg="OK: reproducibleopensuse scripts found this $pkg to have minor variations ignored by build-compare."
+else
+  echo FIXME "$project/$pkg $status"
+  cat .build-jsonresult
+fi
+if [[ $msg ]] ; then
+  cd $basedir
+  rm -r $basedir/$project/$pkg
   echo "checking for previous comments..."
   if osc comment list package $project/$pkg | grep " bmwiedemann wrote:"; then
     echo "skipping comment to avoid spamming..."
     exit 0
   fi
-  osc comment create -c "$msg" package $project/$pkg
-else
-  echo FIXME "$project/$pkg $status"
-  cat .build-jsonresult
+  $debug osc comment create -c "$msg" package $project/$pkg
 fi
