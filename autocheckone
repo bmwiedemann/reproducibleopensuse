@@ -1,0 +1,37 @@
+#!/bin/bash -e
+basedir=/var/tmp/x
+export repo=standard
+export project=$1
+pkg=$2
+set -o pipefail
+
+if [[ -z "$pkg" ]] || [[ -z "$project" ]] ; then
+  echo "USAGE: $0 PRJ PKG"
+  echo "this script will test one package for reproducibility"
+  echo "and comment the status on OBS"
+  exit 1
+fi
+
+mkdir -p $basedir
+cd $basedir
+find -ctime +7 -delete #cleanup
+[[ -d $project/$pkg ]] || osc co $project $pkg
+cd $project/$pkg
+osc up
+rbk
+
+status=$(fgrep '"status" : ' .build-jsonresult)
+status=${status%,}
+status=${status#      }
+if [[ $status =~ " : \"reproducible" ]] ; then
+  msg="GOOD: reproducibleopensuse scripts found this $pkg to have $status"
+  echo "checking for previous comments..."
+  if osc comment list package $project/$pkg | grep " bmwiedemann wrote:"; then
+    echo "skipping comment to avoid spamming..."
+    exit 0
+  fi
+  osc comment create -c "$msg" package $project/$pkg
+else
+  echo FIXME "$project/$pkg $status"
+  cat .build-jsonresult
+fi
