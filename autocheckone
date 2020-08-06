@@ -28,6 +28,9 @@ if [[ $status =~ " : \"reproducible" ]] ; then
   msg="GOOD: reproducibleopensuse scripts found this $pkg to have $status"
 elif fgrep -q '"build_compare_status" : "reproducible"' .build-jsonresult ; then
   msg="OK: reproducibleopensuse scripts found this $pkg to have minor variations ignored by build-compare."
+elif fgrep -q '"status" : "unreproducible"' .build-jsonresult ; then
+  msg="NOTE: reproducibleopensuse scripts found this $pkg to have significant variations between builds. See https://en.opensuse.org/openSUSE:Reproducible_Builds"
+  echo "$pkg" >> ~/f/.autocheckunreproduciblelist.txt
 else
   echo FIXME "$project/$pkg $status"
   cat .build-jsonresult
@@ -40,5 +43,6 @@ if [[ $msg ]] ; then
     echo "skipping comment to avoid spamming..."
     exit 0
   fi
+  echo "commenting $msg on $project/$pkg"
   $debug osc comment create -c "$msg" package $project/$pkg
 fi
