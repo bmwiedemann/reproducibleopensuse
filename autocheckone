@@ -3,6 +3,10 @@ basedir=/var/tmp/autocheck
 export repo=standard
 export project=$1
 pkg=$2
+if [[ -z $pkg ]] ; then
+  pkg=${project##*/}
+  project=${project%/*}
+fi
 set -o pipefail
 
 if [[ -z "$pkg" ]] || [[ -z "$project" ]] ; then
@@ -19,7 +23,7 @@ find -ctime +7 -delete #cleanup
 [[ -d $project/$pkg ]] || osc co $project $pkg
 cd $project/$pkg
 osc up
-rbk
+multibuildrbk ||:
 
 status=$(fgrep '"status" : ' .build-jsonresult)
 status=${status%,}
