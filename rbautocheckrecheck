@@ -1,0 +1,17 @@
+#!/bin/sh
+cd /var/tmp/autocheck
+for p in `find -maxdepth 3 -name \*.spec | cut -d/ -f1-3|sort -u|cut -c3-` ; do
+  if osc r $p -r standard -a x86_64 2>&1 | tee .tmp | grep -q succeeded ; then
+    grep -q "in-progress" $p/RPMS*/.osc-build-retval 2>/dev/null && continue
+    echo "rechecking $p now..."
+    autocheckone $p
+  else
+    if grep -q "Server returned an error: HTTP Error 404: Not Found" .tmp ; then
+      echo "cleaning up $p as it is gone from OBS"
+      rm -rf $p
+    else
+      echo "skipping $p as it does not build on OBS"
+    fi
+  fi
+  sleep 5 || break
+done
