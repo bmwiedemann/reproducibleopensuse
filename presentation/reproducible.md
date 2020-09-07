@@ -124,6 +124,10 @@ compile-time CPU detection libatlas3
 
 * produce bit-identical rpms
 
+* continuously verify published binaries
+
+* report reproducibility regressions in submit-requests
+
 <!--
 fully bit-identical rpms is hard - e.g. python .pyc and .elc timestamps
 always hiding real build hostname would make debugging reproducibility-issues harder - would need extra metadata about it e.g. in OBS or _buildenv file
