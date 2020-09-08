@@ -26,9 +26,9 @@ Aber wie wissen wir, dass die binaries keine Hintertüren enthalten, die beim Ba
 
 ## Warum reproducible builds?
 
-* Man braucht weniger Vertauen in die build Maschinen
+* Man braucht weniger Vertrauen in die build Maschinen
 
-* Weniger last im build-service von rebuilds
+* Weniger Rechenlast im build-service durch rebuilds
 
 * Kleinere delta-rpms in update repos
 
@@ -38,15 +38,15 @@ Aber wie wissen wir, dass die binaries keine Hintertüren enthalten, die beim Ba
 
 <!--
 
-two use-cases with overlap
-dont waste build-power rebuilding dependent packages when nothing changed
-make it safer
+Viele nützliche Eigenschaften
+Man braucht keine Rechenzeit verschwenden, abhängige Pakete zu bauen, wenn sich nichts geändert hat
+Es wird sicherer
 
-but why would a computer be non-deterministic? 2+3 should always be the same...
+Aber warum sollte ein Computer nicht deterministisch sein? 2+3 ist doch immer das selbe...
 
 -->
 
-## Typical problems
+## Typische Probleme
 
 * Zeitstempel, Hostnamen
 
@@ -130,7 +130,7 @@ compile-time CPU detection libatlas3
 * Benachrichtigen über reproducibility Regressionen in submit-requests
 
 <!--
-fully bit-identical rpms is hard - e.g. python .pyc and .elc timestamps
-always hiding real build hostname would make debugging reproducibility-issues harder - would need extra metadata about it e.g. in OBS or _buildenv file
+Ganz bit-identische Pakete zu bauen ist schwerer - z.B. python .pyc und .elc enthalten Zeitstempel
+Man könnte es sich einfacher machen, indem man beim Bauen immer den hostname konstant setzt, aber das könnte debugging von reproducibility-Problemen erschweren - man bräuchte dann zusätzliche Metadaten darüber z.B. in OBS oder der _buildenv Datei
 
 -->
