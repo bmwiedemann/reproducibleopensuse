@@ -44,6 +44,8 @@ two use-cases with overlap
 dont waste build-power rebuilding dependent packages when nothing changed
 make it safer
 
+but why would a computer be non-deterministic? 2+3 should always be the same...
+
 -->
 
 ## Typical problems
@@ -97,6 +99,7 @@ compile-time CPU detection libatlas3
 * 2016: 4 upstream fixes merged
 * 2017: +51 upstream fixes submitted - ~34 merged
 * 2018: +270 upstream submissions - 162 merged
+
 
 * 2017: patches for build-compare to disable filters
 
