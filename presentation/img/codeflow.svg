@@ -157,22 +157,6 @@
          inkscape:connector-curvature="0" />
     </marker>
     <marker
-       inkscape:isstock="true"
-       style="overflow:visible"
-       id="marker5902"
-       refX="0"
-       refY="0"
-       orient="auto"
-       inkscape:stockid="Arrow1Lend"
-       inkscape:collect="always">
-      <path
-         transform="matrix(-0.8,0,0,-0.8,-10,0)"
-         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1pt;stroke-opacity:1"
-         d="M 0,0 5,-5 -12.5,0 5,5 0,0 Z"
-         id="path5904"
-         inkscape:connector-curvature="0" />
-    </marker>
-    <marker
        inkscape:stockid="Arrow1Lend"
        orient="auto"
        refY="0"
@@ -241,8 +225,8 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="1.979899"
-     inkscape:cx="374.96648"
-     inkscape:cy="238.19363"
+     inkscape:cx="454.37577"
+     inkscape:cy="316.98553"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -349,15 +333,15 @@
        ry="34.590759" />
     <text
        xml:space="preserve"
-       style="font-style:normal;font-weight:normal;line-height:0%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       x="537.64844"
+       style="font-style:normal;font-weight:normal;line-height:0%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#c90000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;"
+       x="588.33685"
        y="603.95514"
        id="text4184-0"><tspan
          sodipodi:role="line"
          id="tspan4186-6"
-         x="537.64844"
+         x="588.33685"
          y="603.95514"
-         style="font-size:53.80784988px;line-height:1.25;font-family:sans-serif">OBS</tspan></text>
+         style="font-size:53.80784988px;line-height:1.25;font-family:sans-serif;text-align:center;text-anchor:middle;fill:#c90000;fill-opacity:1;">build</tspan></text>
     <ellipse
        style="fill:#8dffff;fill-opacity:1"
        id="path4182-4"
@@ -376,13 +360,6 @@
          x="518.43134"
          y="464.24689"
          style="font-size:53.80784988px;line-height:1.25;font-family:sans-serif">mirror</tspan></text>
-    <path
-       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.34519625px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#marker5902)"
-       d="m 246.13887,582.03809 h 239.06341 c 1.40625,0 2.8125,-0.3397 2.8125,-0.67941 v 0"
-       id="path4235"
-       inkscape:connector-type="orthogonal"
-       inkscape:connector-curvature="3"
-       sodipodi:nodetypes="csc" />
     <ellipse
        style="fill:#90ff90;fill-opacity:1"
        id="path3355-7"
