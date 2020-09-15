@@ -13,10 +13,10 @@ PNG :=  $(DIA_PNG) $(SVG_PNG)
 	--break-master Break \
 	$< template.odp $@
 
-all: reproducible.odp reproducible-de.odp
+all: reproducible.odp reproducible-de.odp ISD2020.odp
 
 img/%.png: img/%.svg
-	convert -density 200 -transparent white $< $@
+	convert -density 200 -transparent white "$<" "$@"
 
 # ugly, but will do
 img/%.PNG: img/%.dia
