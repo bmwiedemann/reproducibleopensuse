@@ -6,6 +6,13 @@ SVG_PNG := $(patsubst %.svg, %.png, $(SVG))
 DIA_PNG := $(patsubst %.dia, %.PNG, $(DIA))
 PNG :=  $(DIA_PNG) $(SVG_PNG)
 
+ISD2020.odp: ISD2020.md templateISD.odp $(PNG)
+	odpdown \
+	-p 1 \
+	--content-master No-Logo_20_Content \
+	--break-master Break \
+	$< templateISD.odp $@
+	
 %.odp: %.md	template.odp $(PNG)
 	odpdown \
 	-p 1 \

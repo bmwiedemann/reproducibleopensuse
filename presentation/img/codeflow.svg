@@ -225,8 +225,8 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="1.979899"
-     inkscape:cx="454.37577"
-     inkscape:cy="316.98553"
+     inkscape:cx="408.93804"
+     inkscape:cy="214.67107"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -243,7 +243,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title />
+        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -255,79 +255,79 @@
     <ellipse
        style="fill:#90ff90;fill-opacity:1"
        id="path3355"
-       cx="155.32442"
+       cx="149.69942"
        cy="293.40698"
        rx="102.33099"
        ry="34.590759" />
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;line-height:0%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       x="108.91515"
+       x="105.16515"
        y="312.23972"
        id="text4157"><tspan
          sodipodi:role="line"
          id="tspan4159"
-         x="108.91515"
+         x="105.16515"
          y="312.23972"
          style="font-size:53.80784988px;line-height:1.25;font-family:sans-serif">dev</tspan></text>
     <ellipse
        style="fill:#90ff90;fill-opacity:1"
        id="path3355-4"
-       cx="592.03265"
+       cx="588.28265"
        cy="290.52438"
        rx="102.33099"
        ry="34.590759" />
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;line-height:0%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       x="545.62347"
+       x="538.12347"
        y="309.35712"
        id="text4157-2"><tspan
          sodipodi:role="line"
          id="tspan4159-5"
-         x="545.62347"
+         x="538.12347"
          y="309.35712"
          style="font-size:53.80784988px;line-height:1.25;font-family:sans-serif">user</tspan></text>
     <ellipse
        style="fill:#8dffff;fill-opacity:1"
        id="path4182"
-       cx="151.57707"
+       cx="150.01506"
        cy="449.06537"
        rx="97.046303"
        ry="34.590759" />
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;line-height:0%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       x="121.21408"
-       y="462.70953"
+       x="112.76706"
+       y="463.65656"
        id="text4184"><tspan
          sodipodi:role="line"
          id="tspan4186"
-         x="121.21408"
-         y="462.70953"
+         x="112.76706"
+         y="463.65656"
          style="font-size:53.80784988px;line-height:1.25;font-family:sans-serif">git</tspan></text>
     <ellipse
        style="fill:#8dffff;fill-opacity:1"
        id="path4182-3"
-       cx="151.96143"
+       cx="150.01506"
        cy="584.54584"
        rx="97.046303"
        ry="34.590759" />
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;line-height:0%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       x="121.59845"
+       x="117.61884"
        y="598.18994"
        id="text4184-4"><tspan
          sodipodi:role="line"
          id="tspan4186-1"
-         x="121.59845"
+         x="117.61884"
          y="598.18994"
          style="font-size:53.80784988px;line-height:1.25;font-family:sans-serif">tar</tspan></text>
     <ellipse
        style="fill:#8dffff;fill-opacity:1"
        id="path4182-7"
-       cx="586.84418"
+       cx="588.76508"
        cy="584.93018"
        rx="97.046303"
        ry="34.590759" />
@@ -345,7 +345,7 @@
     <ellipse
        style="fill:#8dffff;fill-opacity:1"
        id="path4182-4"
-       cx="591.84058"
+       cx="588.76508"
        cy="445.22198"
        rx="97.046303"
        ry="34.590759" />
@@ -386,33 +386,36 @@
        inkscape:connector-curvature="3" />
     <path
        style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.34519625px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#marker6416)"
-       d="m 483.93822,664.92816 44.16274,-55.713"
+       d="m 482.06322,666.80316 49.78774,-51.963"
        id="path5784"
        inkscape:connector-type="polyline"
-       inkscape:connector-curvature="3" />
+       inkscape:connector-curvature="3"
+       sodipodi:nodetypes="cc" />
     <path
        style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.34519625px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#marker6184)"
-       d="m 151.00056,477.89101 v 75.9075"
+       d="m 150,483.51601 c 0,22.1775 0,44.355 0,66.5325"
        id="path6176"
-       inkscape:connector-type="polyline"
-       inkscape:connector-curvature="3" />
+       inkscape:connector-curvature="0" />
     <path
        style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.34519625px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#marker8786)"
-       d="m 150.03971,321.27173 -0.96086,98.00716"
+       d="m 150,326.89673 v 86.75716"
        id="path8778"
        inkscape:connector-type="polyline"
-       inkscape:connector-curvature="3" />
+       inkscape:connector-curvature="3"
+       sodipodi:nodetypes="cc" />
     <path
        style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.34519625px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#marker8894)"
-       d="m 587.22848,552.83765 -0.96086,-83.59434"
+       d="M 588.75001,550.96265 V 480.49331"
        id="path8886"
        inkscape:connector-type="polyline"
-       inkscape:connector-curvature="3" />
+       inkscape:connector-curvature="3"
+       sodipodi:nodetypes="cc" />
     <path
        style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.34519625px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#marker8996)"
-       d="m 584.34591,412.55291 0.96086,-95.1246"
+       d="M 588.75001,410.67791 V 326.13367"
        id="path8988"
        inkscape:connector-type="polyline"
-       inkscape:connector-curvature="3" />
+       inkscape:connector-curvature="3"
+       sodipodi:nodetypes="cc" />
   </g>
 </svg>
