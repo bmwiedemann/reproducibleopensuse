@@ -14,5 +14,5 @@ while(<>) {
     next;
   }
   print "checking $d->{project} $d->{package}\n";
-  system("autocheckone", $d->{project}, $d->{package});
+  system(qw"timeout 6h autocheckone", $d->{project}, $d->{package});
 }
