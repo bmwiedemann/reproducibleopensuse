@@ -109,8 +109,20 @@ git commit -a
 4.4.3 For projects using phabricator use the 'arcanist' package
  arc diff # FIXME this is incomplete
 
+4.4.4 For projects using mercurial, use hg or https://github.com/felipec/git-remote-hg
+
+4.4.5 For projects using mailing lists for patches:
+  if only members can post, subscribe to ML
+  git send-email --to "$ML_ADDR" HEAD^
+  check ML archive 10-30 minutes later
+  unsubscribe from ML once patch discussion is over
+
+4.4.6 If projects do not specify how to contribute, but you have a git repo, try
+  git log $changedfile
+  git send-email --to "$mainauthor" HEAD^
+
 4.5 Tell the world about your fix
- using https://salsa.debian.org/reproducible-builds/reproducible-website weekly draft blog post entries to link to your fix and become famous - one patch at a time.
+ using https://salsa.debian.org/reproducible-builds/reproducible-website monthly draft blog post entries to link to your fix and become famous - one patch at a time.
 
 4.6 Track fixes for yourself
 Often it takes maintainers some days or weeks to review and merge your fix, but sometimes fixes fall through cracks and then it helps to try and remind them.
