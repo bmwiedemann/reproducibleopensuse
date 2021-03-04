@@ -14,7 +14,7 @@ some unavoidable (or unimportant) differences.
 Setup:
 1. git clone this repo. Some parts of the code assume that it is available in ~/reproducibleopensuse
 
-2. install dependencies with `zypper install osc build build-compare kvm perl-JSON`
+2. install dependencies with `make suseinstall`
 
 3. `export PATH=$PATH:/path/to/reproducibleopensuse`
 
