@@ -1,0 +1,30 @@
+#!/usr/bin/perl -w
+use strict;
+use POSIX 'strftime';
+
+my $good = $ENV{good} || time();
+my $bad  = $ENV{bad} || (time()+3600*24*365*15);
+my $detail = $ENV{detail} || 3600;
+
+sub time_is_good($)
+{ my $t = shift;
+  print STDERR "testing time $t\n";
+  if($ENV{DEBUG}) {
+    if($t>1625000000) { return 0 }
+    return 1;
+  }
+  my $isotime = POSIX::strftime("%FT%T", gmtime($t));
+  system(qw"osc build --vm-type=kvm --noservice", "--build-opt=--vm-custom-opt=-rtc base=$isotime") == 0;
+}
+
+while(abs($bad-$good)>$detail) {
+  my $middle = int(($bad+$good)/2);
+  if(time_is_good($middle)) {
+    $good = $middle;
+  } else {
+    $bad = $middle;
+  }
+}
+
+print "found range $good -> $bad\n";
+
