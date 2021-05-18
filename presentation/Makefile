@@ -6,6 +6,7 @@ SVG_PNG := $(patsubst %.svg, %.png, $(SVG))
 DIA_PNG := $(patsubst %.dia, %.PNG, $(DIA))
 PNG :=  $(DIA_PNG) $(SVG_PNG)
 
+all: reproducible.odp reproducible-de.odp ISD2020.odp
 ISD2020.odp: ISD2020.md templateISD.odp $(PNG)
 	odpdown \
 	-p 1 \
@@ -20,7 +21,6 @@ ISD2020.odp: ISD2020.md templateISD.odp $(PNG)
 	--break-master Break \
 	$< template.odp $@
 
-all: reproducible.odp reproducible-de.odp ISD2020.odp
 
 img/%.png: img/%.svg
 	convert -density 200 -transparent white "$<" "$@"
