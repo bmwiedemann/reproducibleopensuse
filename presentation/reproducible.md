@@ -112,29 +112,25 @@ compile-time CPU detection libatlas3
 
 ## Work done
 
-* 2016: 71 submit-requests
-* 2017: +92 submit-requests
-* 2018: +71 submit-requests
-
-* 2016: 6 bugs filed
-* 2017: +4 bugs filed: 1016848, 1017666, 1017667, 1020147
-* 2018: +13 bugs filed
+* 2016: 71 submit-requests ; 6 bugs filed
+* 2017: +92 submit-requests ; 4 bugs filed
+* 2018: +71 submit-requests ; 13 bugs filed
+* 2019: +133 submit-requests ; 28 bugs filed
+* 2020: +42 submit-requests ; 24 bugs filed
 
 ## Work done #2
 
 * 2016: 4 upstream fixes merged
 * 2017: +51 upstream fixes submitted - ~34 merged
 * 2018: +270 upstream submissions - 162 merged
-
-
-* 2017: patches for build-compare to disable filters
-
+* 2019: +170 upstream submissions - 120 merged
+* 2020: +130 upstream submissions - 80 merged
 
 ## rebuild-test-scripts
 
 * available from https://github.com/bmwiedemann/reproducibleopensuse
 
-* including this presentation's source https://github.com/bmwiedemann/reproducibleopensuse/blob/master/presentation/reproducible.md
+* including this presentation's source https://github.com/bmwiedemann/reproducibleopensuse/blob/presentation/presentation/reproducible.md
 
 ## How reproducible can we get?
 
