@@ -1,3 +1,8 @@
 #!/bin/sh
-arch=$(rpmspec --query --srpm --queryformat="%{arch}" $(basename $(pwd)).spec)
+spec="$(basename $(pwd)).spec"
+arch=$(rpmspec --query --srpm --queryformat="%{arch}" $spec)
+if [ "$arch" = "" ] ; then
+    # parsing failed - maybe unknown macros used
+    arch=$(perl -ne 'm/^BuildArch:\s*(.*)/ && print $1' json-lib.spec)
+fi
 [ "$arch" = noarch ]
