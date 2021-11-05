@@ -117,6 +117,7 @@ compile-time CPU detection libatlas3
 * 2018: +71 submit-requests ; 13 bugs filed
 * 2019: +133 submit-requests ; 28 bugs filed
 * 2020: +42 submit-requests ; 24 bugs filed
+* 2021: +31 submit-requests ; 23 bugs filed
 
 ## Work done #2
 
@@ -125,6 +126,7 @@ compile-time CPU detection libatlas3
 * 2018: +270 upstream submissions - 162 merged
 * 2019: +170 upstream submissions - 120 merged
 * 2020: +130 upstream submissions - 80 merged
+* 2021: +49 upstream submissions - 34 merged
 
 ## rebuild-test-scripts
 
