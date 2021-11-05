@@ -155,6 +155,10 @@ compile-time CPU detection libatlas3
 * bad crypto
 * volkswagen testing-mode
 
+## Package managers
+
+* can fetch and verify third party rebuild certifications
+
 ## Where do we want to go?
 
 * fix all build-compare issues
