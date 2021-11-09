@@ -51,6 +51,9 @@ but how do we know that the binaries dont contain extra backdoors added by build
 
 * * weaker: same content after applying some filters (via build-compare)
 
+## RB diagram
+
+![Codeflow](img/rbflow.png)
 
 ## Why reproducible builds?
 
