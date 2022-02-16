@@ -17,6 +17,9 @@ fi
 if grep -q "^$pkg$" "$(dirname $BASH_SOURCE)"/exceptions/cpu ; then
     cputype2=host
 fi
+if grep -q "^$pkg$" "$(dirname $BASH_SOURCE)"/exceptions/j1 ; then
+    parallelism2=2
+fi
 : ${offline:=false}
 : ${noupdate:=false}
 : ${slot:=4}

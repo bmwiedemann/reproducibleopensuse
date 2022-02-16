@@ -1,0 +1,6 @@
+# 1.6 from 2020 affected, but master working
+aircrack-ng
+# https://bugzilla.opensuse.org/show_bug.cgi?id=1181083
+openblas
+# https://github.com/yast/yast-ruby-bindings/issues/269
+yast2-ruby-bindings
