@@ -11,9 +11,9 @@ our $dbname = $ENV{DBFILE}||"$ENV{HOME}/reproducibleopensuse/data/hdrmd5cid.db";
 our %hdrdata;
 tie(%hdrdata, "DB_File", $dbname, O_RDONLY) or die "error opening DB: $!";
 my $infile = $ENV{IN} || "binaries/_buildenv";
-open(my $infd, "<", $infile) or die "error opening $infile: $!";
 system "rm -rf deps";
 mkdir "deps";
+open(my $infd, "<", $infile) or die "error opening $infile: $!";
 while(<$infd>) {
     if(m/^  <bdep/) {
         next unless m/name="([^"]+)" hdrmd5="([^"]+)"/;
