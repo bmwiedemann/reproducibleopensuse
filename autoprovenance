@@ -96,7 +96,7 @@ sub did_chdir($$)
 
 my $pidre=qr(^(?:\[ *[0-9]+s\] )?\[pid +(\d+)\]); # ignores build timestamp
 my $stringre=qr("([^"]*)");
-my $forkre=qr(vfork|fork|clone);
+my $forkre=qr(vfork|fork|clone|clone3);
 my $file2re=qr(symlink|symlinkat|link|linkat|rename|renameat|renameat2); # 2-operand file syscalls
 while(<STRACE>) {
     if(m/$pidre (open)(?:at)?\((.*$searchfile.*)(?:O_WRONLY|O_RDWR)/o) {
