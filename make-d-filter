@@ -1,0 +1,18 @@
+#!/bin/sh
+#cut -c17- $1 |
+cut -c9- $1 |
+ sed -e 's/PID [0-9][0-9]*/PID 12345XX/g ; s/child 0x5[0-9a-f]*/child 0x5XX/g' \
+    -e "s/0x[0-9a-f][0-9a-f]*/xxxxy/g" \
+    -e "s/^[0-9][0-9]*//" \
+    -e "s/sles12b/sles12a/" \
+    -e "s/buildhostb/buildhosta/" \
+    -e "s/: Process [0-9][0-9]* attached/: Process NNNN attached/" \
+    -e "s/si_pid=[0-9][0-9]*/si_pid=NNNN/" \
+    -e 's/\(vfork.* = \)[0-9][0-9]*$/\1NNNN/' \
+    -e 's/\(wait4.* = \)[0-9][0-9]*$/\1NNNN/' \
+    -e 's/\(clone.* = \)[0-9][0-9]*$/\1NNNN/' \
+    -e 's/\(getpid.* = \)[0-9][0-9]*$/\1NNNN/' \
+    -e 's/\(getppid.* = \)[0-9][0-9]*$/\1NNNN/' \
+    -e 's/\(getpgrp.* = \)[0-9][0-9]*$/\1NNNN/' \
+    -e 's/\(rt_sigreturn.* = \)[0-9][0-9]*$/\1NNNN/' \
+    -e 's/\(wait4(\)[0-9][0-9]*/\1NNNN/'
