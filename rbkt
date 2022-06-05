@@ -46,6 +46,7 @@ sub rbk(@)
     # bit 13 and beyond are unreliable and thus not used in autoclassify
     if(shift) { push(@extrapkg, "reproducible-faketools-faketime") }
     if(shift) { push(@extrapkg, "reproducible-faketools-strace") } # get extra r-b debug info
+    if(shift) { push(@extrapkg, "reproducible-faketools-dettrace") }
     if(@extrapkg) { $ENV{oscbuildextrapkg}=join " ", map {"--extra-pkgs=$_"} @extrapkg }
     system("rbk");
     system("echo @tweakbits > .build-rbkt");
