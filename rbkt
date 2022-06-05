@@ -22,7 +22,9 @@ sub rbk(@)
     if($hosttweak&1) { $ENV{host2}="buildhosta" }
     if($hosttweak&2) { push(@extrapkg, "reproducible-faketools-hostname") }
     # bit 3
-    if(shift) { push(@extrapkg, "reproducible-faketools-filesys"); $ENV{rbfilesys}="reproducible" }
+    my $fstweak=shift||0;
+    if($fstweak&1) { push(@extrapkg, "reproducible-faketools-filesys"); $ENV{rbfilesys}="reproducible" }
+    if($fstweak&2) { $ENV{rbfilesys}="reproducible" }
     # bit 4
     if(shift) { push(@extrapkg, "reproducible-faketools-date") }
     # bit 5
