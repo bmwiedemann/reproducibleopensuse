@@ -23,18 +23,25 @@ sub rbk(@)
     if($hosttweak&2) { push(@extrapkg, "reproducible-faketools-hostname") }
     # bit 3
     if(shift) { push(@extrapkg, "reproducible-faketools-filesys"); $ENV{rbfilesys}="reproducible" }
+    # bit 4
     if(shift) { push(@extrapkg, "reproducible-faketools-date") }
+    # bit 5
     if(shift) { $ENV{rbsnd}=1 } # use strip-nondeterminism
     # bit 6
     if(shift) { $ENV{project}="home:bmwiedemann:reproducible:test" }
+    # bit 7
     if(shift) { push(@extrapkg, "reproducible-faketools-tar") }
     # bit 8
     if(shift) { $ENV{parallelism}=1; $ENV{parallelism2}=1 }
+    # bit 9
     if(shift) { push(@extrapkg, "reproducible-faketools-aslr") }
     # bit 10
     if(shift) { push(@extrapkg, "reproducible-faketools-pid") }
+    # bit 11
     if(shift) { push(@extrapkg, "reproducible-faketools-random") }
+    # bit 12
     if(shift) { $ENV{cputype2}="host" }
+    # bit 13 and beyond are unreliable and thus not used in autoclassify
     if(shift) { push(@extrapkg, "reproducible-faketools-faketime") }
     if(shift) { push(@extrapkg, "reproducible-faketools-strace") } # get extra r-b debug info
     if(@extrapkg) { $ENV{oscbuildextrapkg}=join " ", map {"--extra-pkgs=$_"} @extrapkg }
