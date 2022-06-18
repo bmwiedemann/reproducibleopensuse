@@ -33,7 +33,7 @@ for f in $origrpms ; do
 done
 
 echo $overalldiffered > .build-differed
-echo "overalldiffered=$overalldiffered (not bit-by-bit identical)"
+echo "overalldiffered=$overalldiffered (number of pkgs that are not bit-by-bit identical: 0 is good)"
 echo overall=$overall
 echo $overall > .build-compare-retval
 exit $overalldiffered
