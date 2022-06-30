@@ -75,6 +75,10 @@ sub find_vcs($)
             if($url=~m!https?://www\.freedesktop\.org/software/([^/]+)!i) {
                 return "https://github.com/freedesktop/$1.git";
             }
+# https://gitlab.linphone.org/BC/public/bcg729/-/archive/%{version}/bcg729-%{version}.tar.gz
+            if($url=~m!(https://gitlab.linphone.org/\w+/\w+/\w+)!) {
+                return "$1.git";
+            }
 
 #http://commons.apache.org/bsf/
 #http://geronimo.apache.org/
