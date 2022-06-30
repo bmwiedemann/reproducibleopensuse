@@ -116,6 +116,13 @@ sub find_vcs($)
                 return "hg::".https($1)
             }
             push(@urls, $url);
+            if($ENV{online}) {
+                $url =~s![^a-zA-Z0-9.:~/_-]!!g;
+                my $getinforefs = `curl -s $url/info/refs`;
+                if($getinforefs =~ m!refs/heads!) {
+                    return $url;
+                }
+            }
         }
     }
     print "debug: $spec only had @urls\n";
