@@ -37,12 +37,13 @@ sub find_vcs($)
     my $obspkg=$spec; $obspkg=~s!.*/(.*)\.spec$!$1!;
     my @urls=();
     while(<$f>) {
-        if(m/^(?:#Git-Clone|URL|Source\d*): (.*)/i) {
+        if(m/^(?:#Git-Clone|URL|Source\d*)\s*:\s*(.*)/i) {
             my $url=$1;
             next unless $url=~/:/;
             normalize_url($url);
-            if($url=~m!(\S*\.git)$!) {return $1}
-            if($url=~m!((?:git|https?)://(?:github\.com|gitlab\.com|bitbucket\.org|gitlab\.freedesktop\.org)/[^/]+/[^/]+)!i or
+            $url =~ s/%\{name\}|%name/$obspkg/;
+            if($url=~m!(\S*\.git)$! || $url=~m!^(git://.*)!) {return $1}
+            if($url=~m!((?:git|https?)://(?:github\.com|gitlab\.com|bitbucket\.org|gitlab\.freedesktop\.org|gitlab\.gnome\.org)/[^/]+/[^/]+)!i or
                 $url=~m!(https?://pagure\.io/[^/]+)!i) {
                 return https($1).".git";
             }
