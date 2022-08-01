@@ -68,6 +68,9 @@ sleep 8 # avoid osc race around ./.osc/_last_buildroot.new and .osc/_last_buildr
 pid=$!
 export VM_CUSTOMOPT="-rtc base=$later -cpu $cputype2,l3-cache=on"
 export OSC_BUILD_ROOT=$buildrootbase/build-root.${slot}b/
+if [ -n "$varyrelease" ] ; then
+    export release=1234
+fi
 clean="$clean -j${parallelism2}" arch=$arch2 HOST=$host2 OUTDIR=RPMS rebuild &
 wait
 ret1=`cat RPMS/.osc-build-retval`
