@@ -1,6 +1,7 @@
 #!/bin/bash -e
 # rebuild with KVM mode
 pkg=$(basename `pwd`)
+: ${spec:=$pkg.spec}
 
 mem=$(awk -e '/^build-memory/ {print $3}' ~/.config/osc/oscrc | grep . || echo 128)
 # TODO: parse _constraints
@@ -49,8 +50,9 @@ $noupdate || $offline || osc up -S
 fixuposcmtime
 mkdir -p RPMS
 [[ $arch = $arch2 ]] && a= || a=$arch
+if [ ! -e "$spec" -a -e "flatpak.yaml" ] ; then export spec=flatpak.yaml ; fi
 for a in $a $arch2 ; do
-    $offline || osc build ${oscbuildextrapkg} --preload --nopreinstallimage --noservice --trust-all-projects --vm-type=kvm $alternativeproject ${oscbuildparams} $repo $a $pkg.spec 2>&1 | tee RPMS/.build.log2
+    $offline || osc build ${oscbuildextrapkg} --preload --nopreinstallimage --noservice --trust-all-projects --vm-type=kvm $alternativeproject ${oscbuildparams} $repo $a $spec 2>&1 | tee RPMS/.build.log2
 done
 if (( ${PIPESTATUS[0]} )) ; then
     if grep -q "Error: build description file named '.*does not exist" RPMS/.build.log2 ; then

@@ -6,6 +6,7 @@ EXCEPTIONS_DIR="$(dirname $BASH_SOURCE)/exceptions"
 : ${OUTDIR:=RPMS}
 : ${release:=0.0}
 : ${buildhost:=reproducible}
+: ${spec:=$(basename `pwd`).spec}
 export OSC_BUILD_ROOT
 pkg=$(basename $(pwd))
 : ${debuginfo:=--disable-debuginfo}
@@ -51,7 +52,7 @@ hostname > $OUTDIR/buildhost
 set -x
 osc build --keep-pkg=$OUTDIR/ $alternativeproject --nopreinstallimage \
   --nodebugpackages $debuginfo --noservice$rootforbuild ${oscbuildparams} \
-  $vmtype $clean "${oscopts[@]}" $repo $arch $(basename `pwd`).spec "$@" 2>&1 |
+  $vmtype $clean "${oscopts[@]}" $repo $arch $spec "$@" 2>&1 |
     tee $OUTDIR/.build.log2
 echo ${PIPESTATUS[0]} > $OUTDIR/.osc-build-retval
 cp -a $OUTDIR/.osc-build-retval .
