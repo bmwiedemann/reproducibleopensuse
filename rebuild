@@ -38,6 +38,7 @@ oscopts+=(--define='%source_date_epoch_from_changelog Y' --define="%_buildhost $
 if [[ $nolto ]] ; then
   oscopts+=(--define='%_lto_cflags %{nil}')
 fi
+[[ $optflags ]] && oscopts+=(--define="%optflags $optflags")
 [[ $nopgo ]] && oscopts+=(--define='%do_profiling 0')
 
 #vmtype="--vm-type=kvm"
