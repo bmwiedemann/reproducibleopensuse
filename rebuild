@@ -51,6 +51,7 @@ mkdir -p $OUTDIR
 echo in-progress > $OUTDIR/.osc-build-retval
 hostname > $OUTDIR/buildhost
 set -x
+timeout -k 10 36h \
 osc build --keep-pkg=$OUTDIR/ $alternativeproject --nopreinstallimage \
   --nodebugpackages $debuginfo --noservice$rootforbuild ${oscbuildparams} \
   $vmtype $clean "${oscopts[@]}" $repo $arch $spec "$@" 2>&1 |
