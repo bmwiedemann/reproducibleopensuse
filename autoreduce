@@ -41,7 +41,7 @@ while($workleft) {
             splice(@reducedlines, $i+1-$drop, $drop);
             next if $#reducedlines == $#lines;
             open(my $fd, ">", $file) or die "could not write $file";
-            print $fd @reducedlines;
+            print $fd join("",@reducedlines);
             close $fd;
             system(@ARGV);
             my $ret = $?>>8;
