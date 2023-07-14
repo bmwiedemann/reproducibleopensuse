@@ -18,6 +18,10 @@ fi
 if grep -q "^$pkg$" "$(dirname $BASH_SOURCE)"/exceptions/y2038 ; then
     years=14
 fi
+if grep -q '%{?suse_build_hwcaps_libs}' *.spec ; then
+    cputype2=Haswell
+    grep -q avx /proc/cpuinfo || exit 12 # skip on old CPU
+fi
 if grep -q "^$pkg$" "$(dirname $BASH_SOURCE)"/exceptions/cpu ; then
     cputype2=host
 fi
