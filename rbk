@@ -11,9 +11,12 @@ if grep -q "^$pkg$" ~/reproducibleopensuse/exceptions/memory && [[ $mem -lt 6000
 fi
 
 : ${buildrootbase:=/var/tmp}
-: ${years:=15}
+: ${years:=16}
 if grep -q "^$pkg$" "$(dirname $BASH_SOURCE)"/exceptions/neardate ; then
     years=1
+fi
+if grep -q "^$pkg$" "$(dirname $BASH_SOURCE)"/exceptions/y2038 ; then
+    years=14
 fi
 if grep -q "^$pkg$" "$(dirname $BASH_SOURCE)"/exceptions/cpu ; then
     cputype2=host
