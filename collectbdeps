@@ -16,7 +16,7 @@ mkdir "deps";
 open(my $infd, "<", $infile) or die "error opening $infile: $!";
 while(<$infd>) {
     if(m/^  <bdep/) {
-        next unless m/name="([^"]+)" hdrmd5="([^"]+)"/;
+        next unless m/name="([^"]+)".* hdrmd5="([^"]+)"/;
         my ($pkgname, $pkgid) = ($1, $2);
         my $pkg = $hdrdata{$pkgid};
         unless($pkg) {
