@@ -1,0 +1,10 @@
+#!/bin/sh
+
+for x in -j1 --build-opt=--vm-custom-opt="-rtc base=2038-01-25T00:00:00" ; do
+    if ! osc build --vm-type=kvm --clean --noservice "$x" \
+      --alternative-project home:bmwiedemann:reproducible \
+      openSUSE_Tumbleweed ; then
+        echo "$x failed"
+        exit 11
+    fi
+done
