@@ -28,7 +28,7 @@ origrpm=$(ls binaries/[a-zA-Z0-9]*.rpm | head -1)
 export buildhost=$(rpm -qp --qf "%{BUILDHOST}" $origrpm)
 export DISTURL=$(rpm -qp --qf "%{DISTURL}" $origrpm)
 export release=$(rpm -qp --qf "%{release}" $origrpm |
-    perl -ne '@a=split(/\./, $_); print join(".",$a[-2],$a[-1])')
+    perl -ne '@a=split(/\./, $_); print join(".",$a[0],$a[1])')
 # dummy value to use the repo default
 export debuginfo=--clean
 if [ -n "$offline" ] ; then
