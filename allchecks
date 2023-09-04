@@ -1,0 +1,24 @@
+#!/bin/sh
+echo XXX newly classified:
+find -maxdepth 2 -name .rb.autoclassify -mtime -2 | sort| xargs head -v
+
+echo XXX verifiable:
+rbfindverifiable | tee /tmp/verifiable
+
+echo XXX unnoted:
+unreproducibleunnoted > /tmp/unnoted2 ; diff /tmp/unnoted* | grep '^> '
+
+# notify about successful build without compare results - might have half-failed
+for p in * ; do (
+    ! echo $p | grep -q -e '-testsuite$' -e perl-PAR-Packer-test -e rpmlint-tests &&\
+    cd $p &&\
+    test -e .osc-build-retval &&\
+    grep -q '^0$' .osc-build-retval &&\
+    ( ! test -e .build-compare-retval || ! test -e .build-differed ) &&\
+    echo $p
+  )
+done
+
+grep ">>>>" */*.spec
+
+#scanresults | tee /dev/shm/scanresult
