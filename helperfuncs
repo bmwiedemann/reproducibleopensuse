@@ -23,7 +23,8 @@ qs()
 bcocd()
 {
     osc bco
-    cd home\:*\:branches\:*/$(basename $(pwd))
+    cd home\:*\:branches\:*/$(basename $(pwd)) &&
+    cp -a ../../*spec .
     osc up
     osc meta prjconf -F ~/reproducibleopensuse/prjconf
 }
