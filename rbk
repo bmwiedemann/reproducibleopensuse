@@ -72,7 +72,7 @@ fi
 rm -f .build-differed .build-rbkt .build-jsonresult
 export clean
 export VM_CUSTOMOPT="-cpu $cputype"
-optflags="$optflags1" vmtype="--vm-type=kvm" clean="$clean -j${parallelism}" HOST=$host1 OUTDIR=RPMS.2017 nice -n 7 rebuild &
+optflags="$optflags1" vmtype="--vm-type=kvm" clean="$clean -j${parallelism}" HOST=$host1 OUTDIR=RPMS.2017 nice -n 17 rebuild &
 sleep 8 # avoid osc race around ./.osc/_last_buildroot.new and .osc/_last_buildroot
 pid=$!
 export VM_CUSTOMOPT="-rtc base=$later -cpu $cputype2,l3-cache=on"
@@ -80,7 +80,7 @@ export OSC_BUILD_ROOT=$buildrootbase/build-root.${slot}b/
 if [ -n "$varyrelease" ] ; then
     export release=1234
 fi
-optflags="$optflags2" clean="$clean -j${parallelism2}" arch=$arch2 HOST=$host2 OUTDIR=RPMS rebuild &
+optflags="$optflags2" clean="$clean -j${parallelism2}" arch=$arch2 HOST=$host2 OUTDIR=RPMS nice -n 10 rebuild &
 wait
 ret1=`cat RPMS/.osc-build-retval`
 [ "$ret1" -eq 0 ] || echo "$ret1" > .osc-build-retval
