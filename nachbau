@@ -10,7 +10,7 @@ detect_repo()
 }
 
 : ${repo:=`detect_repo`}
-: ${olddeps:=true}
+: ${olddeps:='netcat -z localhost 8080'}
 : ${fast:=false}
 : ${arch:=x86_64}
 export project=$(cat .osc/_project)
