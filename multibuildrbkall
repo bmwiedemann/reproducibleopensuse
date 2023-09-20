@@ -1,0 +1,17 @@
+#!/bin/bash
+export CLEAN=1
+if [[ -e _multibuild ]] ; then
+    [[ $multibuilds ]] ||
+        multibuilds=$(fgrep -v i686 _multibuild | grep -v '<!--' | fgrep -e package -e flavor | sed 's/.*>\([^<>]*\)<.*/\1/')
+    for multibuild in "" $multibuilds ; do
+        [[ $multibuild =~ test ]] && continue
+        #export project=openSUSE:Factory
+        #export repo=standard
+	if [[ -n $multibuild ]] ; then
+            export oscbuildparams="-M $multibuild"
+	fi
+	echo "running $(basename $(pwd)) $oscbuildparams"
+        rbkt "$@" || exit 27
+	echo "success $(basename $(pwd)) $oscbuildparams"
+    done
+fi
