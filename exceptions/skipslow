@@ -5,6 +5,7 @@ chromium
 cilium-proxy
 codelite
 cppreference-doc
+deno
 FreeCAD
 gcc7
 gcc7-testresults
@@ -16,6 +17,10 @@ gnuradio
 godot
 java-10-openjdk
 java-11-openjdk
+java-11-openj9
+java-17-openj9
+java-17-openjdk
+java-20-openjdk
 julia
 julia-compat
 kernel-debug
@@ -23,6 +28,10 @@ kernel-default
 kernel-vanilla
 kicad
 krita
+kubernetes1.26
+kubernetes1.27
+kubernetes1.28
+kubernetes1.29
 libqt5-creator
 libqt5-qtbase
 libqt5-qtdoc
@@ -46,6 +55,7 @@ MozillaThunderbird
 nodejs12
 nodejs10
 nodejs8
+nodejs-electron
 occt
 oce
 OpenSceneGraph
@@ -61,6 +71,8 @@ subversion
 telegram-desktop
 tensorflow
 tensorflow2
+ungoogled-chromium
 virtualbox
 vtk
 webkit2gtk3
+wpewebkit

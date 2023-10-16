@@ -40,6 +40,7 @@ perl-Net-SSLeay
 python
 python3
 python3-base
+python312
 # https://github.com/django/django/pull/10993 / 10994
 #python-Django
 # SSL cert expired

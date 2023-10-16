@@ -13,6 +13,7 @@ kernel-vanilla
 lttng-modules
 mhvtl
 msr-safe
+nvidia-open-driver-G06-signed
 openafs
 oracleasm
 pcfclock
