@@ -11,6 +11,7 @@ if [[ -e _multibuild ]] ; then
             export oscbuildparams="-M $multibuild"
 	fi
 	echo "running $(basename $(pwd)) $oscbuildparams"
+	echo $multibuild > RPMS/_multibuild
         rbkt "$@" || exit 27
 	echo "success $(basename $(pwd)) $oscbuildparams"
     done
