@@ -31,5 +31,7 @@ while(<$infd>) {
         print "$pkg $pkgname\n";
         my $pkgbasename = $pkg ; $pkgbasename =~ s!.*/!!;
         symlink "$base/$pkg", "deps/$pkgname.rpm";
+        my $pid = fork();
+        if($pid==0) { exec("ipfs pin add $base/$pkg > /dev/null") || die "exec failed: $!" }
     }
 }
