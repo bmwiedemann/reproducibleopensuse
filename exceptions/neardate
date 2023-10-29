@@ -3,6 +3,7 @@ bitcoin
 # SSL expired
 breezy
 chromium
+cockpit
 #gnutls
 httpie
 icu
@@ -74,5 +75,7 @@ python-trollius
 # SSL
 qpid-proton
 terraform
+# https://sourceforge.net/p/xindy/bugs/65/
+xindy
 # some cert tests?
 MozillaFirefox

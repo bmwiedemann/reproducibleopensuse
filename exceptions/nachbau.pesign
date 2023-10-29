@@ -7,10 +7,12 @@ dpdk
 drbd
 facetimehd
 fwupd
+fwupd-efi
 gasket-driver
 hdjmod
 kernel-vanilla
 lttng-modules
+memtest86+
 mhvtl
 msr-safe
 nvidia-open-driver-G06-signed
