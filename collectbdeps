@@ -8,6 +8,11 @@ use strict;
 use DB_File;
 our $base = $ENV{PKGBASE}||"/ipfs";
 our $dbname = $ENV{DBFILE}||"$ENV{HOME}/reproducibleopensuse/data/hdrmd5cid.db";
+my $dbdir = $dbname; $dbdir =~ s![^/]*$!!;
+my $rsyncout = `rsync --size-only --inplace --stats /ipns/ipfs.opensuse.org/other/hdrmd5cid.txt $dbname.txt`;
+if ($rsyncout =~ /Number of regular files transferred: 1/) {
+    system(qw(make -C), $dbdir);
+}
 our %hdrdata;
 tie(%hdrdata, "DB_File", $dbname, O_RDONLY) or die "error opening DB: $!";
 my $infile = $ENV{IN} || "binaries/_buildenv";
