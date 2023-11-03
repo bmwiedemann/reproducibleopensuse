@@ -36,7 +36,7 @@ if [ -n "$offline" ] ; then
 fi
 export vmtype="--vm-type=kvm -j4"
 export OSC_BUILD_ROOT=/var/tmp/build-root.${slot}/
-$fast || osc up
+$fast || osc up -S
 srcmd5s=$(perl -ne 'if(m/srcmd5="([a-f0-9]+)"/i){print "$1\n"}' .osc/_files)
 srcmd5found=false
 for srcmd5 in $srcmd5s ; do

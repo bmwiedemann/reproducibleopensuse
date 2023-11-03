@@ -1,7 +1,7 @@
 #!/bin/bash -e
 # rebuild with KVM mode
 pkg=$(basename `pwd`)
-: ${spec:=$pkg.spec}
+: ${spec:=*$pkg.spec}
 
 mem=$(awk -e '/^build-memory/ {print $3}' ~/.config/osc/oscrc | grep . || echo 128)
 # TODO: parse _constraints
