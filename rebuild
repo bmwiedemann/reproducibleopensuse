@@ -6,7 +6,7 @@ EXCEPTIONS_DIR="$(dirname $BASH_SOURCE)/exceptions"
 : ${OUTDIR:=RPMS}
 : ${release:=0.0}
 : ${buildhost:=reproducible}
-: ${spec:=$(basename `pwd`).spec}
+: ${spec:=*$(basename `pwd`).spec}
 export OSC_BUILD_ROOT
 pkg=$(basename $(pwd))
 : ${debuginfo:=--disable-debuginfo}
@@ -35,7 +35,7 @@ fi
 [[ $rbsnd ]] && oscopts+=(-x strip-nondeterminism --define='%__spec_install_post [ -e /usr/bin/strip-nondeterminism ] && find %buildroot -type f -print0 | xargs -0 --no-run-if-empty strip-nondeterminism --timestamp=${SOURCE_DATE_EPOCH:-1494270000} --clamp-timestamp ; %__os_install_post')
 oscopts+=("--build-opt=--vm-disk-filesystem=ext4" --trust-all-projects)
 getent passwd qemu >/dev/null || oscopts+=("--build-opt=--vm-user=nobody")
-oscopts+=(--define='%source_date_epoch_from_changelog Y' --define="%_buildhost $buildhost" --define='%clamp_mtime_to_source_date_epoch Y' --define='%use_source_date_epoch_as_buildtime Y')
+oscopts+=(--define='%source_date_epoch_from_changelog 1' --define="%_buildhost $buildhost" --define='%clamp_mtime_to_source_date_epoch 1' --define='%use_source_date_epoch_as_buildtime 1')
 if [[ $nolto ]] ; then
   oscopts+=(--define='%_lto_cflags %{nil}')
 fi
