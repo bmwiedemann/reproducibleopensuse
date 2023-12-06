@@ -8,7 +8,7 @@ if [[ -e _multibuild ]] ; then
         #export project=openSUSE:Factory
         #export repo=standard
 	if [[ -n $multibuild ]] ; then
-            export oscbuildparams="-M $multibuild"
+            export oscbuildparams="-M=$multibuild"
 	fi
 	echo "running $(basename $(pwd)) $oscbuildparams"
 	echo $multibuild > RPMS/_multibuild
