@@ -3,16 +3,21 @@ export CLEAN=1
 if [[ -e _multibuild ]] ; then
     [[ $multibuilds ]] ||
         multibuilds=$(fgrep -v i686 _multibuild | grep -v '<!--' | fgrep -e package -e flavor | sed 's/.*>\([^<>]*\)<.*/\1/')
+else
+    multibuilds=
+fi
     for multibuild in "" $multibuilds ; do
         [[ $multibuild =~ test ]] && continue
-        #export project=openSUSE:Factory
-        #export repo=standard
 	if [[ -n $multibuild ]] ; then
             export oscbuildparams="-M=$multibuild"
 	fi
 	echo "running $(basename $(pwd)) $oscbuildparams"
-	echo $multibuild > RPMS/_multibuild
-        rbkt "$@" || exit 27
+	mkdir -p RPMS ; echo $multibuild > RPMS/_multibuild
+        if ! rbkt "$@" ; then
+		if [ -n "$multibuild" ] || ! grep -q status.....notforus .build-jsonresult ; then
+			exit 27
+		fi
+	fi
 	echo "success $(basename $(pwd)) $oscbuildparams"
     done
-fi
+touch .rb.multibuildrbkall.succeeded
