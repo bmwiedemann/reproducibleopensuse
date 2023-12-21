@@ -49,7 +49,7 @@ fi
 if $olddeps ; then collectbdeps | tee .build.nachbau.collectbdeps.log ; oscbuildparams+=" -p deps " ; export oscbuildparams ; fi
 fixuposcmtime
 rm -f .build-*-nachbau
-rebuild
+nice -n 17 rebuild
 dir2=$OUTDIR compareone
 
 ret=$(cat .build-compare-retval)
