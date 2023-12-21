@@ -58,6 +58,7 @@ fixuposcmtime
 mkdir -p RPMS
 [[ $arch = $arch2 ]] && a= || a=$arch
 if [ ! -e "$spec" -a -e "flatpak.yaml" ] ; then export spec=flatpak.yaml ; fi
+[[ $rbsnd ]] && oscbuildextrapkg+=" --extra-pkgs=strip-nondeterminism "
 for a in $a $arch2 ; do
     $offline || osc build ${oscbuildextrapkg} --preload --nopreinstallimage --noservice --trust-all-projects --vm-type=kvm $alternativeproject ${oscbuildparams} $repo $a $spec 2>&1 | tee RPMS/.build.log2
 done
