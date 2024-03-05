@@ -16,7 +16,7 @@ if grep -q "^$pkg$" "$(dirname $BASH_SOURCE)"/exceptions/neardate ; then
     years=1
 fi
 if grep -q "^$pkg$" "$(dirname $BASH_SOURCE)"/exceptions/y2038 ; then
-    years=14
+    years=13
 fi
 if grep -q '%{?suse_build_hwcaps_libs}' *.spec ; then
     cputype2=Haswell
