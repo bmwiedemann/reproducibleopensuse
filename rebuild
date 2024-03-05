@@ -28,6 +28,9 @@ if grep -q "^$pkg$" $EXCEPTIONS_DIR/date ; then
   VM_CUSTOMOPT=""
 fi
 oscopts+=("--build-opt=--buildtool-opt=--noclean") # to counter rpm commit b34333fa021c0ee7215714eeef96d1a2843ea08e and still get buildroot diffs for r-b debugging
+if ! [[ "$withcheck" ]] ; then
+  oscopts+=("--nocheck")
+fi
 if [[ $VM_CUSTOMOPT ]] && osc build --help | grep -q build-opt ; then
   oscopts+=("--build-opt=--vm-custom-opt=$VM_CUSTOMOPT")
   unset VM_CUSTOMOPT
