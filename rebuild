@@ -4,7 +4,7 @@ EXCEPTIONS_DIR="$BASE_DIR/exceptions"
 : ${OSC_BUILD_ROOT:="/var/tmp/build-root/standard-x86_64"}
 : ${clean:=--clean}
 : ${OUTDIR:=RPMS}
-: ${release:=0.0}
+: ${release:=1.1}
 : ${buildhost:=reproducible}
 export OSC_BUILD_ROOT
 pkg=$(basename $(pwd))
