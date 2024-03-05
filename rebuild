@@ -18,6 +18,9 @@ fi
 if grep -q "^$pkg$" $EXCEPTIONS_DIR/rootforbuild ; then
   rootforbuild=" --userootforbuild"
 fi
+if grep -q '^# needssslcertforbuild$' $spec ; then
+  cp -a $BASE_DIR/_projectcert.crt .
+fi
 if grep -q "^$pkg$" $EXCEPTIONS_DIR/debuginfo ; then
   debuginfo="--debuginfo"
 fi
