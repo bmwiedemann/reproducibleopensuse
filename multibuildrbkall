@@ -11,6 +11,10 @@ fi
         [[ $multibuild =~ test ]] && continue
 	if [[ -n $multibuild ]] ; then
             export oscbuildparams="-M=$multibuild"
+            if [[ -e $multibuild.spec ]] ; then
+	        export spec=$multibuild.spec
+            fi
+	    osc api "/build/openSUSE:Factory/_result?package=$pkg:$multibuild&repository=standard&arch=x86_64" | grep -E 'code="(excluded|disabled|unresolvable)"' && continue
 	else
 	    osc api "/build/openSUSE:Factory/_result?package=$pkg&repository=standard&arch=x86_64" | grep -E 'code="(excluded|disabled|unresolvable)"' && continue
 	fi
