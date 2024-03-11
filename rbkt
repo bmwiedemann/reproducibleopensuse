@@ -38,7 +38,7 @@ sub rbk(@)
     # bit 9
     if(shift) { push(@extrapkg, "reproducible-faketools-aslr") }
     # bit 10
-    if(shift) { push(@extrapkg, "reproducible-faketools-pid") }
+    if(shift) { push(@extrapkg, "reproducible-faketools-pid"); $ENV{withcheck}=1 }
     # bit 11
     if(shift) { push(@extrapkg, "reproducible-faketools-random") }
     # bit 12
