@@ -1,0 +1,4 @@
+#!/bin/sh
+# for filterdiff
+f=$1
+cpio -vt < $1
