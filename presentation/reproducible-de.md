@@ -125,9 +125,13 @@ compile-time CPU detection libatlas3
 
 * Bit-identische rpms erzeugen
 
-* Fortwährend veröffentliche Programme prüfen
+* Fortwährend veröffentlichte Programme prüfen
 
 * Benachrichtigen über reproducibility Regressionen in submit-requests
+
+* rb-reviewbot, der nicht-reproduzierbare Pakete ablehnt
+
+* 100% bit-reproducible Pakete
 
 <!--
 Ganz bit-identische Pakete zu bauen ist schwerer - z.B. python .pyc und .elc enthalten Zeitstempel
