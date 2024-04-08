@@ -17,6 +17,8 @@ pkg=$(basename `pwd`)
 export project=$(cat .osc/_project)
 export repo
 export arch
+: ${reservedspace:=5200}
+export reservedspace
 
 export OUTDIR=binaries.nachbau
 $fast || rm -rf binaries $OUTDIR
