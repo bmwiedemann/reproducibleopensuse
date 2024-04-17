@@ -25,8 +25,11 @@ fi
 if grep -q "^$pkg$" "$(dirname $BASH_SOURCE)"/exceptions/cpu ; then
     cputype2=host
 fi
+if grep -q "^$pkg$" "$(dirname $BASH_SOURCE)"/exceptions/j3 ; then
+    parallelism2=3
+fi
 if grep -q "^$pkg$" "$(dirname $BASH_SOURCE)"/exceptions/j1 ; then
-    parallelism2=2
+    parallelism=1
 fi
 if grep -q "^$pkg$" "$(dirname $BASH_SOURCE)"/exceptions/withcheck ; then
     export withcheck=1

@@ -1,8 +1,4 @@
-# list of packages that don't work on 1-core-VMs:
-# 1.6 from 2020 affected, but master working
-aircrack-ng
-# https://bugzilla.opensuse.org/show_bug.cgi?id=1181083
-openblas
-python-blosc2
-# https://github.com/yast/yast-ruby-bindings/issues/269
-yast2-ruby-bindings
+# packages that must be built with -j1 to become reproducible
+#go1.14
+# j4 build fails with memory-problems
+PrusaSlicer
