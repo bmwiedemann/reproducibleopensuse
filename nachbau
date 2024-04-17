@@ -42,7 +42,8 @@ export debuginfo=--clean
 if [ -n "$offline" ] ; then
     export clean="--clean --offline"
 fi
-export vmtype="--vm-type=kvm -j4"
+: ${parallelism:=4}
+export vmtype="--vm-type=kvm -j$parallelism"
 export OSC_BUILD_ROOT=/var/tmp/build-root.${slot}/
 $fast || osc up -S
 srcmd5s=$(perl -ne 'if(m/srcmd5="([a-f0-9]+)"/i){print "$1\n"}' .osc/_files)
