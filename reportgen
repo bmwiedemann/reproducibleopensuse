@@ -49,5 +49,5 @@ $buildcomparefailed/$compiled => $(perl -e '@a=@ARGV;printf("%.2f %", 100*$a[0]/
 $unreproducible/$compiled => $(perl -e '@a=@ARGV;printf("%.2f %", 100*$a[0]/$a[1])' $unreproducible $compiled) of packages are not perfectly reproducible
 EOF
 
-echo "package notes:"
+echo -e "\n\npackage notes:"
 ( cd ~/f && find -maxdepth 2 -name .rb.notes -mtime -39 | sort | xargs head -2)
