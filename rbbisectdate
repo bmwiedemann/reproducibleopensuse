@@ -14,7 +14,7 @@ sub time_is_good($)
     return 1;
   }
   my $isotime = POSIX::strftime("%FT%T", gmtime($t));
-  system(qw"osc build --vm-type=kvm --noservice", "--build-opt=--vm-custom-opt=-rtc base=$isotime") == 0;
+  system(qw"osc build --vm-type=kvm --noservice", "--build-opt=--vm-custom-opt=-rtc base=$isotime", @ARGV) == 0;
 }
 
 while(abs($bad-$good)>$detail) {
