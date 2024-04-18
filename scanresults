@@ -1,4 +1,6 @@
 #!/bin/sh
+filelist=$(for p in $(cat ~/tmp/failchecklist) ; do echo $p/RPMS*/.build.log2 $p/binaries.nachbau/.build.log2 ; done)
+[ -n "$FULL" ] && filelist=*/RPMS*/.build.log2
 unset CDPATH
 p1="unresolvable: nothing provides librpm.so.3"
 p2="Kernel panic"
