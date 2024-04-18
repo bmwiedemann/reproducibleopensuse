@@ -10,6 +10,8 @@ p7="Starting Emergency Shell"
 p8='Failed to get "write" lock'
 p9='mount must be owned by root. Exit'
 p10='error: init_b_cache'
+p10b='error: .init_b_cache'
+p11='not an rpm package'
 pssl="SSL Error: unexpected eof"
 espc="echo: write error: No space left on device"
 emem="Out of memory: Kill process"
@@ -23,8 +25,8 @@ p500="Server returned an error: HTTP Error 500: Internal Server Error"
 p502="Server returned an error: HTTP Error 502: Bad Gateway"
 p503="Server returned an error: HTTP Error 503: Service Temporarily Unavailable"
 w1="W: python-bytecode-inconsistent-mtime"
-fgrep "[Errno 2] No such file or directory: '/var/tmp/osbuild-packagecache/home:bmwiedemann:reproducible/_pubkey" */RPMS*/.build.log2
-fgrep -e "$p1" -e "$p2" -e "$p3" -e "$p4" -e "$p5" -e "$p6" -e "$p7" -e "$p8" -e "$p9" -e "$p10" -e "$pssl" -e "$eswi" -e "$estruc" -e "$epatch" -e "$p400" -e "$p500" -e "$p502" -e "$p503" -e "$espc" -e "$emem" -e "$emem2" -e "$eipfs1" */RPMS*/.build.log2 */binaries.nachbau/.build.log2
+fgrep "[Errno 2] No such file or directory: '/var/tmp/osbuild-packagecache/home:bmwiedemann:reproducible/_pubkey" $filelist
+fgrep -e "$p1" -e "$p2" -e "$p3" -e "$p4" -e "$p5" -e "$p6" -e "$p7" -e "$p8" -e "$p9" -e "$p10" -e "$p10b" -e "$p11" -e "$pssl" -e "$eswi" -e "$estruc" -e "$epatch" -e "$p400" -e "$p500" -e "$p502" -e "$p503" -e "$espc" -e "$emem" -e "$emem2" -e "$eipfs1" $filelist
 fgrep -l "can't open binaries" */binaries.nachbau/*-compare.out
 grep "in-progress" */RPMS*/.osc-build-retval
 #post-process with
