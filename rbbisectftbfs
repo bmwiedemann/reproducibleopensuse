@@ -2,7 +2,7 @@
 : ${slot:=4}
 export OSC_BUILD_ROOT=/var/tmp/build-root.${slot}/
 
-for x in -j1 --build-opt=--vm-custom-opt="-rtc base=2038-01-25T00:00:00" ; do
+for x in -j1 --build-opt=--vm-custom-opt="-rtc base=2040-01-25T00:00:00" --no-checks ; do
     if ! osc build --vm-type=kvm --clean --noservice "$x" \
       --alternative-project home:bmwiedemann:reproducible \
       openSUSE_Tumbleweed ; then
