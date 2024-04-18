@@ -26,5 +26,5 @@ while(abs($bad-$good)>$detail) {
   }
 }
 
-print "found range $good -> $bad\n";
+print "found range good=$good bad=$bad\n";
 
