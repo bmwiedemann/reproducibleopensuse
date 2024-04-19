@@ -6,7 +6,7 @@ SVG_PNG := $(patsubst %.svg, %.png, $(SVG))
 DIA_PNG := $(patsubst %.dia, %.PNG, $(DIA))
 PNG :=  $(DIA_PNG) $(SVG_PNG)
 
-all: reproducible.odp reproducible-de.odp ISD2020.odp
+all: reproducible.odp reproducible-lightning.odp reproducible-de.odp ISD2020.odp
 ISD2020.odp: ISD2020.md templateISD.odp $(PNG)
 	odpdown \
 	-p 1 \
@@ -14,6 +14,13 @@ ISD2020.odp: ISD2020.md templateISD.odp $(PNG)
 	--break-master Break \
 	$< templateISD.odp $@
 	
+reproducible-lightning.odp: reproducible-lightning.md template-lightning.odp $(PNG)
+	odpdown \
+	-p 1 \
+	--content-master No-Logo_20_Content \
+	--break-master Break \
+	$< template-lightning.odp $@
+
 %.odp: %.md	template.odp $(PNG)
 	odpdown \
 	-p 1 \
