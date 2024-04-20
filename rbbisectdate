@@ -5,6 +5,7 @@ use POSIX 'strftime';
 my $good = $ENV{good} || time();
 my $bad  = $ENV{bad} || (time()+3600*24*365*16);
 my $detail = $ENV{detail} || 3600;
+$ENV{OSC_BUILD_ROOT}="/var/tmp/build-root.$ENV{slot}/";
 
 sub time_is_good($)
 { my $t = shift;
