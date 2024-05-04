@@ -1,0 +1,3 @@
+#!/bin/sh
+# hex decode
+rpm -qp --qf "%{HEADERIMMUTABLE}\n" "$1" | perl -pe 's/[0-9a-f][0-9a-f]/chr(hex($&))/ge'
