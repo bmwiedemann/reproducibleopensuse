@@ -9,6 +9,7 @@ sub readrbstats($)
     while(<$fd>) {
         chomp;
         my @a=split(": ");
+        $a[1] =~ s/ .*//;
         #print "@a\n";
         $data{$a[0]} = $a[1];
         push(@{$data{keys}}, $a[0]);
