@@ -28,7 +28,7 @@ sub rbk(@)
     # bit 4
     if(shift) { push(@extrapkg, "reproducible-faketools-date") }
     # bit 5
-    if(shift) { $ENV{rbsnd}=1 } # use strip-nondeterminism
+    if(shift) { push(@extrapkg, "reproducible-faketools-strip-nondeterminism") }
     # bit 6
     if(shift) { $ENV{project}="home:bmwiedemann:reproducible:test" }
     # bit 7
