@@ -46,6 +46,7 @@ export OSC_BUILD_ROOT=/var/tmp/build-root.${slot}/
 $fast || osc up -S
 srcmd5s=$(perl -ne 'if(m/srcmd5="([a-f0-9]+)"/i){print "$1\n"}' .osc/_files)
 srcmd5found=false
+if [[ "$DISTURL" = "(none)" ]] ; then FORCE=1 ; fi
 for srcmd5 in $srcmd5s ; do
     echo "$DISTURL" | grep -q "$srcmd5" && srcmd5found=true
 done

@@ -37,7 +37,7 @@ if [[ $VM_CUSTOMOPT ]] && osc build --help | grep -q build-opt ; then
 fi
 [[ $rbfilesys = unreproducible ]] && grep -q vm-disk-dirindex /usr/lib/build/build && oscopts+=("--build-opt=--vm-disk-dirindex")
 [[ $rbfilesys = reproducible ]] && grep -q nodirindex /usr/lib/build/build && oscopts+=("--build-opt=--vm-disk-filesystem-options=nodirindex")
-[[ $DISTURL ]] && oscopts+=("--build-opt=--disturl=$DISTURL")
+[[ $DISTURL ]] && [[ $DISTURL != "(none)" ]] && oscopts+=("--build-opt=--disturl=$DISTURL")
 [[ $reservedspace ]] && oscopts+=("--define=%__gpg_reserved_space $reservedspace")
 oscopts+=("--build-opt=--vm-disk-filesystem=ext4" --trust-all-projects)
 getent passwd qemu >/dev/null || oscopts+=("--build-opt=--vm-user=nobody")
