@@ -4,6 +4,9 @@ if [[ -e _multibuild ]] ; then
         multibuild=$(fgrep -v i686 _multibuild | grep -v '<!--' | fgrep -m 1 -e package -e flavor | sed 's/.*>\([^<>]*\)<.*/\1/')
     if [[ $multibuild ]] && ! [[ $multibuild =~ test ]] ; then
         export oscbuildparams+=" -M=$multibuild"
+        if [[ -e $multibuild.spec ]] ; then
+	    export spec=$multibuild.spec
+        fi
     fi
 fi
 exec rbk "$@" || exit 27
