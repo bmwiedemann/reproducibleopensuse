@@ -36,7 +36,7 @@ if grep -q "^$pkg$" "$(dirname $BASH_SOURCE)"/exceptions/withcheck ; then
 fi
 
 # dummy value to use the repo default
-export debuginfo=--clean
+export debuginfo="--clean --baselibs"
 if [ -n "$offline" ] ; then
     export clean="--clean --offline"
 fi
