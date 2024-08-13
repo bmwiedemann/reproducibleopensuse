@@ -1,0 +1,8 @@
+#!/bin/sh
+: ${d:=.}
+
+cd $d
+[ -e _build.standard.x86_64 ] && cd _build.standard.x86_64
+export LANG=C
+export LC_ALL=C
+sha256sum */*.rpm | tee .sha256sums
