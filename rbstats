@@ -15,7 +15,8 @@ grep -l '"status" : "unreproducible"' */.build-jsonresult | cut -d/ -f1 > ~/tmp/
 grep -v '^0$' */.build-compare-retval | cut -d/ -f1 > ~/tmp/build-compare-differed-builds.txt
 grep -v '^0$' */.build-differed-nachbau | cut -d/ -f1 > ~/tmp/differed-builds-nachbau.txt
 grep -v '^0$' */.build-compare-retval-nachbau | cut -d/ -f1 > ~/tmp/build-compare-differed-builds-nachbau.txt
-buildunverified=$(grep '"verified" : 0' */.build-jsonresult | wc -l)
+grep -l '"verified" : 0' */.build-jsonresult | cut -d/ -f1 > ~/tmp/build-verify-failed.txt
+buildunverified=$(wc -l < ~/tmp/build-verify-failed.txt)
 buildsemiverified=$(grep '"verified" : [12]' */.build-jsonresult | wc -l)
 buildverified=$(grep '"verified" : 2' */.build-jsonresult | wc -l)
 buildfailed=$(wc -l < ~/tmp/failed-builds.txt)
