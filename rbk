@@ -21,6 +21,9 @@ fi
 if grep -q "^$pkg$" "$(dirname $BASH_SOURCE)"/exceptions/y2038 || [[ $arch = i586 ]] ; then
     years=13
 fi
+if grep -q "^$pkg$" "$(dirname $BASH_SOURCE)"/exceptions/nopgo ; then
+    export nopgo=1
+fi
 if grep -q '%{?suse_build_hwcaps_libs}' *.spec ; then
     cputype2=Haswell
     grep -q avx /proc/cpuinfo || exit 12 # skip on old CPU
