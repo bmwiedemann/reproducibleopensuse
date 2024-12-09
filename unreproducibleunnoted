@@ -1,0 +1,2 @@
+#!/bin/sh
+for p in `cat ~/tmp/build-compare-differed-builds.txt` ; do ! test -e $p/.rb.notes && echo $p; done
