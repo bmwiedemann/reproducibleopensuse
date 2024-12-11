@@ -12,6 +12,7 @@ ls | wc -l
 buildtried=$(ls */.build-jsonresult | wc -l)
 grep -l '"status" : "FTBFS"' */.build-jsonresult | cut -d/ -f1 > ~/tmp/failed-builds.txt
 grep -l '"status" : "unreproducible"' */.build-jsonresult | cut -d/ -f1 > ~/tmp/differed-builds.txt
+grep -l 'build_compare_status" : "reproducible"' */.build-jsonresult | cut -d/ -f1 > ~/tmp/minor-differed-builds.txt
 grep -v '^0$' */.build-compare-retval | cut -d/ -f1 > ~/tmp/build-compare-differed-builds.txt
 grep -v '^0$' */.build-differed-nachbau | cut -d/ -f1 > ~/tmp/differed-builds-nachbau.txt
 grep -v '^0$' */.build-compare-retval-nachbau | cut -d/ -f1 > ~/tmp/build-compare-differed-builds-nachbau.txt
