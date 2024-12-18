@@ -28,6 +28,7 @@ if grep -q "^$pkg$" $EXCEPTIONS_DIR/date ; then
   VM_CUSTOMOPT=""
 fi
 oscopts+=("--build-opt=--buildtool-opt=--noclean") # to counter rpm commit b34333fa021c0ee7215714eeef96d1a2843ea08e and still get buildroot diffs for r-b debugging
+oscopts+=("--build-opt=--vm-use-mkfs-copyin") # to counter https://github.com/openSUSE/obs-build/issues/1030
 if ! [[ "$withcheck" ]] ; then
   oscopts+=("--nocheck")
 fi
