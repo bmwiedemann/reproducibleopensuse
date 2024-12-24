@@ -10,7 +10,8 @@ fi
     for multibuild in "" $multibuilds ; do
         [[ $multibuild =~ test ]] && continue
 	if [[ -n $multibuild ]] ; then
-            export oscbuildparams="-M=$multibuild"
+            oscbuildparams+=" -M=$multibuild "
+            export oscbuildparams
             if [[ -e $multibuild.spec ]] ; then
 	        export spec=$multibuild.spec
             fi
