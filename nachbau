@@ -9,7 +9,7 @@ detect_repo()
         perl -ne '/^<buildinfo.*repository="([^"]*)"/ && print $1'
 }
 
-pkg=$(basename `pwd`)
+: ${pkg:=$(basename `pwd`)}
 : ${repo:=`detect_repo`}
 : ${olddeps:='netcat -z localhost 8080'}
 : ${fast:=false}
@@ -20,7 +20,7 @@ export arch
 
 export OUTDIR=binaries.nachbau
 $fast || rm -rf binaries $OUTDIR
-$fast || osc getbinaries --sources $repo $arch || exit 16
+$fast || osc getbinaries --sources $project $pkg $repo $arch || exit 16
 $fast || rm -f binaries/*.{aarch64,ppc64le,s390x}.rpm binaries/*-32bit-*.rpm # for syslinux importing other arch's binaries into x86_64
 $fast || for bin in binaries/*rpm ; do rpm -qpi $bin | grep "^Signature.*:" ; rpm --delsign $bin ; done > binaries/signature
 p=$(basename $(pwd))

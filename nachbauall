@@ -1,0 +1,45 @@
+#!/bin/bash
+export CLEAN=1
+pkg=$(basename $(pwd))
+
+function testone
+{
+        local oscbuildparams=$oscbuildparams
+	if [[ -n $multibuild ]] ; then
+            oscbuildparams+=" -M=$multibuild "
+            export oscbuildparams
+            if [[ -e $multibuild.spec ]] ; then
+	        export spec=$multibuild.spec
+            fi
+	    osc api "/build/openSUSE:Factory/_result?package=$pkg:$multibuild&repository=standard&arch=x86_64" | grep -E 'code="(excluded|disabled|unresolvable)"' && return
+	else
+	    osc api "/build/openSUSE:Factory/_result?package=$pkg&repository=standard&arch=x86_64" | grep -E 'code="(excluded|disabled|unresolvable)"' && return
+	    nachbau ; return
+	fi
+	echo "running $pkg $oscbuildparams"
+	rm -rf .multi.$multibuild ; mkdir -p .multi.$multibuild/$pkg
+        cp -l [a-zA-Z0-9]* .multi.$multibuild/$pkg/ 2>/dev/null
+        cp -al .osc .multi.$multibuild/$pkg/
+        pushd .multi.$multibuild/$pkg/
+        pkg=$pkg:$multibuild nachbau "$@"
+	cp -a binaries.nachbau .build-differed-nachbau .build-compare-retval-nachbau ../../
+        ret=$?
+        if [[ $ret != 0 ]] ; then
+		if [ -n "$multibuild" ] || ! grep -q status.....notforus .build-jsonresult ; then
+			exit 27
+		fi
+	fi
+	echo "success $(basename $(pwd)) $oscbuildparams"
+	popd
+}
+
+if [[ -e _multibuild ]] ; then
+    [[ $multibuilds ]] ||
+        multibuilds=$(fgrep -v i686 _multibuild | grep -v '<!--' | fgrep -e package -e flavor | sed 's/.*>\([^<>]*\)<.*/\1/')
+else
+    multibuilds=
+fi
+    for multibuild in "" $multibuilds ; do
+        [[ $multibuild =~ test ]] && continue
+        testone "$multibuild"
+    done
