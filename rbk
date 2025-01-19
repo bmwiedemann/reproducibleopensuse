@@ -19,7 +19,7 @@ if grep -q "^$pkg$" "$(dirname $BASH_SOURCE)"/exceptions/nearestdate ; then
     years=0
 fi
 if grep -q "^$pkg$" "$(dirname $BASH_SOURCE)"/exceptions/y2038 || [[ $arch = i586 ]] ; then
-    years=13
+    years=12
 fi
 if grep -q "^$pkg$" "$(dirname $BASH_SOURCE)"/exceptions/nopgo ; then
     export nopgo=1
