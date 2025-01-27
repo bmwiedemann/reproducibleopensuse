@@ -11,4 +11,9 @@ if(-e '_constraints') {
 if($jobs > 4 && $jobs <=12) { # map to actual OBS worker size
     $jobs = 12
 }
+my $spec=`strings binaries/*.src.rpm`;
+if($spec =~ /make -O -j12/ or
+   $spec =~ /make -j12/ or
+   $spec =~ /cmake --build build -j12/
+   ) { $jobs = 12 }
 print $jobs,"\n";
