@@ -41,7 +41,7 @@ export debuginfo="--clean --baselibs"
 if [ -n "$offline" ] ; then
     export clean="--clean --offline"
 fi
-: ${parallelism:=4}
+: ${parallelism:=$(getjobs)}
 export vmtype="--vm-type=kvm -j$parallelism"
 export OSC_BUILD_ROOT=/var/tmp/build-root.${slot}/
 $fast || osc up -S

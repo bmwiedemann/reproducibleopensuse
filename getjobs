@@ -1,0 +1,14 @@
+#!/usr/bin/perl -w
+use strict;
+my $jobs = 4;
+
+if(-e '_constraints') {
+    my $c = `cat _constraints`;
+    if($c =~ m,<jobs>(\d+)</jobs>,) {
+        $jobs = $1
+    }
+}
+if($jobs > 4 && $jobs <=12) { # map to actual OBS worker size
+    $jobs = 12
+}
+print $jobs,"\n";
