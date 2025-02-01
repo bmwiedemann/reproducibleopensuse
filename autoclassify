@@ -1,15 +1,15 @@
 #!/usr/bin/perl -w
 # for packages that do not build reproducibly, this script tries to find the
-# source of indeterminism.
+# source of nondeterminism.
 # If you do not give it bits as CLI args,
-# it starts with maximally reduced indeterminism and if that is not enough,
+# it starts with maximally reduced nondeterminism and if that is not enough,
 # the resulting bits have a 99 appended
 # If a build is still reproducible, it goes through the list of bits
-# and drops them one by one, thereby slowly increasing sources of indeterminism.
+# and drops them one by one, thereby slowly increasing sources of nondeterminism.
 # The resulting bitmask is written to .rb.autoclassify
 # See the rbkt script for the meaning of individual bits.
 
-# For low-entropy indeterminism such as two entries ordered correctly
+# For low-entropy nondeterminism such as two entries ordered correctly
 # 50% of the time, use rbretries=4 as environment variable
 
 use strict;

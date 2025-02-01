@@ -1,5 +1,5 @@
 #!/usr/bin/perl -w
-# drop lines from a source file to find a minimal reproducer for indeterminism
+# drop lines from a source file to find a minimal reproducer for nondeterminism
 # BUILDPROG should return 0 if a dropped line is good to keep dropped
 # see the autoreducebuild helper for an example
 use strict;
