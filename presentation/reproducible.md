@@ -35,6 +35,19 @@ safe on mirror because of signatures
 but how do we know that the binaries dont contain extra backdoors added by build env
 -->
 
+## Codeflow in 2025
+
+![Codeflow](img/codeflow2025.png)
+
+<!--
+As we have seen recently with xz-5.6.0 , we cannot always trust that
+upstream tarballs are equivalent to git sources, so we need to treat
+it as yet another build step that must be reproducible / verifiable.
+Or we skip tarballs completely and build directly from git checkouts
+as allowed by the new OBS git workflow that will be used for Factory
+and Leap-16
+-->
+
 # The solution
 
 ## 
