@@ -1,0 +1,14 @@
+gutenprint
+kanku
+kitty
+qemu
+
+# https://github.com/opensuse-haskell/ghc-rpm-macros/pull/1
+cabal-install
+cpphs
+git-annex
+gtk2hs-buildtools
+hadolint
+hscolour
+texmath
+xmonad

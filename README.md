@@ -19,6 +19,11 @@ Setup:
 3. `export PATH=$PATH:/path/to/reproducibleopensuse`
 
 4. make sure you can build a package with `osc build --vm-type=kvm`
+
+4.1 make sure you have write-access to /dev/kvm - either it is world writable or you are member of the kvm group (needs new login after group change)
+
+4.2 on Debian stretch, you also need to apply [this patch](https://github.com/openSUSE/obs-build/pull/376/files) to `/usr/lib/obs-build/build-vm-kvm`
+
 You probably need to adjust your `~/.oscrc`
 
 This config is known to work (except for huge packages like chromium that work with 8GB RAM):

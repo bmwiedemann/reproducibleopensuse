@@ -1,11 +1,12 @@
 #!/bin/bash
 if [[ -e _multibuild ]] ; then
     [[ $multibuild ]] ||
-         multibuild=$(grep -m 1 package _multibuild | sed 's/.*>\([^<>]*\)<.*/\1/')
-    if ! [[ $multibuild =~ test ]] ; then
-        export project=openSUSE:Factory
-        export repo=standard
-        export oscbuildparams="-M $multibuild"
+        multibuild=$(fgrep -v i686 _multibuild | grep -v '<!--' | fgrep -m 1 -e package -e flavor | sed 's/.*>\([^<>]*\)<.*/\1/')
+    if [[ $multibuild ]] && ! [[ $multibuild =~ test ]] ; then
+        export oscbuildparams+=" -M=$multibuild"
+        if [[ -e $multibuild.spec ]] ; then
+	    export spec=$multibuild.spec
+        fi
     fi
 fi
 exec rbk "$@" || exit 27

@@ -1,0 +1,60 @@
+# list of packages that don't work on 1-core-VMs:
+# 1.6 from 2020 affected, but master working
+aircrack-ng
+# FIXME
+arpack-ng
+# FIXME
+aws-c-common
+# FIXME ninja
+cartridges
+# https://bugzilla.opensuse.org/show_bug.cgi?id=1131699
+dovecot23
+# FIXME
+FlightGear
+# FIXME
+form
+# FIXME
+gromacs
+# FIXME ninja
+impression
+# FIXME
+kakoune
+liburing
+nim
+# https://bugzilla.opensuse.org/show_bug.cgi?id=1181083
+openblas
+# https://bugzilla.opensuse.org/show_bug.cgi?id=1170639
+perl-Image-Sane
+python-blosc2
+# https://github.com/devpi/devpi/issues/948
+python-devpi-server
+#test
+python-ZEO
+# FIXME
+python-execnet
+python-hdf5plugin
+python-limnoria
+python-paho-mqtt
+python-paramiko
+# https://github.com/giampaolo/pyftpdlib/issues/540
+python-pyftpdlib
+python-pytest-httpbin
+python-pytest-mpi
+python-pytest-salt-factories
+python-Scrapy
+python-sherpa
+python-sunpy
+python-websockets
+qt6-webengine
+spamassassin
+# https://bugzilla.suse.com/show_bug.cgi?id=1201273
+sundials
+# FIXME
+tbb
+# FIXME
+tinyssh
+# https://github.com/yast/yast-ruby-bindings/issues/269
+yast2-ruby-bindings
+
+
+python-django-request

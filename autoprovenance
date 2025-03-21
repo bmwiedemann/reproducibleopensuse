@@ -2,45 +2,114 @@
 # report on where a file is created during a build
 # Requires output of something like https://github.com/bmwiedemann/reproducible-faketools/blob/master/bin/rpmbuild-strace
 use strict;
+use Cwd;
+my $pkgname = getcwd; $pkgname=~s!.*/!!;
 my $stracefile=".rb.build.log.strace";
 open(STRACE, "<", $stracefile) or die "error opening $stracefile: $! ; you need to run stracebuild first";
 my $searchfile=shift or die "need filename to search for";
+my $dotfile=$ENV{DOTFILE}||"provenance.dot";
+open(DOT, ">", $dotfile) or die $!;
+print DOT qq!digraph "$pkgname" {\n graph[rankdir=RL]\n!;
 our %piddata=();
 
 #sub diag {print STDERR @_,"\n"}
 sub diag {}
 
-sub pidinfo($);
-sub pidinfo($)
+sub escape($)
+{ my $x=shift;$x=~s{[^a-zA-Z0-9 ()\[\]{}<>&|?';:.,_#=/*+-]}{\\$&}g; return $x }
+
+sub dot_label($)
+{ my $extra=shift;
+    return "" unless $extra;
+    return "[".join(" ", map{$_.'="'.escape($extra->{$_}).'"'} keys %$extra)."]";
+}
+
+my %edge_seen;
+my %node_seen;
+sub add_node($)
 { my $pid=shift;
+    return if $edge_seen{$pid}++;
+    my $details="";
+    my $exec=$piddata{$pid}{exec}||"";
+    my $dir=$piddata{$pid}{dir}||".";
+    my $node_extra={shape=>"plaintext", style=>"filled", fillcolor=>"#bbeeff"};
+    my $tip="pid=$pid dir=$dir ";
+    if($exec) {
+        if($exec=~m{^"[^ ]*/([^/ ]+)"}) {
+            $node_extra->{label}=$1;
+        }
+        $tip.=$exec;
+    }
+    $node_extra->{tooltip}=$tip;
+    $node_extra=dot_label($node_extra);
+    print DOT qq!$pid $node_extra\n!;
+}
+
+sub add_edge($$;$)
+{ my($pid1,$pid2,$extra)=@_;
+    return if $edge_seen{$pid1."-".$pid2}++;
+    foreach my $pid ($pid1,$pid2) {
+        add_node($pid);
+    }
+    $extra=dot_label $extra;
+    print DOT "$pid2 -> $pid1 $extra\n";
+}
+
+sub pidinfo($;$);
+sub pidinfo($;$)
+{ my ($pid, $extra)=@_;
     return "" unless $pid;
     my $exec=$piddata{$pid}{exec}||"";
     if($exec) {$exec=" exec=$exec"}
     my $dir=$piddata{$pid}{dir}||"";
     if($dir) {$dir=" dir=$dir"}
+    add_edge($pid, $piddata{$pid}{ppid}||0, $extra);
     "\n    by pid=$pid$dir$exec - started".pidinfo($piddata{$pid}{ppid});
+}
+
+sub add_file($$$;$)
+{ my ($pid, $syscall, $file, $extra)=@_;
+    $extra||="";
+    my %edge_style=(
+        open=>[color=>"darkgreen"],
+        link=>[color=>"blue", style=>"dashed"],
+        syml=>[color=>"red", style=>"dashed"],
+        rena=>[color=>"blue"],
+    );
+    diag "$pid found $file";
+    $file=~s/"([^"]*)"/$1/;
+    if($file!~m{^/}) {$file=($piddata{$pid}{dir}||".")."/".$file}
+    print "$file$extra written per $syscall".pidinfo($pid)."\n\n";
+    my $shortfile=$file; $shortfile=~s{.*/}{};
+    my $edge_extra=dot_label {label=>$syscall, penwidth=>4, @{$edge_style{substr($syscall,0,4)}}};
+    my $node_extra=dot_label {shape=>"ellipse", style=>"filled", fillcolor=>"#ffddaa", label=>$shortfile, tooltip=>"$file$extra"};
+    print DOT qq{$pid -> "$file" $edge_extra\n  "$file" $node_extra\n};
 }
 
 sub did_chdir($$)
 { my ($pid,$chdir)=@_;
-    my $newdir=".";
+    my $newdir;
     if($chdir=~m{^/}) { $newdir=$chdir }
-    elsif($piddata{$pid}{dir}) {
-        $newdir=$piddata{$pid}{dir}."/".$chdir;
-    }
+    else { $newdir=($piddata{$pid}{dir}||".")."/".$chdir }
     $piddata{$pid}{dir}=$newdir;
 }
 
 my $pidre=qr(^(?:\[ *[0-9]+s\] )?\[pid +(\d+)\]); # ignores build timestamp
-my $forkre=qr(vfork|fork|clone);
+my $stringre=qr("([^"]*)");
+my $forkre=qr(vfork|fork|clone|clone3);
+my $file2re=qr(symlink|symlinkat|link|linkat|rename|renameat|renameat2); # 2-operand file syscalls
 while(<STRACE>) {
-    if(m/$pidre open(?:at)?\((.*$searchfile.*)(?:O_WRONLY|O_RDWR)/o) {
+    if(m/$pidre (open)(?:at)?\((.*$searchfile.*)(?:O_WRONLY|O_RDWR)/o) {
         #[pid  8096] openat(AT_FDCWD, "/tmp/cczAkoQ7.s", O_WRONLY|O_CREAT|O_TRUNC, 0666 <unfinished ...>
-        my ($pid, $file)=($1,$2);
+        my ($pid, $syscall, $file)=($1,$2,$3);
         $file=~s/^AT_FDCWD, //;
         $file=~s/, $//;
-        diag "$pid found $file";
-        print "$file written".pidinfo($pid)."\n\n";
+        add_file $pid, $syscall, $file;
+    } elsif(m/$pidre ($file2re)\((?:AT_FDCWD, )?$stringre, (?:AT_FDCWD, )?"([^"]*${searchfile}[^"]*)"/o) {
+        #[pid 22994] renameat2(AT_FDCWD, "./confbvUCpB/out", AT_FDCWD, "pcp.lsm", RENAME_NOREPLACE) = 0
+        #[pid 18003] symlinkat("../pcp-pidstat.py", AT_FDCWD, "pcp-4.1.1/src/pcp/pidstat/test/pcp_pidstat.py") = 0
+        my ($pid, $syscall, $file1, $file2)=($1,$2,$3,$4);
+        add_file($pid, $syscall, $file2, " from $file1");
     }
     elsif(m/$pidre $forkre\(.* = (\d+)$/o ||
        m/$pidre <\.\.\. $forkre resumed>.* = (\d+)/o)
@@ -64,3 +133,5 @@ while(<STRACE>) {
         did_chdir($pid, $dir);
     }
 }
+print DOT "}\n"; close(DOT);
+system(qw"dot -O -T svg", $dotfile) if -x "/usr/bin/dot";

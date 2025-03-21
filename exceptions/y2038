@@ -1,0 +1,93 @@
+apache-arrow
+#https://github.com/borgbackup/borg/issues/6996
+#borgbackup
+breezy
+# https://github.com/boostorg/build/issues/760 https://tracker.ceph.com/issues/68778
+ceph
+# SSL
+certmonger
+galera-4
+# https://bugzilla.suse.com/show_bug.cgi?id=1223169
+gcc12
+gcc13
+gcc14
+httpie
+#https://github.com/libarchive/libarchive/issues/1837 https://github.com/libarchive/libarchive/pull/1836
+#libarchive
+# https://github.com/openSUSE/libzypp/issues/559
+#libzypp
+# https://bugzilla.opensuse.org/show_bug.cgi?id=1203317
+mercurial-extension-hg-evolve
+# TODO FTBFS-2023-09-04
+#mozilla-nss
+# https://github.com/nim-lang/Nim/issues/20285
+#nim
+# https://bugzilla.opensuse.org/show_bug.cgi?id=1203310
+#perl-DBD-MariaDB
+# https://github.com/jwilk-mirrors/perl-net-dns/issues/1
+perl-Net-DNS
+#perl-Time-Moment
+# maybe from memcache issue
+php-memcache
+# https://gitlab.com/procps-ng/procps/-/issues/362
+#procps
+# SSL SR 1058352 toolchain FTBFS-2038-01-01
+#python-aiosmtplib
+# TLS SR 1058352 toolchain FTBFS-2038-01-01
+#python-anyio
+# https://github.com/memcached/memcached/pull/927 toolchain FTBFS-2038
+python-cachelib
+# SSL SR 1058352 toolchain FTBFS-2038-01-01
+#python-cheroot
+# https://github.com/zopefoundation/DateTime/issues/56
+#python-DateTime
+# https://github.com/django/django/pull/16459 is follow-up on https://github.com/django/django/pull/10994
+#python-Django
+#python-Django4
+# https://github.com/flavors/django-graphql-jwt/issues/318
+python-django-graphql-jwt
+python-exiv2
+# https://github.com/lextudio/pysnmp/pull/35
+python-pysnmp
+# FIXME
+python-pytest-httpbin
+# https://bugzilla.opensuse.org/show_bug.cgi?id=1203310 mariadb toolchain FTBFS-2038
+#python-PyMySQL
+# mariadb toolchain FTBFS-2038
+python-sortinghat
+# SSL
+python-pytest-httpbin
+# https://github.com/arthurdejong/python-stdnum/issues/431
+python-python-stdnum
+# https://bugzilla.opensuse.org/show_bug.cgi?id=1203311
+#python-softlayer
+# https://github.com/GothenburgBitFactory/taskwarrior/pull/3052 https://github.com/GothenburgBitFactory/taskwarrior/issues/3050 FTBFS-2038 - toolchain from taskwarrior int overflow ; merged upstream, missing in OBS
+python-tasklib
+python-taskw
+# SSL SR 1058352 toolchain trustme FTBFS-2038-01-01
+#python-trio
+python-ZEO
+# https://github.com/theimpossibleastronaut/rmw/issues/439
+#rmw
+# https://github.com/WayneD/rsync/issues/366
+rsync
+# https://bugzilla.opensuse.org/show_bug.cgi?id=1208969
+sonic-pi
+# https://bugzilla.opensuse.org/show_bug.cgi?id=1226200
+systemd
+# https://bugzilla.opensuse.org/show_bug.cgi?id=1203982
+#tcl
+# https://github.com/yast/yast-core/issues/160 
+#yast2-core
+
+# python38 https://bugzilla.opensuse.org/show_bug.cgi?id=1202666
+#python-base
+
+# time overflow?
+bin86
+
+# toolchain mercurial https://github.com/WeblateOrg/weblate/issues/8556
+weblate
+
+#xemacs SR 1058331
+xemacs-packages

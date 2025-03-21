@@ -9,27 +9,56 @@ detect_repo()
         perl -ne '/^<buildinfo.*repository="([^"]*)"/ && print $1'
 }
 
+: ${pkg:=$(basename `pwd`)}
 : ${repo:=`detect_repo`}
+: ${olddeps:='netcat -z localhost 8080'}
+: ${fast:=false}
+: ${arch:=x86_64}
 export project=$(cat .osc/_project)
 export repo
-export arch=x86_64
+export arch
 
 export OUTDIR=binaries.nachbau
-rm -rf binaries $OUTDIR
-osc getbinaries $repo $arch || exit 16
-for bin in binaries/*rpm ; do rpm -qpi $bin | grep "^Signature.*:" ; rpm --delsign $bin ; done > binaries/signature
+$fast || rm -rf binaries $OUTDIR
+$fast || osc getbinaries --debuginfo --sources $project $pkg $repo $arch || exit 16
+$fast || rm -f binaries/*.{aarch64,ppc64le,s390x}.rpm binaries/*-32bit-*.rpm # for syslinux importing other arch's binaries into x86_64
+$fast || for bin in binaries/*rpm ; do rpm -qpi $bin | grep "^Signature.*:" ; rpm --delsign $bin ; done > binaries/signature
 p=$(basename $(pwd))
 origrpm=$(ls binaries/[a-zA-Z0-9]*.rpm | head -1)
 [ -n "$origrpm" ] || exit 17
 export buildhost=$(rpm -qp --qf "%{BUILDHOST}" $origrpm)
 export DISTURL=$(rpm -qp --qf "%{DISTURL}" $origrpm)
-export release=$(rpm -qp --qf "%{release}" $origrpm)
+: ${release:=$(rpm -qp --qf "%{release}" $origrpm |
+    perl -ne '@a=split(/\./, $_); print join(".",$a[0],$a[1])')}
+export release
+
+if grep -q "^$pkg$" "$(dirname $BASH_SOURCE)"/exceptions/withcheck ; then
+    export withcheck=1
+fi
+
 # dummy value to use the repo default
-export debuginfo=--clean
-export vmtype="--vm-type=kvm -j4"
+export debuginfo="--clean --baselibs"
+if [ -n "$offline" ] ; then
+    export clean="--clean --offline"
+fi
+: ${parallelism:=$(getjobs)}
+export vmtype="--vm-type=kvm -j$parallelism"
 export OSC_BUILD_ROOT=/var/tmp/build-root.${slot}/
+$fast || osc up -S
+srcmd5s=$(perl -ne 'if(m/srcmd5="([a-f0-9]+)"/i){print "$1\n"}' .osc/_files)
+srcmd5found=false
+if [[ "$DISTURL" = "(none)" ]] ; then FORCE=1 ; fi
+for srcmd5 in $srcmd5s ; do
+    echo "$DISTURL" | grep -q "$srcmd5" && srcmd5found=true
+done
+if [ "$FORCE" != 1 ] && ! $srcmd5found ; then
+    echo "skipping nachbau because binary was not built from this source"
+    exit 0
+fi
+if $olddeps ; then collectbdeps | tee .build.nachbau.collectbdeps.log ; oscbuildparams+=" -p deps " ; export oscbuildparams ; fi
+fixuposcmtime
 rm -f .build-*-nachbau
-rebuild
+nice -n 17 rebuild
 dir2=$OUTDIR compareone
 
 ret=$(cat .build-compare-retval)

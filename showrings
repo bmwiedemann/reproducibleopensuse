@@ -1,0 +1,17 @@
+#!/bin/sh
+test -e /tmp/ring1 || osc ls openSUSE:Factory:Rings:1-MinimalX > /tmp/ring1
+test -e /tmp/ring0 || osc ls openSUSE:Factory:Rings:0-Bootstrap > /tmp/ring0
+cp -a ~/f/.sle150-badlist.txt /tmp/ringsle15
+for ring in 0 1 sle15 ; do
+    echo "--- ring$ring ---"
+    for p in `cat /tmp/ring$ring` ; do
+        grep "^$p$" ~/tmp/build-compare-differed-builds.txt
+    done
+done
+
+# high prio items
+echo "--- ring 1+sle ---"
+for p in `cat /tmp/ring1` ; do
+    grep -q "^$p$" /tmp/ringsle15 || continue
+    grep "^$p$" ~/tmp/build-compare-differed-builds.txt
+done

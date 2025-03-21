@@ -5,10 +5,10 @@ fi
 cd .osc || { echo "^^ $1 ^^" ; exit 5 ; }
 
 maxt=0
-for f in * ; do
+for f in * sources/* ; do
     case "$f" in
-        _files|_meta|_build_repositories|_buildconfig-*|_buildinfo-*)
-		true
+        _files|_meta|_build_repositories|_last_buildroot|_buildconfig-*|_buildinfo-*|_osclib_version|sources)
+		continue
 		;;
 	*)
 		t=$(stat -c %Y "$f")

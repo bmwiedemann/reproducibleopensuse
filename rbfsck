@@ -1,0 +1,29 @@
+#!/bin/bash
+# sanity check
+bad=
+for p in * ; do test -e $p/.osc/_files || { echo $p ; bad=1 ; } ; done
+[[ $bad ]] && exit 32
+
+echo -n "total-packages: "
+ls | wc -l
+ls */.build-jsonresult | cut -d/ -f1 | sort > ~/tmp/rbbuild-tried.txt
+grep -l '^0$' */.osc-build-retval | cut -d/ -f1 > ~/tmp/status-succeeded-builds.txt
+buildtried=$(wc -l < ~/tmp/rbbuild-tried.txt)
+for status in FTBFS notforus waitdep ; do
+  grep -l '"status" : "'$status\" */.build-jsonresult | cut -d/ -f1 > ~/tmp/status-$status-builds.txt
+done
+buildverified=$(grep '"verified" : 2' */.build-jsonresult | wc -l)
+buildfailed=$(wc -l < ~/tmp/failed-builds.txt)
+buildfailedarch=$(grep "\"status\" : \"notforus\"" */.build-jsonresult | wc -l)
+buildfailedwaitdep=$(grep "\"status\" : \"waitdep\"" */.build-jsonresult | wc -l)
+buildsucceeded=$(grep '^0$' */.osc-build-retval | wc -l)
+echo "build-tried: $buildtried"
+echo "build-failed: $((buildfailed))"
+echo "build-n-a: $((buildfailedarch+buildfailedwaitdep))"
+echo "build-succeeded: $buildsucceeded"
+if ! [[ $((buildfailed+buildfailedarch+buildfailedwaitdep+buildsucceeded)) == $buildtried ]] ; then
+  echo sanity check failed
+  cat ~/tmp/status-*-builds.txt | sort | diff - ~/tmp/rbbuild-tried.txt
+else
+  echo all OK
+fi

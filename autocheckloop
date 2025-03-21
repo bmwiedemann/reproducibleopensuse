@@ -1,0 +1,18 @@
+#!/usr/bin/perl -w
+use strict;
+use JSON;
+
+open(STDIN, "-|", "tail -f /var/tmp/opensuse/openSUSE/.dumprabbit.json") or die $!;
+
+while(<>) {
+  next unless m/_link/;
+  my $d = decode_json($_);
+  next unless $d->{project} =~ /^openSUSE:/;
+  next unless $d->{project} =~ /:Staging:/;
+  if(system(qw"grep -q", "^$d->{package}\$", </root/reproducibleopensuse/exceptions/skip*>) == 0) {
+    print "skipping $d->{project} $d->{package}\n";
+    next;
+  }
+  print "checking $d->{project} $d->{package}\n";
+  system(qw"timeout 6h autocheckone", $d->{project}, $d->{package});
+}

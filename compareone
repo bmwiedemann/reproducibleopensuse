@@ -3,8 +3,12 @@ scriptdir=$(dirname $BASH_SOURCE)
 p=$(basename $(pwd))
 : ${dir1:=binaries}
 : ${dir2:=RPMS}
-    if ! test -e $dir1 || test -z "$(find $dir2/ -maxdepth 1 -name '*.rpm' -print -quit)" ; then
+    if ! test -e $dir1 ||
+         test -z "$(find $dir1/ -maxdepth 1 -name '*.rpm' -print -quit)" ||
+         test -z "$(find $dir2/ -maxdepth 1 -name '*.rpm' -print -quit)"
+    then
          echo "result:$p=notbuilt"
+         jsonresultcache .
          exit 0
     fi
     o=$dir2/$p-compare.out

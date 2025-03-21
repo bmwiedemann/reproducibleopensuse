@@ -1,0 +1,3 @@
+#!/bin/sh
+d=${1:-.}
+view $d/binaries.nachbau/*-compare.out

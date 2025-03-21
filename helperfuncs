@@ -1,0 +1,48 @@
+gs()
+{
+    git init
+    git add .
+    git commit -m "orig"
+    git tag orig
+    #git gc >/dev/null 2>&1 &
+}
+
+qs()
+{
+    local fuzz=--fuzz=1
+    quilt -v setup $fuzz $(basename $(pwd)).spec
+    d=$(find . -maxdepth 1 -type d | grep -v -e '/binaries' -e /RPMS -e /deps -e '\.osc$' -e '^\.$'|head -1)
+    if [[ $d ]] ; then
+        cd $d
+        touch series
+        [[ -e patches ]] || ln -s ".." patches
+        quilt push -a $fuzz
+    fi
+}
+
+bcocd()
+{
+    osc bco
+    cd home\:*\:branches\:*/$(basename $(pwd)) &&
+    cp -a ../../*spec .
+    osc up
+    osc meta prjconf -F ~/reproducibleopensuse/prjconf
+}
+
+function vonoa
+{
+    d=${1:-.}
+    view $d/.rb.noarchcheck.diff
+}
+
+function rbn
+{
+    make -f ~/reproducibleopensuse/Makefile.rebuild .build-differed-nachbau
+}
+export -f rbn
+function rbnoa
+{
+    make -f ~/reproducibleopensuse/Makefile.rebuild .rb.noarchcheck
+}
+export -f rbnoa
+# to be used with "rbmany rbn *"

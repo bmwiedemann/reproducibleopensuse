@@ -1,4 +1,6 @@
 #!/bin/sh
+filelist=$(for p in $(cat ~/tmp/failchecklist) ; do echo $p/RPMS*/.build.log2 $p/binaries.nachbau/.build.log2 ; done)
+[ -n "$FULL" ] && filelist=*/RPMS*/.build.log2
 unset CDPATH
 p1="unresolvable: nothing provides librpm.so.3"
 p2="Kernel panic"
@@ -7,18 +9,27 @@ p4="No buildstatus set, either the base system is broken"
 p5="create archive failed on file"
 p6="unsupported package type. magic"
 p7="Starting Emergency Shell"
+p8='Failed to get "write" lock'
+p9='mount must be owned by root. Exit'
+p10='error: init_b_cache'
+p10b='error: .init_b_cache'
+p11='not an rpm package'
 pssl="SSL Error: unexpected eof"
+espc="echo: write error: No space left on device"
 emem="Out of memory: Kill process"
 emem2="out of memory allocating"
+eipfs1="Transport endpoint is not connected"
 eswi="Failed to start Switch Root"
 estruc=" failed: Structure needs cleaning"
+epatch=" hunk FAILED -- saving rejects to file"
 p400="Server returned an error: HTTP Error 400: Bad Request"
 p500="Server returned an error: HTTP Error 500: Internal Server Error"
 p502="Server returned an error: HTTP Error 502: Bad Gateway"
 p503="Server returned an error: HTTP Error 503: Service Temporarily Unavailable"
 w1="W: python-bytecode-inconsistent-mtime"
-fgrep "[Errno 2] No such file or directory: '/var/tmp/osbuild-packagecache/home:bmwiedemann:reproducible/_pubkey" */RPMS*/.build.log2
-fgrep -e "$p1" -e "$p2" -e "$p3" -e "$p4" -e "$p5" -e "$p6" -e "$p7" -e "$pssl" -e "$eswi" -e "$estruc" -e "$p400" -e "$p500" -e "$p502" -e "$p503" -e "$emem" -e "$emem2" */.build.log */RPMS*/.build.log2
+fgrep "[Errno 2] No such file or directory: '/var/tmp/osbuild-packagecache/home:bmwiedemann:reproducible/_pubkey" $filelist
+fgrep -e "$p1" -e "$p2" -e "$p3" -e "$p4" -e "$p5" -e "$p6" -e "$p7" -e "$p8" -e "$p9" -e "$p10" -e "$p10b" -e "$p11" -e "$pssl" -e "$eswi" -e "$estruc" -e "$epatch" -e "$p400" -e "$p500" -e "$p502" -e "$p503" -e "$espc" -e "$emem" -e "$emem2" -e "$eipfs1" $filelist
+fgrep -l "can't open binaries" */binaries.nachbau/*-compare.out
 grep "in-progress" */RPMS*/.osc-build-retval
 #post-process with
 #grep python-bytecode-inconsistent-mtime | grep -o "/usr/lib[^ ]*" /root/tmp/bytecode-inconsistent.txt|sort -u > /root/tmp/bytecode-inconsistent2.txt

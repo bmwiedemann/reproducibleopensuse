@@ -1,0 +1,28 @@
+digraph G {
+  find -> debug -> fix -> submit
+
+  subgraph cluster_0 {
+    color=lightgray;
+    style=filled;
+    rbk -> noarchcheck -> nachbau;
+    label = "Is there an issue?";
+  }
+  subgraph cluster_1 {
+    color="#ffbbbb";
+    style=filled;
+    autoclassify -> autoprovenance -> "other provenance";
+    label = "Where is the issue?";
+  }
+  subgraph cluster_2 {
+    color="#ffff99";
+    style=filled;
+    edit -> {SDE,sort,memset};
+    label = "How to fix the issue?";
+  }
+  subgraph cluster_3 {
+    color="#bbffbb";
+    style=filled;
+    submit -> find_repo -> {github,gitlab,sf,gerrit,arc,ML} -> keep_track;
+    label = "How to submit the fix?";
+  }
+}

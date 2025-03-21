@@ -1,0 +1,140 @@
+#!/usr/bin/perl -w
+use strict;
+
+# todo: verify it is a git repo with
+# curl -s https://github.com/bmwiedemann/reproducibleopensuse.git/info/refs?service=git-upload-pack | grep -a -o refs/heads/.*
+
+sub https($)
+{ my $url=shift;
+    $url=~s!^http:!https:!;
+    return $url;
+}
+
+sub detect_sf_vcs($$)
+{ my($url, $obspkg)=@_;
+    my $vcshtml = `curl -s -L $url/$obspkg`;
+    if($vcshtml =~m!"hg clone ([^" ]+)!) {
+        return "hg::$1"
+    }
+    $vcshtml = `curl -s -L $url/code-0 $url/code`;
+    if($vcshtml =~m!"svn checkout (https?://[^" ]+)!) {
+        return "svn::$1"
+    }
+    if($vcshtml =~m! cvs -z3 -d(:pserver[^" ]+)!) {
+        return "cvs::$1"
+    } else {print "$vcshtml\n";}
+    return "";
+}
+
+sub normalize_url($)
+{
+    $_[0] =~ s/www\.github\.com/github.com/;
+}
+
+sub find_vcs($)
+{ my $spec=shift;
+    open(my $f, "<", $spec) or die "cannot read spec file $spec";
+    my $obspkg=$spec; $obspkg=~s!.*/(.*)\.spec$!$1!;
+    my @urls=();
+    while(<$f>) {
+        if(m/^(?:#Git-Clone|URL|Source\d*)\s*:\s*(.*)/i) {
+            my $url=$1;
+            next unless $url=~/:/;
+            normalize_url($url);
+            $url =~ s/%\{name\}|%name/$obspkg/;
+            if($url=~m!(\S*\.git)/?$! || $url=~m!^(git://.*)!) {return $1}
+            if($url=~m!((?:git|https?)://(?:github\.com|gitlab\.com|bitbucket\.org|gitlab\.freedesktop\.org|gitlab\.gnome\.org|gitlab\.suse\.de)/[^/]+/[^/]+)!i or
+                $url=~m!(https?://pagure\.io/[^/]+)!i) {
+                return https($1).".git";
+            }
+#debug: akonadi-calendar-tools/akonadi-calendar-tools.spec only had            https://www.kde.org         https://download.kde.org/stable/release-service/%{version}/src/%{name}-%{version}.tar.xz        https://download.kde.org/stable/release-service/%{version}/src/%{name}-%{version}.tar.xz.sig
+            if($url=~m!\.kde\.org!i) {
+                # TODO: verify guess
+                return "https://github.com/kde/$obspkg.git"
+            }
+#debug: alac/alac.spec only had            https://macosforge.github.io/alac/
+            if($url=~m!https?://([^/.]+).github\.(?:io|com)/([^/]+)!i) {
+                return "https://github.com/$1/$2.git"
+            }
+#debug: albert/albert.spec only had            https://albertlauncher.github.io/
+#debug: aranym/aranym.spec only had            http://aranym.github.io/
+            if($url=~m!https?://([^/.]+)\.github\.io!i or
+               $url=~m!https?://github\.com/([^/.]+)i!) {
+                # could guess from spec and prj
+                return "https://github.com/$1/FIXME.git $obspkg"
+            }
+#https://download.gnome.org/sources/accerciser => https://gitlab.gnome.org/GNOME/accerciser.git
+            if($url=~m!https?://download\.gnome\.org/sources/([^/]+)!i) {
+                return "https://gitlab.gnome.org/gnome/$1.git";
+            }
+#debug: python-XStatic-jquery-ui/python-XStatic-jquery-ui.spec only had https://raw.githubusercontent.com/jquery/jquery-ui/master/LICENSE.txt
+            if($url=~m!https?://raw\.github(?:usercontent)?\.com/([^/]+/[^/]+)!i) {
+                return "https://github.com/$1.git";
+            } 
+
+# https://cgit.freedesktop.org/xorg/driver/xf86-video-opentegra/
+            if($url =~ m!https?://cgit.freedesktop.org/(.*[^/])/?$!) {
+                return "https://gitlab.freedesktop.org/$1.git";
+            }
+#https://www.freedesktop.org/software/accountsservice/ => https://github.com/freedesktop/accountsservice.git
+            if($url=~m!https?://www\.freedesktop\.org/software/([^/]+)!i) {
+                return "https://github.com/freedesktop/$1.git";
+            }
+# https://gitlab.linphone.org/BC/public/bcg729/-/archive/%{version}/bcg729-%{version}.tar.gz
+            if($url=~m!(https://gitlab.linphone.org/\w+/\w+/\w+)!) {
+                return "$1.git";
+            }
+
+#http://commons.apache.org/bsf/
+#http://geronimo.apache.org/
+#http://maven.apache.org/shared/maven-jarsigner/
+#http://launchpad.net/cloud-init/
+#http://libvirt.org/ocaml/
+#http://mojo.codehaus.org/javacc-maven-plugin/
+#http://pypi.python.org/pypi/rss2email/
+#https://developers.yubico.com/yubico-pam/
+#https://hackage.haskell.org/package/%{pkg_name}
+#https://gcc.gnu.org/
+#http://www.tug.org/texlive/
+#https://metacpan.org/release/%{cpan_name}
+#https://archive.xfce.org/src/apps/gigolo/0.5/%{name}
+#http://savannah.nongnu.org/projects/avr-libc
+#http://ftp.gnu.org/gnu/autoconf
+#http://www.gnu.org/software/autoconf
+#https://www.nongnu.org/zutils/zutils.html
+#https://download.savannah.gnu.org/releases/zutils/
+            if($url=~m!www.gnu.org/software/([^/]+)!i or
+               $url=~m!ftp.gnu.org/gnu/([^/]+)!i or
+               $url=~m!https?://savannah.(?:non)?gnu.org/projects/([^/]+)!i) {
+                return "FIXME $& prj=$1";
+            }
+            if($url=~m!([a-z0-9-]+)\.(?:sourceforge|sf)\.net!i or $url=~m!https?://(?:sourceforge|sf)\.net/projects/([^/]+)!i) {
+                my $prj = $1;
+                # detect type of VCS, e.g. xine = hg
+                if($ENV{VCSDETECT}) {
+                    return detect_sf_vcs("https://sourceforge.net/p/$prj", $obspkg);
+                }
+                return "https://sourceforge.net/projects/$prj/FIXME $obspkg";
+            }
+            if($url=~m!(https?://hg.mozilla.org/projects/[^/]+)!i) {
+                return "hg::".https($1)
+            }
+            push(@urls, $url);
+            if($ENV{online}) {
+                $url =~s![^a-zA-Z0-9.:~/_-]!!g;
+                my $getinforefs = `curl -s $url/info/refs`;
+                if($getinforefs =~ m!refs/heads!) {
+                    return $url;
+                }
+            }
+        }
+    }
+    print "debug: $spec only had @urls\n";
+    #TODO: crawl @urls, google $obspkg github/git
+    return undef;
+}
+
+foreach my $spec (@ARGV) {
+    my $vcs = find_vcs($spec) || "unknown";
+    print "$spec = $vcs\n";
+}

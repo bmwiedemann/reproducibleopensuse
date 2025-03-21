@@ -1,0 +1,19 @@
+#!/usr/bin/perl -w
+# convert a db.txt into a db
+# similar to postmap
+use strict;
+use DB_File;
+my $indb = shift or die "usage: input.txt";
+my $outdb = $indb.".db";
+$outdb =~ s/\.db\.txt\.db$/.db/;
+open(my $infd, "<", $indb) or die $!;
+our %hdrdata;
+tie(%hdrdata, "DB_File", $outdb, O_RDWR|O_CREAT) or die "error opening DB: $!";
+
+while(<$infd>) {
+    my @a = split(" ", $_);
+    chomp($a[1]);
+#    print "$a[0] : $a[1]\n";
+    next if $hdrdata{$a[0]};
+    $hdrdata{$a[0]} = $a[1];
+}

@@ -1,0 +1,23 @@
+#!/bin/sh
+srcprj=$1
+pkg=$2
+rbprj=home:bmwiedemann:reproducible:rebuild
+
+if test -z "$pkg" -a -n "$srcprj" ; then
+    pkg=$(echo "$srcprj" | cut -d/ -f2)
+    srcprj=$(echo "$srcprj" | cut -d/ -f1)
+fi
+
+if test -z "$srcprj" -o -z "$pkg" ; then
+    echo "Usage: $0 PRJ PKG"
+    echo "$0 openSUSE:Factory:Staging:adi:14/msgpack-c"
+    exit 1
+fi
+
+#osc release --no-delay $srcprj --target-project $rbprj $pkg --target-repository=openSUSE_Factory -r standard # cannot copy binaries between different reposiory servers yet
+
+osc copypac $srcprj $pkg $rbprj
+# wait for build done
+osc results --watch $rbprj $pkg
+osc rebuild --all $rbprj $pkg
+# TODO: check if old binary was reused (rebuild-counter==1)

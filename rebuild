@@ -1,13 +1,15 @@
 #!/bin/bash
-
-EXCEPTIONS_DIR="$(dirname $BASH_SOURCE)/exceptions"
+BASE_DIR="$(dirname $BASH_SOURCE)"
+EXCEPTIONS_DIR="$BASE_DIR/exceptions"
 : ${OSC_BUILD_ROOT:="/var/tmp/build-root/standard-x86_64"}
 : ${clean:=--clean}
 : ${OUTDIR:=RPMS}
-: ${release:=0.0}
+: ${release:=1.1}
 : ${buildhost:=reproducible}
 export OSC_BUILD_ROOT
 pkg=$(basename $(pwd))
+#: ${spec:=*$(basename `pwd`).spec}
+: ${spec:=$(ls $pkg.spec *:$pkg.spec 2>/dev/null|head -1)}
 : ${debuginfo:=--disable-debuginfo}
 clean+=" --release=$release"
 if grep -q "^$pkg$" $EXCEPTIONS_DIR/cleanbuild ; then
@@ -16,6 +18,9 @@ fi
 if grep -q "^$pkg$" $EXCEPTIONS_DIR/rootforbuild ; then
   rootforbuild=" --userootforbuild"
 fi
+if grep -q '^# needssslcertforbuild$' $spec ; then
+  cp -a $BASE_DIR/_projectcert.crt .
+fi
 if grep -q "^$pkg$" $EXCEPTIONS_DIR/debuginfo ; then
   debuginfo="--debuginfo"
 fi
@@ -23,26 +28,43 @@ if grep -q "^$pkg$" $EXCEPTIONS_DIR/date ; then
   VM_CUSTOMOPT=""
 fi
 oscopts+=("--build-opt=--buildtool-opt=--noclean") # to counter rpm commit b34333fa021c0ee7215714eeef96d1a2843ea08e and still get buildroot diffs for r-b debugging
+oscopts+=("--build-opt=--vm-use-mkfs-copyin") # to counter https://github.com/openSUSE/obs-build/issues/1030
+if ! [[ "$withcheck" ]] ; then
+  oscopts+=("--nocheck")
+fi
 if [[ $VM_CUSTOMOPT ]] && osc build --help | grep -q build-opt ; then
   oscopts+=("--build-opt=--vm-custom-opt=$VM_CUSTOMOPT")
   unset VM_CUSTOMOPT
 fi
-[[ $DISTURL ]] && oscopts+=("--build-opt=--disturl=$DISTURL")
-[[ $rbsnd ]] && oscopts+=(--define='%__spec_build_post [ -e /usr/bin/strip-nondeterminism ] && find -type f -print0 | xargs -0 --no-run-if-empty strip-nondeterminism --timestamp=${SOURCE_DATE_EPOCH:-1494270000} --clamp-timestamp ; exit 0')
-oscopts+=("--build-opt=--vm-disk-filesystem=ext4")
+[[ $rbfilesys = unreproducible ]] && grep -q vm-disk-dirindex /usr/lib/build/build && oscopts+=("--build-opt=--vm-disk-dirindex")
+[[ $rbfilesys = reproducible ]] && grep -q nodirindex /usr/lib/build/build && oscopts+=("--build-opt=--vm-disk-filesystem-options=nodirindex")
+[[ $DISTURL ]] && [[ $DISTURL != "(none)" ]] && oscopts+=("--build-opt=--disturl=$DISTURL")
+oscopts+=("--define=%no_store_expanded_spec 1")
+[[ $reservedspace ]] && oscopts+=("--define=%__gpg_reserved_space $reservedspace")
+oscopts+=("--build-opt=--vm-disk-filesystem=ext4" --trust-all-projects)
 getent passwd qemu >/dev/null || oscopts+=("--build-opt=--vm-user=nobody")
-oscopts+=(--define='%source_date_epoch_from_changelog Y' --define="%_buildhost $buildhost" --define='%clamp_mtime_to_source_date_epoch Y' --define='%use_source_date_epoch_as_buildtime Y')
+oscopts+=(--define='%source_date_epoch_from_changelog 1' --define="%_buildhost $buildhost" --define='%clamp_mtime_to_source_date_epoch 1' --define='%use_source_date_epoch_as_buildtime 1')
+if [[ $nolto ]] ; then
+  oscopts+=(--define='%_lto_cflags %{nil}')
+fi
+[[ $optflags ]] && oscopts+=(--define="%optflags $optflags")
+[[ $nopgo ]] && oscopts+=(--define='%do_profiling 0')
 
 #vmtype="--vm-type=kvm"
 : ${project:=home:bmwiedemann:reproducible}
 : ${repo:=openSUSE_Tumbleweed}
+alternativeproject="--alternative-project=$project"
 rm -rf $OSC_BUILD_ROOT/home/abuild/rpmbuild/RPMS/ $OSC_BUILD_ROOT/.mount/.build.packages/RPMS/ $OSC_BUILD_ROOT/.build.log
 rm -rf $OUTDIR
 mkdir -p $OUTDIR
 echo in-progress > $OUTDIR/.osc-build-retval
 hostname > $OUTDIR/buildhost
 set -x
-osc build --keep-pkg=$OUTDIR/ --alternative-project "$project" --nopreinstallimage $debuginfo --noservice$rootforbuild ${oscbuildparams} $vmtype $clean "${oscopts[@]}" $repo $(basename `pwd`).spec "$@" 2>&1 | tee $OUTDIR/.build.log2
+osc build --keep-pkg=$OUTDIR/ $alternativeproject --nopreinstallimage \
+  --nodebugpackages $debuginfo --noservice$rootforbuild ${oscbuildparams} \
+  $vmtype $clean "${oscopts[@]}" $repo $arch $spec "$@" 2>&1 |
+    timeout -k 10 36h \
+    tee $OUTDIR/.build.log2
 echo ${PIPESTATUS[0]} > $OUTDIR/.osc-build-retval
 cp -a $OUTDIR/.osc-build-retval .
 cp -a $OSC_BUILD_ROOT/.build.log $OUTDIR/

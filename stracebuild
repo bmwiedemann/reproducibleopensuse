@@ -1,5 +1,5 @@
 #!/bin/sh
 : ${slot:=4}
 export OSC_BUILD_ROOT=/var/tmp/build-root.${slot}/
-osc build --clean --noservice --alternative-project home:bmwiedemann:reproducible -x reproducible-faketools-strace "$@"
+nice -n 17 osc build --clean --nocheck --noservice --trust-all-projects -x reproducible-faketools-strace "$@"
 cp -a $OSC_BUILD_ROOT/.build.log .rb.build.log.strace

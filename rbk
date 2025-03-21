@@ -1,33 +1,79 @@
 #!/bin/bash -e
 # rebuild with KVM mode
 pkg=$(basename `pwd`)
-years=15
+: ${spec:=*$pkg.spec}
+
+mem=$(awk -e '/^build-memory/ {print $3}' ~/.config/osc/oscrc | grep . || echo 128)
+# TODO: parse _constraints
+if grep -q "^$pkg$" ~/reproducibleopensuse/exceptions/memory && [[ $mem -lt 6000 ]] ; then
+    echo "skipping package '$pkg' because of too low build-memory value in ~/.oscrc"
+    exit 37
+fi
+
+: ${buildrootbase:=/var/tmp}
+: ${years:=16}
 if grep -q "^$pkg$" "$(dirname $BASH_SOURCE)"/exceptions/neardate ; then
     years=1
+fi
+if grep -q "^$pkg$" "$(dirname $BASH_SOURCE)"/exceptions/nearestdate ; then
+    years=0
+fi
+if grep -q "^$pkg$" "$(dirname $BASH_SOURCE)"/exceptions/y2038 || [[ $arch = i586 ]] ; then
+    years=12
+fi
+if grep -q "^$pkg$" "$(dirname $BASH_SOURCE)"/exceptions/nopgo ; then
+    export nopgo=1
+fi
+if grep -q '%{?suse_build_hwcaps_libs}' *.spec ; then
+    cputype2=Haswell
+    grep -q avx /proc/cpuinfo || exit 12 # skip on old CPU
 fi
 if grep -q "^$pkg$" "$(dirname $BASH_SOURCE)"/exceptions/cpu ; then
     cputype2=host
 fi
+if grep -q "^$pkg$" "$(dirname $BASH_SOURCE)"/exceptions/j3 ; then
+    parallelism2=3
+fi
+if grep -q "^$pkg$" "$(dirname $BASH_SOURCE)"/exceptions/j1 ; then
+    parallelism=1
+fi
+if grep -q "^$pkg$" "$(dirname $BASH_SOURCE)"/exceptions/withcheck ; then
+    export withcheck=1
+fi
+: ${offline:=false}
+: ${noupdate:=false}
 : ${slot:=4}
 : ${clean:=--clean --offline}
 : ${project:=home:bmwiedemann:reproducible}
 : ${repo:=openSUSE_Tumbleweed}
+: ${arch:=x86_64}
+: ${arch2:=x86_64}
 : ${datediff:=$(((((365*$years+36)*24+13)*60+17)*60))}
 : ${host1:=buildhosta}
 : ${host2:=buildhostb}
 : ${parallelism:=4}
 : ${parallelism2:=1}
+: ${rbfilesys:=unreproducible}
+: ${cputype:=host}
 : ${cputype2:=qemu64}
 : ${vmtype:=--vm-type=kvm}
+export rbfilesys
+export arch
 export vmtype
 now=$(date +%s)
 later=$(date --date=@$((now+datediff)) -u "+%FT%T")
-export OSC_BUILD_ROOT=/var/tmp/build-root.${slot}/
+alternativeproject="--alternative-project=$project"
+export OSC_BUILD_ROOT=$buildrootbase/build-root.${slot}/
 export VM_CUSTOMOPT=""
-osc up -S
+$noupdate || $offline || osc up -S
 fixuposcmtime
 mkdir -p RPMS
-osc build ${oscbuildextrapkg} --preload --nopreinstallimage --noservice --vm-type=kvm --alternative-project=$project ${oscbuildparams} $repo $pkg.spec 2>&1 | tee RPMS/.build.log2
+[[ $arch = $arch2 ]] && a= || a=$arch
+if [ ! -e "$spec" -a -e "flatpak.yaml" ] ; then export spec=flatpak.yaml ; fi
+[[ $rbsnd ]] && oscbuildextrapkg+=" --extra-pkgs=strip-nondeterminism "
+for a in $a $arch2 ; do
+    $offline || osc build ${oscbuildextrapkg} --preload --nopreinstallimage --noservice --trust-all-projects --vm-type=kvm $alternativeproject ${oscbuildparams} $repo $a $spec 2>&1 | tee RPMS/.build.log2
+done
 if (( ${PIPESTATUS[0]} )) ; then
     if grep -q "Error: build description file named '.*does not exist" RPMS/.build.log2 ; then
         echo 2
@@ -36,13 +82,22 @@ if (( ${PIPESTATUS[0]} )) ; then
     fi > .osc-build-retval
     exit 33
 fi
-rm -f .build-differed .build-rbkt
+rm -f .build-differed .build-rbkt .build-jsonresult
 export clean
-vmtype="--vm-type=kvm" clean="$clean -j${parallelism}" HOST=$host1 OUTDIR=RPMS.2017 nice -n 7 rebuild &
+export VM_CUSTOMOPT="-cpu $cputype"
+optflags="$optflags1" vmtype="--vm-type=kvm" clean="$clean -j${parallelism}" HOST=$host1 OUTDIR=RPMS.2017 nice -n 17 rebuild &
+sleep 8 # avoid osc race around ./.osc/_last_buildroot.new and .osc/_last_buildroot
 pid=$!
 export VM_CUSTOMOPT="-rtc base=$later -cpu $cputype2,l3-cache=on"
-export OSC_BUILD_ROOT=/var/tmp/build-root.${slot}b/
-clean="$clean -j${parallelism2}" HOST=$host2 OUTDIR=RPMS rebuild
-wait $pid
+export OSC_BUILD_ROOT=$buildrootbase/build-root.${slot}b/
+if [ -n "$varyrelease" ] ; then
+    export release=1234
+fi
+withcheck=1 optflags="$optflags2" clean="$clean -j${parallelism2}" arch=$arch2 HOST=$host2 OUTDIR=RPMS nice -n 10 rebuild &
+wait
+ret1=`cat RPMS/.osc-build-retval`
+[ "$ret1" -eq 0 ] || echo "$ret1" > .osc-build-retval
+ret2=`cat RPMS.2017/.osc-build-retval`
+[ "$ret2" -eq 0 ] || echo "$ret2" > .osc-build-retval
 dir1=RPMS.2017 compareone
 grep '^0$' .build-differed || oscmount

@@ -1,0 +1,3 @@
+#!/bin/sh
+# filter for filterdiff that splits long lines at word boundaries
+sed 's/ /\n/g' "$1"

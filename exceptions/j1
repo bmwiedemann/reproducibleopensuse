@@ -1,0 +1,4 @@
+# packages that must be built with -j1 to become reproducible
+#go1.14
+# j4 build fails with memory-problems
+PrusaSlicer

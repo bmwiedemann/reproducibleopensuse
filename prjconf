@@ -1,0 +1,8 @@
+Macros:
+%want_reproducible_builds 1
+%_buildhost reproducible
+%source_date_epoch_from_changelog Y
+%clamp_mtime_to_source_date_epoch Y
+%use_source_date_epoch_as_buildtime Y
+%no_store_expanded_spec 1
+:Macros

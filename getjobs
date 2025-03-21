@@ -1,0 +1,19 @@
+#!/usr/bin/perl -w
+use strict;
+my $jobs = 4;
+
+if(-e '_constraints') {
+    my $c = `cat _constraints`;
+    if($c =~ m,<jobs>(\d+)</jobs>,) {
+        $jobs = $1
+    }
+}
+if($jobs > 4 && $jobs <=12) { # map to actual OBS worker size
+    $jobs = 12
+}
+my $spec=`strings binaries/*.src.rpm`;
+if($spec =~ /make -O -j12/ or
+   $spec =~ /make -j12/ or
+   $spec =~ /cmake --build build -j12/
+   ) { $jobs = 12 }
+print $jobs,"\n";
