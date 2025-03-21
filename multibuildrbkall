@@ -28,4 +28,4 @@ fi
 	fi
 	echo "success $(basename $(pwd)) $oscbuildparams"
     done
-touch .rb.multibuildrbkall.succeeded
+touch .build.multibuildrbkall.succeeded
