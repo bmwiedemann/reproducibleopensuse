@@ -40,6 +40,7 @@ fi
 [[ $rbfilesys = reproducible ]] && grep -q nodirindex /usr/lib/build/build && oscopts+=("--build-opt=--vm-disk-filesystem-options=nodirindex")
 [[ $DISTURL ]] && [[ $DISTURL != "(none)" ]] && oscopts+=("--build-opt=--disturl=$DISTURL")
 oscopts+=("--define=%no_store_expanded_spec 1")
+oscopts+=("--define=%want_reproducible_builds 1")
 [[ $reservedspace ]] && oscopts+=("--define=%__gpg_reserved_space $reservedspace")
 oscopts+=("--build-opt=--vm-disk-filesystem=ext4" --trust-all-projects)
 getent passwd qemu >/dev/null || oscopts+=("--build-opt=--vm-user=nobody")
