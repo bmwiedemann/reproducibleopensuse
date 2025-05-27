@@ -21,8 +21,8 @@ EOF
 ring0=$(wc -l < /tmp/ring0)
 ring1=$(wc -l < /tmp/ring1)
 ringtotal=$((ring0+ring1))
-ring0=$(($(fgrep -nm 1 -- "--- ring1 ---" ~/tmp/unreproduciblerings.txt | cut -d: -f1)-2))
-ring1=$(($(fgrep -nm 1 -- "--- ringsle15 " ~/tmp/unreproduciblerings.txt | cut -d: -f1)-3-ring0))
+ring0=$(($(grep -F -nm 1 -- "--- ring1 ---" ~/tmp/unreproduciblerings.txt | cut -d: -f1)-2))
+ring1=$(($(grep -F -nm 1 -- "--- ringsle15 " ~/tmp/unreproduciblerings.txt | cut -d: -f1)-3-ring0))
 
 compiled=$(echo $(grep build-succeeded ~/tmp/rbstats.txt| cut -d: -f2))
 buildcomparefailed=$(echo $(grep build-compare-failed ~/tmp/rbstats.txt| cut -d: -f2))

@@ -3,7 +3,7 @@ export CLEAN=1
 pkg=$(basename $(pwd))
 if [[ -e _multibuild ]] ; then
     [[ $multibuilds ]] ||
-        multibuilds=$(fgrep -v i686 _multibuild | grep -v '<!--' | fgrep -e package -e flavor | sed 's/.*>\([^<>]*\)<.*/\1/')
+        multibuilds=$(grep -F -v i686 _multibuild | grep -v '<!--' | grep -F -e package -e flavor | sed 's/.*>\([^<>]*\)<.*/\1/')
 else
     multibuilds=
 fi
