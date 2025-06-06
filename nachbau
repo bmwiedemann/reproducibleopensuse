@@ -27,6 +27,7 @@ p=$(basename $(pwd))
 origrpm=$(ls binaries/[a-zA-Z0-9]*.rpm | head -1)
 [ -n "$origrpm" ] || exit 17
 export buildhost=$(rpm -qp --qf "%{BUILDHOST}" $origrpm)
+export buildtime=$(rpm -qp --qf "%{BUILDTIME}" $origrpm)
 export DISTURL=$(rpm -qp --qf "%{DISTURL}" $origrpm)
 : ${release:=$(rpm -qp --qf "%{release}" $origrpm |
     perl -ne '@a=split(/\./, $_); print join(".",$a[0],$a[1])')}
