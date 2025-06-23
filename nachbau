@@ -18,6 +18,11 @@ export project=$(cat .osc/_project)
 export repo
 export arch
 
+if [ "$project" = SUSE:SLFO:Main ] ; then
+    project=SUSE:SLFO:Main:Build
+    FORCE=1
+fi
+
 export OUTDIR=binaries.nachbau
 $fast || rm -rf binaries $OUTDIR
 $fast || osc getbinaries --debuginfo --sources $project $pkg $repo $arch || exit 16
@@ -29,6 +34,7 @@ origrpm=$(ls binaries/[a-zA-Z0-9]*.rpm | head -1)
 export buildhost=$(rpm -qp --qf "%{BUILDHOST}" $origrpm)
 export buildtime=$(rpm -qp --qf "%{BUILDTIME}" $origrpm)
 export DISTURL=$(rpm -qp --qf "%{DISTURL}" $origrpm)
+export VCSURL=$(rpm -qp --qf "%{VCS}" $origrpm)
 : ${release:=$(rpm -qp --qf "%{release}" $origrpm |
     perl -ne '@a=split(/\./, $_); print join(".",$a[0],$a[1])')}
 export release
@@ -41,6 +47,12 @@ fi
 export debuginfo="--clean --baselibs"
 if [ -n "$offline" ] ; then
     export clean="--clean --offline"
+fi
+if ls binaries/*-debugsource-* >/dev/null 2>&1 ; then
+    debuginfo+=" --debuginfo"
+fi
+if [ -n "$VCSURL" -a "$VCSURL" != "(none)" ] ; then
+    debuginfo+=" --build-opt=--vcs=$VCSURL"
 fi
 : ${parallelism:=$(getjobs)}
 export vmtype="--vm-type=kvm -j$parallelism"
