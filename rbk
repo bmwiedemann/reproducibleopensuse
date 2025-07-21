@@ -92,7 +92,7 @@ pid=$!
 export VM_CUSTOMOPT="-rtc base=$later -cpu $cputype2,l3-cache=on"
 export OSC_BUILD_ROOT=$buildrootbase/build-root.${slot}b/
 if [ -n "$varyrelease" ] ; then
-    export release=1234
+    export release=1.1234
 fi
 withcheck=1 optflags="$optflags2" clean="$clean -j${parallelism2}" arch=$arch2 HOST=$host2 OUTDIR=RPMS nice -n 10 rebuild &
 wait
