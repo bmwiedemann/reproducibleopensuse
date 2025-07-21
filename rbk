@@ -57,6 +57,7 @@ fi
 : ${cputype:=host}
 : ${cputype2:=qemu64}
 : ${vmtype:=--vm-type=kvm}
+: ${vmtype2:=--vm-type=kvm}
 export rbfilesys
 export arch
 export vmtype
@@ -85,7 +86,7 @@ fi
 rm -f .build-differed .build-rbkt .build-jsonresult
 export clean
 export VM_CUSTOMOPT="-cpu $cputype"
-optflags="$optflags1" vmtype="--vm-type=kvm" clean="$clean -j${parallelism}" HOST=$host1 OUTDIR=RPMS.2017 nice -n 17 rebuild &
+optflags="$optflags1" vmtype="$vmtype2" clean="$clean -j${parallelism}" HOST=$host1 OUTDIR=RPMS.2017 nice -n 17 rebuild &
 sleep 8 # avoid osc race around ./.osc/_last_buildroot.new and .osc/_last_buildroot
 pid=$!
 export VM_CUSTOMOPT="-rtc base=$later -cpu $cputype2,l3-cache=on"
