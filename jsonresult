@@ -83,12 +83,29 @@ sub get_build_duration($)
   return $duration;
 }
 
+sub osc_get_project($)
+{ my $dir = shift;
+  eval{ getline("$dir/.osc/_project") } or getline("$dir/../.osc/_project")
+}
+
+sub osc_get_data($)
+{ my $dir = shift;
+  my $oscdata;
+  eval{
+    $oscdata=XMLin("$dir/.osc/_files");
+  };
+  return $oscdata if $oscdata;
+  # git case without .osc pkg dir
+  my $pwd=`pwd`; chomp($pwd); $pwd=~s,.*/,,;
+  return {name=>$pwd, rev=>"git"}
+}
+
 sub get_status_for_one_dir($)
 {
   my $dir=shift;
   print STDERR "processing $dir\n";
   if(! -e "$dir/.osc-build-retval") {return () } # skip unbuilt
-  my $oscdata=XMLin("$dir/.osc/_files");
+  my $oscdata=osc_get_data($dir);
   my $name=$oscdata->{name};
   my $version=find_version($dir, "$dir/$name");
   my $data = {
@@ -97,7 +114,7 @@ sub get_status_for_one_dir($)
     architecture=>(POSIX::uname())[4],
     status=>find_status($dir),
     verified=>find_verified($dir),
-    release=>getline("$dir/.osc/_project"),
+    release=>osc_get_project($dir),
     opensusetweaks=>eval{getline("$dir/.build-rbkt")}||undef,
     opensuseautoclassify=>eval{getline("$dir/.rb.autoclassify")}||undef,
     build_date=>(stat("$dir/.osc-build-retval"))[9],
