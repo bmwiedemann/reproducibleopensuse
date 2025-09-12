@@ -96,7 +96,7 @@ sub osc_get_data($)
   };
   return $oscdata if $oscdata;
   # git case without .osc pkg dir
-  my $pwd=`pwd`; chomp($pwd); $pwd=~s,.*/,,;
+  my $pwd=`cd $dir ; pwd`; chomp($pwd); $pwd=~s,.*/,,;
   return {name=>$pwd, rev=>"git"}
 }
 
