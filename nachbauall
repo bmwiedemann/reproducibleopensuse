@@ -11,6 +11,9 @@ function testone
             if [[ -e $multibuild.spec ]] ; then
 	        export spec=$multibuild.spec
             fi
+            if [[ -e $multibuild ]] ; then
+	        export spec=$multibuild
+            fi
 	    osc api "/build/openSUSE:Factory/_result?package=$pkg:$multibuild&repository=standard&arch=x86_64" | grep -E 'code="(excluded|disabled|unresolvable)"' && return
 	else
 	    osc api "/build/openSUSE:Factory/_result?package=$pkg&repository=standard&arch=x86_64" | grep -E 'code="(excluded|disabled|unresolvable)"' && return
