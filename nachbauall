@@ -1,5 +1,6 @@
 #!/bin/bash
 export CLEAN=1
+: ${project:=openSUSE:Factory}
 pkg=$(basename $(pwd))
 
 function testone
@@ -14,9 +15,9 @@ function testone
             if [[ -e $multibuild ]] ; then
 	        export spec=$multibuild
             fi
-	    osc api "/build/openSUSE:Factory/_result?package=$pkg:$multibuild&repository=standard&arch=x86_64" | grep -E 'code="(excluded|disabled|unresolvable)"' && return
+	    osc api "/build/$project/_result?package=$pkg:$multibuild&repository=standard&arch=x86_64" | grep -E 'code="(excluded|disabled|unresolvable)"' && return
 	else
-	    osc api "/build/openSUSE:Factory/_result?package=$pkg&repository=standard&arch=x86_64" | grep -E 'code="(excluded|disabled|unresolvable)"' && return
+	    osc api "/build/$project/_result?package=$pkg&repository=standard&arch=x86_64" | grep -E 'code="(excluded|disabled|unresolvable)"' && return
 	    nachbau ; return
 	fi
 	echo "running $pkg $oscbuildparams"
