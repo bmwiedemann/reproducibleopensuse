@@ -78,5 +78,5 @@ ret=$(cat .build-compare-retval)
 mv .build-compare-retval .build-compare-retval-nachbau
 mv .build-differed .build-differed-nachbau
 # restore rbk result status
-dir1=RPMS.2017 compareone
+dir1=RPMS.2 compareone
 exit $ret

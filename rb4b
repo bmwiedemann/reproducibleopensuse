@@ -6,5 +6,5 @@ hostname sles12b
 #clean="--noinit --release=12.34" rb
 clean="--clean --release=0.0" rb
 hostname `cat /etc/hostname`
-dir1=RPMS.2017 compareone
+dir1=RPMS.2 compareone
 

@@ -3,6 +3,6 @@ osc up
 date --set="2017-01-21"
 hostname sles12a
 clean="--clean --release=0.0" rb
-rm -rf RPMS.2017
-cp -a RPMS{,.2017}
+rm -rf RPMS.2
+cp -a RPMS{,.2}
 rb4b

@@ -86,7 +86,7 @@ fi
 rm -f .build-differed .build-rbkt .build-jsonresult
 export clean
 export VM_CUSTOMOPT="-cpu $cputype"
-optflags="$optflags1" vmtype="$vmtype2" clean="$clean -j${parallelism}" HOST=$host1 OUTDIR=RPMS.2017 nice -n 17 rebuild &
+optflags="$optflags1" vmtype="$vmtype2" clean="$clean -j${parallelism}" HOST=$host1 OUTDIR=RPMS.2 nice -n 17 rebuild &
 sleep 8 # avoid osc race around ./.osc/_last_buildroot.new and .osc/_last_buildroot
 pid=$!
 export VM_CUSTOMOPT="-rtc base=$later -cpu $cputype2,l3-cache=on"
@@ -98,7 +98,7 @@ withcheck=1 optflags="$optflags2" clean="$clean -j${parallelism2}" arch=$arch2 H
 wait
 ret1=`cat RPMS/.osc-build-retval`
 [ "$ret1" -eq 0 ] || echo "$ret1" > .osc-build-retval
-ret2=`cat RPMS.2017/.osc-build-retval`
+ret2=`cat RPMS.2/.osc-build-retval`
 [ "$ret2" -eq 0 ] || echo "$ret2" > .osc-build-retval
-dir1=RPMS.2017 compareone
+dir1=RPMS.2 compareone
 grep '^0$' .build-differed || oscmount
