@@ -1,0 +1,9 @@
+#!/bin/sh
+mkdir .osc || exit 0
+pkg=$(basename $(pwd))
+echo "$pkg" > .osc/_package
+cp -a ../.osc/{_apiurl,_osclib_version,_project,_scm} .osc
+touch .osc/_build_repositories
+rev=$(cat .git/refs/heads/*|head -1)
+test -e .osc/_files || echo "<directory name=\"$pkg\" rev=\"$rev\"/>" > .osc/_files
+
