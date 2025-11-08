@@ -1,0 +1,9 @@
+#!/usr/bin/perl -w
+use strict;
+while(<>) {
+   chomp;
+   my $orig = $_;
+   s/RPMS.2017/RPMS.2/;
+   print "mv $orig $_\n";
+   rename($orig, $_);
+}
