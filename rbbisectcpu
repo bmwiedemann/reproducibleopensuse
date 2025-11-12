@@ -1,0 +1,15 @@
+#!/bin/sh
+: ${slot:=4}
+export OSC_BUILD_ROOT=/var/tmp/build-root.${slot}/
+
+#for cpu in qemu64 Penryn Broadwell Conroe Haswell host ; do
+for cpu in host Haswell Conroe Broadwell Penryn qemu64 ; do
+    if ! osc build --keep-pkgs RPMS.cpu --release 1.1 --vm-type=kvm --clean --noservice "--build-opt=--vm-custom-opt=-cpu $cpu" \
+      -j8 \
+      --alternative-project home:bmwiedemann:reproducible "$@" \
+      openSUSE_Tumbleweed ; then
+        echo "building with cpu=$cpu failed"
+        exit 11
+    fi
+    md5sum RPMS.cpu/*.rpm
+done
