@@ -1,0 +1,54 @@
+#!/bin/sh
+# 'nachbau' is the German word for a copy/clone of something
+#
+# this script fetches a package from OBS and tries to do a local build that matches it
+
+set -x
+detect_repo()
+{
+    osc buildinfo |
+        perl -ne '/^<buildinfo.*repository="([^"]*)"/ && print $1'
+}
+
+: ${parallelism:=4}
+: ${pkg:=$(basename `pwd`)}
+: ${repo:=`detect_repo`}
+#: ${olddeps:='true'}
+: ${olddeps:='netcat -z localhost 8080'}
+: ${fast:=false}
+: ${arch:=x86_64}
+export project=$(cat .osc/_project 2>/dev/null || cat ../.osc/_project)
+export repo
+export arch
+
+export OUTDIR=binaries.nachbau
+$fast || rm -rf binaries $OUTDIR
+$fast || osc getbinaries --debuginfo --sources $project $pkg $repo $arch || exit 16
+$fast || rm -f binaries/*.{aarch64,ppc64le,s390x}.rpm binaries/*-32bit-*.rpm # for syslinux importing other arch's binaries into x86_64
+$fast || for bin in binaries/*rpm ; do rpm -qpi $bin | grep "^Signature.*:" ; rpm --delsign $bin ; done > binaries/signature
+p=$(basename $(pwd))
+origrpm=$(ls binaries/[a-zA-Z0-9]*.rpm | head -1)
+[ -n "$origrpm" ] || exit 17
+
+slsa=binaries/_slsa_provenance.json
+[ -e $slsa ] || exit 18
+
+#export vmtype="--vm-type=kvm --jobs $parallelism"
+export vmtype="--jobs $parallelism"
+export BUILD_ROOT=/var/tmp/build-root.${slot}/
+$fast || osc up -S
+#fixuposcmtime
+rm -f .build-*-nachbau
+mkdir -p $OUTDIR
+nice -n 17 sudo build --changelog --clean --debuginfo --root $BUILD_ROOT $vmtype $slsa
+echo "$?" > $OUTDIR/.osc-build-retval
+cp -a $BUILD_ROOT/home/abuild/rpmbuild/{SRPMS,RPMS/*}/*.rpm $OUTDIR/
+
+dir2=$OUTDIR compareone
+
+ret=$(cat .build-compare-retval)
+mv .build-compare-retval .build-compare-retval-nachbau
+mv .build-differed .build-differed-nachbau
+# restore rbk result status
+dir1=RPMS.2 compareone
+exit $ret
