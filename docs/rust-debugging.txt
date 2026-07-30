@@ -9,7 +9,8 @@ rust enables local-LTO by default that adds large amounts of noise in binary dif
 build-root diffs are also noisy from timestamps and hashes. Sometimes one can find good pointers in there.
 
 We build without internet, so large vendor tarballs are used to keep crates. These can still have buggy versions of i18n and other parts we fixed earlier.
-So before starting a search, it would be good to check that known fixes are included.
+So before starting a search, it would be good to check that known fixes are included. How to do that efficiently?
+Earlier toolchain fixes:
 * https://github.com/longbridge/rust-i18n/pull/104
 * https://github.com/kellpossible/cargo-i18n/pull/151
 * https://github.com/gtk-rs/gtk-rs-core/pull/1840
@@ -17,4 +18,12 @@ So before starting a search, it would be good to check that known fixes are incl
 * https://github.com/rust-lang/git2-rs/pull/619
 * https://pyrossh.dev/repos/rust-embed/commits/5574de9c39b988573e88145c6235e8ab3ff4eab7
 * https://github.com/alexcrichton/xz2-rs/pull/102
+
+Builds usually take many minutes even on multi-core machines. This means iteration cycles are slow.
+
+A normal test could use
+    parallelism2=6 parallelism=7 rbk
+
+and once other issues are resolved, do a harder test with
+    debuginfo="--debuginfo" rbk
 
