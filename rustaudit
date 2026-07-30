@@ -65,6 +65,24 @@ lzma-sys-*|build.rs|sort|https://github.com/alexcrichton/xz2-rs/pull/102
 liblzma-sys-*|build.rs|sort|https://github.com/alexcrichton/xz2-rs/pull/102
 EOF
 
+hr "compile-time entropy (fresh random constants in every build)"
+# These bake OS entropy into the binary while it compiles, so no tweak bit can
+# suppress them and no two builds ever agree. Each has an env knob that pins it.
+for c in const-random const-random-macro ; do
+    for d in $vendor/$c-[0-9]* ; do
+        [ -d "$d" ] || continue
+        echo "!! $(basename $d) - set CONST_RANDOM_SEED in %build to pin it"
+        echo "!!   e.g. export CONST_RANDOM_SEED=\"\${SOURCE_DATE_EPOCH}\""
+        grep -rln 'const_random!' $vendor/*/src/ 2>/dev/null |
+            sed -e 's!/src/.*!!' -e "s#^$vendor/#   invoked by #"
+    done
+done
+for d in $vendor/ahash-[0-9]* ; do
+    [ -d "$d" ] || continue
+    grep -q 'compile-time-rng' "$d/Cargo.toml" 2>/dev/null &&
+        echo ".. $(basename $d) can use compile-time-rng; only active when runtime-rng is off"
+done
+
 hr "build metadata crates (embed build date, git state or NUM_JOBS)"
 # These are the crates whose whole purpose is to bake volatile state into the
 # binary. Most honour SOURCE_DATE_EPOCH by now - verify that it reaches cargo.

@@ -29,8 +29,10 @@ and once other issues are resolved, do a harder test with
 
 Helper scripts in this repo for the sections below:
     rustaudit       static audit of an unpacked rust source tree (section 1)
-    rustcwrap       RUSTC_WRAPPER that fingerprints each crate (section 4)
+    rustcwrapdiff   summarize the two crate fingerprint logs (section 4)
     cargochecksum   refresh .cargo-checksum.json after patching (section 7)
+and one that has to run inside the build root, so it ships as a package:
+    reproducible-faketools-rustc   fingerprints each crate (section 4)
 
 
 === 1. audit the source before spending a build on it ===
@@ -38,6 +40,7 @@ Helper scripts in this repo for the sections below:
 Run 'rustaudit' in the unpacked source dir (after %prep or 'qs'). It takes
 about a second and reports:
 * whether the known toolchain fixes above are present in vendor/
+* compile-time entropy (const-random, ahash compile-time-rng) - see 2.1
 * crates whose job is to bake volatile state into the binary
   (built, vergen*, shadow-rs, build-time, git-version) and who pulls them in
 * build.rs scripts reading readdir order, the clock, NUM_JOBS or rand
@@ -90,15 +93,49 @@ Both rbk builds unpack the same tarballs, so vendor/ *content* is identical
 between them. Only readdir order, the clock, hostname, NUM_JOBS, pid and
 ASLR differ. Anything else rustaudit prints cannot be the cause.
 
+Note the asymmetry between the two languages, because most rust packages
+have a python or meson build driver around cargo:
+* python: our builds export PYTHONHASHSEED=42, so set/dict order is fixed
+  and identical in both builds. An unsorted set() in a build script is
+  still worth sorting, but it cannot be the cause of a diff here.
+* rust: there is no equivalent knob. RandomState reseeds per process, so
+  hash order stays a live variable in every build.
+So a hash-order finding in a .py file is a false lead; the same finding in
+rust code is not.
+
+2.1 compile-time entropy
+The other reason for a "99" is a crate that reads OS entropy while it
+compiles and bakes the result into the binary as a constant. No tweak bit
+touches it either. The one seen so far is const-random, whose const_random!()
+macro calls getrandom() in the proc macro. It has an escape hatch, so the fix
+is one line in %build and needs no patch and no vendor refresh:
+    export CONST_RANDOM_SEED="${SOURCE_DATE_EPOCH}"
+Note const-random reads it with option_env!, i.e. when const-random-macro
+itself is compiled, so exporting it for the whole cargo run is what works.
+
+Worked example, gstreamer-plugins-rs 1.28.5: exactly one of 63 files differed,
+libgstburn.so, in 450 bytes. 53 of them were four movabs immediates inside
+  <burn_backend::tensor::kind::Float as ...Numeric<burn_ndarray::NdArray>>::random
+and the rest were llvm.<hash> names in .strtab plus the build-id, both
+downstream of those four constants. Cause: analytics/burn/Cargo.toml has
+    burn = { version = "0.21", default-features = false }
+which drops the std feature, so burn-ndarray takes its no_std get_seeded_rng()
+path and seeds SmallRng from const_random!(u64), const-folded into four u64.
+The upstream fix is features = ["std"] there - but that pulls burn-autodiff,
+which is not in the vendor tarball, so it needs a vendor refresh first.
+CONST_RANDOM_SEED fixes it today without touching the sources.
+
 Low-entropy cases (a two-element HashMap comes out right 50% of the time)
 need repeats or you will believe a wrong answer:
     rbretries=4 autoclassify
 and re-run rbk two or three times before declaring a fix good.
 
-Known trap: vendor/rustversion-*/src/time.rs calls SystemTime::now() from a
-proc macro and ignores SOURCE_DATE_EPOCH. rbk shifts the clock by 16 years,
-which is enough to flip a #[rustversion::since(...)] cfg. Worth an upstream
-fix; rustversion is a build-dependency of a large part of crates.io.
+When a scan turns up a clock read in a proc macro, check where the value
+actually goes before chasing it. vendor/rustversion-*/src/time.rs calls
+SystemTime::now(), but today() only feeds two error messages, so it cannot
+affect a build that succeeds. Patch sent upstream anyway so that it stops
+costing everyone the same manual check:
+    ~/reproducibleopensuse/rustversion branch source-date-epoch
 
 
 === 3. target/ is the rust provenance goldmine ===
@@ -141,29 +178,81 @@ the two build roots yourself or drop that line for the debug session.
 Diffing the two logs names the culprit crate directly, which is what
 autoprovenance would have done for a C package.
 
-The script has to exist inside the build root, so write it out in %prep and
-point RUSTC_WRAPPER at it in %build. Put the log under %{_builddir} so the
-mounted build roots of section 3 have it:
+It has to run inside the build root, so it ships in reproducible-faketools:
 
-    export RUSTCWRAP_LOG=%{_builddir}/rustcwrap
-    export RUSTC_WRAPPER=%{_builddir}/rustcwrap.sh
+    oscbuildextrapkg="--extra-pkgs=reproducible-faketools-rustc" rbk
 
-then after both builds
-    diff -ru /var/tmp/build-root.4{,b}/.mount/home/abuild/rpmbuild/BUILD/rustcwrap |
-        head -40
+Installing that subpackage is all it takes - its rpmbuild.d hook exports
+RUSTC_WRAPPER and writes the log to /home/abuild/rpmbuild/rustcwrap, which
+is inside the tree that oscmount diffs.
 
-Reading the result:
-* only the 'metadata' line differs -> an env var or a path reached rustc.
-  Look at that crate's build script output (section 3.1), not at its code.
-* only some sha256 lines differ -> that crate's own codegen is unstable.
-* the first differing crate in dependency order is the one to fix;
-  everything downstream differs only as a consequence.
-  'cargo tree -i <crate>' gives you that order and also tells you which
-  plugins should show the diff - a cheap check of your hypothesis.
+Do NOT read those logs with diff. Every crate downstream of the culprit
+differs as a consequence, so a raw 'diff -ruN' of the two trees runs to five
+figures. Use the summarizer, which mounts nothing and needs no arguments:
+
+    rustcwrapdiff
+
+It splits the differing crates into
+* SUSPECTS - crates whose *own* artifacts differ. This is the short list.
+  The most upstream of them is the cause; order them with cargo tree -i.
+* link steps that differ only because an input to them did - ignore these,
+  they are the consequence.
+* metadata/flags differences - an env var or a path reached rustc. Look at
+  that crate's build script output (section 3.1), not at its code.
+On the gstreamer-plugins-rs run that found the burn bug this turned 13093
+lines of diff into 7 suspects.
 
 Build scripts run outside rustc, so the wrapper does not cover them, but a
 build script whose output changed makes its consumer crate differ, so the
 first differing crate still points at the right neighbourhood.
+
+4.1 noise you should not chase
+* build order does not need to be deterministic. rustc's output for a crate
+  does not depend on what else is compiling next to it, so -j only reaches
+  the build through NUM_JOBS (see 1.2), never through rustc itself. In that
+  same run, zero of the 64 crates had a differing metadata or flags line,
+  which is the direct measurement of "nothing about the invocation varied".
+  Making the order deterministic would cost a lot and fix nothing.
+* rbk deliberately gives the two builds different core counts, so every
+  crate whose build.rs feeds cc-rs from an unsorted read_dir or from
+  $NUM_JOBS shows up. In that run ring, libsodium_sys, whisper_rs_sys and
+  zstd_sys all had differing rlibs while the linked plugins came out equal,
+  because member order in an .a does not change what the linker emits.
+  To silence that class while hunting something else, give both sides the
+  same count - parallelism=7 parallelism2=7 rbk - rather than dropping to
+  one core. -j1 on both sides is rbkt bit 8; it is a slow diagnostic to run
+  once you already have a diff, not a way to look for one, because it also
+  hides every parallelism-sensitive bug you were trying to find.
+* unpaired log files named autocfg_<hex>_<n> mean the build root still has
+  an old reproducible-faketools-rustc. autocfg honours RUSTC_WRAPPER and
+  probes with randomly named crates, so each probe used to leave a log file
+  that existed in only one of the two builds.
+* .a and .o files under target/*/build/*/out. Every -sys crate that compiles
+  C shows up here. It is *not* ar embedding mtimes: binutils ar honours
+  SOURCE_DATE_EPOCH by itself, and in a real build the member headers are
+  already "0/0 ... 1970". It is gcc's LTO random seed, because openSUSE
+  builds these with -ffat-lto-objects, so each object carries .gnu.lto_*
+  sections whose name suffix is a fresh random value per invocation:
+      .gnu.lto_.inline.fadabfdac2d65a2   vs   .gnu.lto_.inline.c6c91723aa9757fb
+  The compiled code is the same - check it in one command:
+      objcopy -O binary --only-section=.text a.o /tmp/a.bin   # and for b.o
+  If .text matches, ignore the whole class; it does not reach the rpm,
+  because the final link takes the code and drops the LTO IR. Filter it with
+      diff -ruN -x '*.a' -x '*.o' ...
+  Only if it ever does reach an artifact is there something to fix, and then
+  the lever is -frandom-seed=<per-file constant> or dropping
+  -ffat-lto-objects, not anything to do with ar.
+
+4.2 reading a build root without root
+oscmount needs sudo to loop-mount. If you only want to look at files, ext4
+images can be mounted read-only in userspace:
+    mkdir -p /tmp/m4 /tmp/m4b
+    for x in "" b ; do
+        fuse2fs -o ro,fakeroot /var/tmp/build-root.4$x/img /tmp/m4$x
+    done
+    ...
+    fusermount -u /tmp/m4 ; fusermount -u /tmp/m4b
+That is enough for ar t, readelf, objcopy and diff on anything in the tree.
 
 
 === 5. shortening the iteration cycle ===
