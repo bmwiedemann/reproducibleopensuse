@@ -5,6 +5,7 @@ stracebuild + autoprovenance are usually not useful for similar reason as in jav
 autoclassify rarely gives insight - none of the tweaks help with random HashMap/HashSet order.
 
 rust enables local-LTO by default that adds large amounts of noise in binary diffs for a single bit of variation. Disable it if possible. export RUSTFLAGS='-C lto=off'
+Inside a .spec that export only reaches the parts of the build that do not go through %{cargo_build}/%{cargo_install}, which set their own RUSTFLAGS. -> see section 8 before you trust any env var you set in a spec.
 
 build-root diffs are also noisy from timestamps and hashes. Sometimes one can find good pointers in there.
 
@@ -166,7 +167,9 @@ so a diff points straight at the unstable line.
 * the order of cargo:rerun-if-changed= lines in 'output'. Several build
   scripts (rav1e, ring, av-scenechange) emit those from an unsorted
   read_dir walk. It varies, it is harmless, and it is not worth a patch.
-* -C incremental paths, if the build did not disable incremental
+* -C incremental paths, if the build did not disable incremental. Skipping
+  the path is right, but do not conclude the build is fine: incremental
+  compilation is itself a source of diffs, see section 8.2
 
 Note: oscmount currently starts with 'exit 0 # skip', so you have to mount
 the two build roots yourself or drop that line for the debug session.
@@ -206,6 +209,12 @@ Build scripts run outside rustc, so the wrapper does not cover them, but a
 build script whose output changed makes its consumer crate differ, so the
 first differing crate still points at the right neighbourhood.
 
+One log file per crate name, so it is last-write-wins. If %install re-runs
+cargo - and with cargo-c it does, see 8.3 - the 'flags' line you read for
+those crates is %install's invocation, not %build's. rav1e's 'rav1e' log
+shows the flags of the 'cargo cinstall' in %install, which is why it looks
+like %build's exports never arrived when for that unit they had.
+
 4.1 noise you should not chase
 * build order does not need to be deterministic. rustc's output for a crate
   does not depend on what else is compiling next to it, so -j only reaches
@@ -217,7 +226,10 @@ first differing crate still points at the right neighbourhood.
   crate whose build.rs feeds cc-rs from an unsorted read_dir or from
   $NUM_JOBS shows up. In that run ring, libsodium_sys, whisper_rs_sys and
   zstd_sys all had differing rlibs while the linked plugins came out equal,
-  because member order in an .a does not change what the linker emits.
+  because what differed inside those archives was only the gcc LTO seed of
+  the last bullet, which the final link drops. That is a statement about
+  those members' *contents* - member order is a different thing and it does
+  reach the binary, see 4.2.
   To silence that class while hunting something else, give both sides the
   same count - parallelism=7 parallelism2=7 rbk - rather than dropping to
   one core. -j1 on both sides is rbkt bit 8; it is a slow diagnostic to run
@@ -237,13 +249,44 @@ first differing crate still points at the right neighbourhood.
   The compiled code is the same - check it in one command:
       objcopy -O binary --only-section=.text a.o /tmp/a.bin   # and for b.o
   If .text matches, ignore the whole class; it does not reach the rpm,
-  because the final link takes the code and drops the LTO IR. Filter it with
+  because the final link takes the code and drops the LTO IR. Once 4.2 has
+  cleared the member order, filter it with
       diff -ruN -x '*.a' -x '*.o' ...
   Only if it ever does reach an artifact is there something to fix, and then
   the lever is -frandom-seed=<per-file constant> or dropping
   -ffat-lto-objects, not anything to do with ar.
 
-4.2 reading a build root without root
+4.2 archive member order is not noise
+Do that filter only after comparing the member order:
+    for x in "" b ; do ar t /tmp/m4$x/path/to/libfoo.a > /tmp/ord$x ; done
+    diff /tmp/ord /tmp/ordb
+The linker pulls archive members in the order they appear, so that order
+becomes the .text layout of everything that links the archive. If it
+differs, you have found the bug and not noise.
+
+rav1e 0.8.1 was exactly this and nothing else. All 57 members of
+librav1e-<hash>.rlib were byte-identical between the two builds - only
+their order was not - and the shipped librav1e.so.0.8.1 had the assembly
+routines at different addresses, rav1e_put_bilin_8bpc_ssse3 and
+rav1e_put_bilin_8bpc_avx512icl swapping places with everything after them
+shifted by 0x40. Cause: nasm-rs with the "parallel" feature shares one work
+list between the calling thread and the jobs its helper thread spawns, then
+concatenates the two result vectors, so which file lands in which vector
+depends on jobserver timing. build.rs hands that Vec straight to
+cc::Build::object(), so it becomes the member order of librav1easm.a.
+Fixed in the crate, not in the package:
+    ~/reproducibleopensuse/openSUSE:Factory/rav1e/nasm-rs
+    branch deterministic-object-order
+Note this is a plain thread race, so equal core counts do not hide it -
+parallelism=7 parallelism2=7 reproduced it every time.
+
+Note what the 4.1 filter costs you here. A section 3 diff of target/ does
+report "Binary files ... librav1easm.a differ", which is the whole trail;
+adding -x '*.a' -x '*.o' to it reported zero differences for rav1e. So
+reach for that filter to quiet a class you have already identified, never
+as the first thing you run.
+
+4.3 reading a build root without root
 oscmount needs sudo to loop-mount. If you only want to look at files, ext4
 images can be mounted read-only in userspace:
     mkdir -p /tmp/m4 /tmp/m4b
@@ -326,6 +369,9 @@ Beyond 'RUSTFLAGS=-C lto=off' from above:
   legibly, instead of the 17h<hash>E form
 These change -C metadata, so only ever compare a tweaked build against
 another tweaked build, never against an untweaked one.
+Exporting RUSTFLAGS in %build gets them only past the cargo macros' back,
+not through them - see section 8.1 - so check the rustcwrap 'flags' line of
+the crate you actually care about to confirm the flag landed there.
 
 
 === 7. patching a vendored crate ===
@@ -344,3 +390,79 @@ upstream in the crate, and the same patch will be needed by every other
 distro package that vendors it. Note the crate version in the patch header
 so the next vendor tarball refresh shows whether it can be dropped.
 Then add a line for it to the table in 'rustaudit'.
+
+Easiest way to produce such a patch, once you have the fix committed in a
+checkout of the crate, is to let git write the vendor paths for you:
+
+    git format-patch -1 --stdout --no-signature \
+        --src-prefix=a/vendor/nasm-rs-0.3.2/ \
+        --dst-prefix=b/vendor/nasm-rs-0.3.2/ > ../rav1e-nasm-rs-<topic>.patch
+
+The commit message becomes the patch header, so the packaged patch and the
+upstream submission stay the same text.
+
+
+=== 8. the spec sets less of the environment than it looks ===
+
+Two of the levers above are environment variables, and the openSUSE cargo
+macros set their own copies. A line in %build can look right and still
+reach only part of the build, so confirm every flag in the rustcwrap
+'flags' line (section 4) rather than in the spec or the build log.
+
+8.1 RUSTFLAGS
+The macros all run cargo through %__cargo, which is
+
+    %__cargo CARGO_INCREMENTAL=0 CARGO_FEATURE_VENDORED=1 \
+             RUSTFLAGS="%{?__rustflags} %{?build_rustflags}" \
+             CARGO_TARGET_DIR=... %{_bindir}/cargo
+
+i.e. those are command-prefix assignments. So %{cargo_build} and
+%{cargo_install} build with %{build_rustflags} and nothing else, whatever
+%build exported - but the assignments do not persist, so a bare
+'cargo cbuild' or 'cargo cinstall' on the next line does get your exports.
+One spec therefore builds half the package with your flags and half
+without. rav1e's %build had
+
+    export RUSTFLAGS="%{build_rustflags} -C lto=off"
+    %{cargo_build}
+    CFLAGS="%{optflags}" cargo cbuild
+
+and of its rustcwrap 'flags' lines, 64 carry -C lto=off while 170 carry
+%{build_rustflags} without it.
+
+To reach everything, redefine the macro input instead of exporting:
+
+    %global build_rustflags %{build_rustflags} -C lto=off
+
+Do not try to read this off the build log: bash traces a prefix assignment
+on its own '+' line, so the macro's RUSTFLAGS looks exactly like a shell
+assignment that overwrote yours. The rustcwrap 'flags' line is the only
+honest answer - subject to the last-write-wins caveat in section 4.
+
+8.2 CARGO_INCREMENTAL
+%__cargo sets CARGO_INCREMENTAL=0 the same way, so it covers the macros and
+stops at them. 'cargo cbuild' / 'cargo cinstall' build with whatever the
+profile asks for, and [profile.release] incremental = true is common in
+Cargo.toml - rav1e has it, as does every crate that copied that profile.
+It is not reproducible. The incremental session hash goes into the .rcgu.o
+file names, and under lto=thin LLVM derives the .llvm.<hash> suffix of
+promoted local symbols from the module id, so the shipped library differs
+in a few symbol names and the .strtab size that follows from them:
+
+    -  anon.c8262dd94e9298412e971bc29852bf5d.3.llvm.443857735349943663
+    +  anon.c8262dd94e9298412e971bc29852bf5d.3.llvm.17355317238218771162
+
+Two tells that you are looking at this and not at real codegen: the rlibs
+differ only in member *names* (the <session>.rcgu.o component, so 4.2's
+ar t comparison shows it at once), and the flags line carries
+-C incremental=PATH. The fix needs no patch:
+
+    export CARGO_INCREMENTAL=0
+
+8.3 %build and %install are separate shells
+rpm runs each section as its own script, so an export in %build is gone by
+%install. That matters whenever %install re-runs cargo, and the cargo-c
+layout always does - '%{cargo_install}' followed by a 'cargo cinstall', and
+cinstall is what produces the shipped .so. For rav1e, setting
+CARGO_INCREMENTAL=0 in %build alone made the binary package reproducible
+and left librav1e0_8 differing; it had to go in both sections.
