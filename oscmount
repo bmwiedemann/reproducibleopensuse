@@ -1,7 +1,7 @@
 #!/bin/bash
-: ${slot:=${1:=4}}
+: ${slot:=${1:-4}}
 if [ "$2" = 1 ] ; then rbdebug=1 ; fi
-[ $(id -u) = 0 ] || exec sudo $BASH_SOURCE $slot
+[ $(id -u) = 0 ] || exec sudo "$BASH_SOURCE" "$slot" "$rbdebug"
 for x in "" b ; do
     b=/var/tmp/build-root.$slot$x
     mkdir -p $b/.mount/
