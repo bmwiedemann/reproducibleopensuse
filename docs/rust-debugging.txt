@@ -1,0 +1,20 @@
+Here is my write-up on how to debug reproducible-builds in rust
+
+stracebuild + autoprovenance are usually not useful for similar reason as in java+python. Because one big build process produces a single binary.
+
+autoclassify rarely gives insight - none of the tweaks help with random HashMap/HashSet order.
+
+rust enables local-LTO by default that adds large amounts of noise in binary diffs for a single bit of variation. Disable it if possible. export RUSTFLAGS='-C lto=off'
+
+build-root diffs are also noisy from timestamps and hashes. Sometimes one can find good pointers in there.
+
+We build without internet, so large vendor tarballs are used to keep crates. These can still have buggy versions of i18n and other parts we fixed earlier.
+So before starting a search, it would be good to check that known fixes are included.
+* https://github.com/longbridge/rust-i18n/pull/104
+* https://github.com/kellpossible/cargo-i18n/pull/151
+* https://github.com/gtk-rs/gtk-rs-core/pull/1840
+* https://github.com/AlephAlpha/build-time/pull/5
+* https://github.com/rust-lang/git2-rs/pull/619
+* https://pyrossh.dev/repos/rust-embed/commits/5574de9c39b988573e88145c6235e8ab3ff4eab7
+* https://github.com/alexcrichton/xz2-rs/pull/102
+
