@@ -9,7 +9,7 @@ rust enables local-LTO by default that adds large amounts of noise in binary dif
 build-root diffs are also noisy from timestamps and hashes. Sometimes one can find good pointers in there.
 
 We build without internet, so large vendor tarballs are used to keep crates. These can still have buggy versions of i18n and other parts we fixed earlier.
-So before starting a search, it would be good to check that known fixes are included. How to do that efficiently?
+So before starting a search, it would be good to check that known fixes are included. -> use 'rustaudit', see section 1.
 Earlier toolchain fixes:
 * https://github.com/longbridge/rust-i18n/pull/104
 * https://github.com/kellpossible/cargo-i18n/pull/151
@@ -19,7 +19,7 @@ Earlier toolchain fixes:
 * https://pyrossh.dev/repos/rust-embed/commits/5574de9c39b988573e88145c6235e8ab3ff4eab7
 * https://github.com/alexcrichton/xz2-rs/pull/102
 
-Builds usually take many minutes even on multi-core machines. This means iteration cycles are slow.
+Builds usually take many minutes even on multi-core machines. This means iteration cycles are slow. -> see section 5 for ways to shorten them.
 
 A normal test could use
     parallelism2=6 parallelism=7 rbk
@@ -27,3 +27,231 @@ A normal test could use
 and once other issues are resolved, do a harder test with
     debuginfo="--debuginfo" rbk
 
+Helper scripts in this repo for the sections below:
+    rustaudit       static audit of an unpacked rust source tree (section 1)
+    rustcwrap       RUSTC_WRAPPER that fingerprints each crate (section 4)
+    cargochecksum   refresh .cargo-checksum.json after patching (section 7)
+
+
+=== 1. audit the source before spending a build on it ===
+
+Run 'rustaudit' in the unpacked source dir (after %prep or 'qs'). It takes
+about a second and reports:
+* whether the known toolchain fixes above are present in vendor/
+* crates whose job is to bake volatile state into the binary
+  (built, vergen*, shadow-rs, build-time, git-version) and who pulls them in
+* build.rs scripts reading readdir order, the clock, NUM_JOBS or rand
+* proc-macro crates iterating HashMap/HashSet
+* the pinned git revisions of git-sourced vendored crates
+
+1.1 check fixes by content, not by version
+Version numbers do not answer "is my fix in there?":
+* a fix can be backported into an older release
+* git-sourced crates carry a meaningless version. gst-plugins-rs vendors
+  glib 0.22.8, but that is really gtk-rs-core commit ae5dabb5 from a branch,
+  and gtk-rs-core#1840 was merged as 8a033dc3.
+So probe for the change itself. gtk-rs-core#1840 replaced HashMap with
+BTreeMap in glib-macros, so the whole check is
+    grep -c BTreeMap vendor/glib-macros-*/src/properties.rs
+That is what the table at the top of 'rustaudit' does - add a line to it
+whenever you land a new toolchain fix, so the next person gets it for free.
+
+For a git-sourced crate you can also settle it exactly:
+    rev=$(grep -o 'gtk-rs-core[^"]*#\K[0-9a-f]*' -P Cargo.lock | head -1)
+    git -C ~/src/gtk-rs-core merge-base --is-ancestor 8a033dc3 $rev && echo fix is in
+
+1.2 two greps that the generic howtodebug misses
+* proc macros, not just build.rs. A proc macro runs at compile time and its
+  token order lands in the binary the same way generated code does. This is
+  where gtk-rs-core#1840 and rust-i18n#104 both were.
+      grep -l 'proc-macro = true' vendor/*/Cargo.toml
+* NUM_JOBS / CARGO_MAKEFLAGS. cargo exports NUM_JOBS to build scripts and
+  cc-rs uses it to parallelize C compilation, so -j leaks into the build.
+  vendor/libsodium-sys-*/build.rs passes -j$NUM_JOBS to make.
+  This is the usual reason a rust package "gets fixed by -j1" (rbkt bit 8)
+  without there being a real race.
+
+
+=== 2. what the tweak bits can and cannot tell you ===
+
+std's HashMap RandomState is seeded per process from the OS, so its order
+varies on every single build no matter which nondeterminism you disable.
+That gives a useful inference rule:
+
+* autoclassify ends in "1 1 1 1 1 1 1 1 1 1 1 1 99"
+  -> suspect hash-container order (build.rs or proc macro) first, before
+     looking at anything else. Start from the rustaudit output.
+* some bit does help
+  -> hash order is ruled out. Chase that bit instead; for rust the common
+     ones are bit 3 (readdir order feeding cc-rs file lists) and bit 8
+     (NUM_JOBS, see 1.2).
+
+Both rbk builds unpack the same tarballs, so vendor/ *content* is identical
+between them. Only readdir order, the clock, hostname, NUM_JOBS, pid and
+ASLR differ. Anything else rustaudit prints cannot be the cause.
+
+Low-entropy cases (a two-element HashMap comes out right 50% of the time)
+need repeats or you will believe a wrong answer:
+    rbretries=4 autoclassify
+and re-run rbk two or three times before declaring a fix good.
+
+Known trap: vendor/rustversion-*/src/time.rs calls SystemTime::now() from a
+proc macro and ignores SOURCE_DATE_EPOCH. rbk shifts the clock by 16 years,
+which is enough to flip a #[rustversion::since(...)] cfg. Worth an upstream
+fix; rustversion is a build-dependency of a large part of crates.io.
+
+
+=== 3. target/ is the rust provenance goldmine ===
+
+Do not read the whole .rb.buildroot.diff. Almost all rust codegen lands in
+target/ as plain text, so diff only that. The target dir sits wherever the
+build system put it (meson, cargo and cargo-c all differ), so find it:
+
+    for x in "" b ; do
+        eval d$x=$(find /var/tmp/build-root.4$x/.mount/home/abuild/rpmbuild/BUILD \
+            -type d -path '*/target/*/build' -print -quit)
+    done
+    diff -ruN -x invoked.timestamp -x root-output "$d" "$db" > .rb.cargo.diff
+
+3.1 target/*/build/<crate>-<hash>/output
+The captured stdout of each build script, i.e. every cargo: directive.
+A build date shows up here in clear text, e.g. for librespot-core:
+    cargo:rustc-env=VERGEN_BUILD_DATE=2026-07-30
+That is the whole diagnosis, in a text file, with the crate name in the path.
+
+3.2 target/*/build/<crate>-<hash>/out/
+Everything build scripts generate: built.rs, bindgen bindings, prost
+protobuf code, hyphenation dictionaries, generated tables. All plain .rs,
+so a diff points straight at the unstable line.
+
+3.3 noise to skip in there
+* 'invoked.timestamp' and 'root-output' - cargo bookkeeping
+* the order of cargo:rerun-if-changed= lines in 'output'. Several build
+  scripts (rav1e, ring, av-scenechange) emit those from an unsorted
+  read_dir walk. It varies, it is harmless, and it is not worth a patch.
+* -C incremental paths, if the build did not disable incremental
+
+Note: oscmount currently starts with 'exit 0 # skip', so you have to mount
+the two build roots yourself or drop that line for the debug session.
+
+
+=== 4. finding the first crate that differs ===
+
+'rustcwrap' is a RUSTC_WRAPPER that fingerprints every crate rustc emits.
+Diffing the two logs names the culprit crate directly, which is what
+autoprovenance would have done for a C package.
+
+The script has to exist inside the build root, so write it out in %prep and
+point RUSTC_WRAPPER at it in %build. Put the log under %{_builddir} so the
+mounted build roots of section 3 have it:
+
+    export RUSTCWRAP_LOG=%{_builddir}/rustcwrap
+    export RUSTC_WRAPPER=%{_builddir}/rustcwrap.sh
+
+then after both builds
+    diff -ru /var/tmp/build-root.4{,b}/.mount/home/abuild/rpmbuild/BUILD/rustcwrap |
+        head -40
+
+Reading the result:
+* only the 'metadata' line differs -> an env var or a path reached rustc.
+  Look at that crate's build script output (section 3.1), not at its code.
+* only some sha256 lines differ -> that crate's own codegen is unstable.
+* the first differing crate in dependency order is the one to fix;
+  everything downstream differs only as a consequence.
+  'cargo tree -i <crate>' gives you that order and also tells you which
+  plugins should show the diff - a cheap check of your hypothesis.
+
+Build scripts run outside rustc, so the wrapper does not cover them, but a
+build script whose output changed makes its consumer crate differ, so the
+first differing crate still points at the right neighbourhood.
+
+
+=== 5. shortening the iteration cycle ===
+
+5.1 build less
+Most rust packages have a switch to build one component. gst-plugins-rs has
+68 per-plugin meson options, so once you suspect one crate,
+'cargo tree -i <crate>' tells you which plugin needs it and you can turn the
+other 67 off. A 30 minute build becomes a couple of minutes.
+For a plain cargo package the equivalent is 'cargo build -p <crate>'.
+
+5.2 stop using rbk for the inner loop
+rbk is for detection: two full rpm builds plus build-compare. Once you have
+a suspect, use one build root and run cargo twice in it instead. Enter it
+with 'oscmount 4 1' (drop its leading 'exit 0' first) and then
+
+    cd /home/abuild/rpmbuild/BUILD/*/    # wherever Cargo.toml/target is
+    for t in 1 2 ; do
+        cargo build --offline --release --target-dir /tmp/t$t -j7
+    done
+    diff -ruN -x invoked.timestamp -x root-output /tmp/t1/*/build /tmp/t2/*/build
+
+Note the two runs are *identical*: for the hash-order case of section 2 that
+is already enough, because RandomState is reseeded per process. No date
+shift, no second machine, no rpm packaging. This is the fastest loop
+available and it hands you target/ for section 3 for free.
+For the other bits, vary the one thing you suspect: -j1 vs -j7 for NUM_JOBS,
+SOURCE_DATE_EPOCH or 'faketime +16years' for the clock (needs
+reproducible-faketools-faketime in the build root).
+Caveat: OUT_DIR contains the --target-dir path, so ignore diffs that are
+only /tmp/t1 vs /tmp/t2.
+
+5.3 confirm a hash-order suspicion in seconds
+Do not rebuild the package to test a HashMap theory. Copy the crate out of
+vendor/, change the one HashMap to BTreeMap, build that crate alone twice
+and compare the rlib. If it stabilizes you already have your upstream patch.
+
+
+=== 6. reading a binary diff you cannot avoid ===
+
+6.1 free provenance from panic locations
+rustc embeds the source path of every unwrap/expect/index as a string
+literal, and for vendored deps that path contains the crate and version:
+    strings libgstfoo.so | grep -oE 'vendor/[a-z0-9_-]+-[0-9][^/]*/[^ ]*' | sort -u
+Diff that list between the two builds, or look up which crate owns the
+strings next to the diff. This is the closest thing rust has to
+autoprovenance and it costs nothing.
+
+6.2 tell "everything moved" from "one thing moved"
+Legacy rust symbols end in 17h<16 hex digits>E, a hash of the crate's
+-C metadata. Normalize it away and compare the symbol *sets*:
+    for n in 1 2 ; do
+        nm -D --defined-only $n/libgstfoo.so |
+            sed -e 's/17h[0-9a-f]\{16\}E/17hXE/' -e 's/^[0-9a-f]* //' |
+            sort -u > /tmp/syms.$n
+    done
+    diff /tmp/syms.1 /tmp/syms.2
+* the sets are equal but the hashes differ -> -C metadata changed, so an env
+  var, a path or a flag reached rustc. Go to the rustcwrap 'flags' line.
+* the sets differ -> real codegen difference; the added/removed names tell
+  you which generic instantiation or which crate.
+Section triage first, to know where to look:
+    readelf -WS libgstfoo.so   # compare section sizes between the two
+
+6.3 more flags to make diffs readable
+Beyond 'RUSTFLAGS=-C lto=off' from above:
+* -C codegen-units=1 removes CGU partitioning and the <cgu-hash>-cgu.N
+  naming noise, so a one-bit change stops moving unrelated code
+* -C debuginfo=0 while hunting a non-debuginfo diff
+* -C symbol-mangling-version=v0 gives symbols that survive 'rustfilt'
+  legibly, instead of the 17h<hash>E form
+These change -C metadata, so only ever compare a tweaked build against
+another tweaked build, never against an untweaked one.
+
+
+=== 7. patching a vendored crate ===
+
+cargo verifies every file of a vendored crate against the sha256 listed in
+vendor/<crate>/.cargo-checksum.json, so 'quilt edit vendor/foo-1.2.3/src/lib.rs'
+fails the build with
+    error: the listed checksum of `.../src/lib.rs` has changed
+Refresh it afterwards with
+    cargochecksum vendor/foo-1.2.3
+or from %prep, after applying the patches
+    ./cargochecksum vendor/*/
+
+Keep the patch against the crate, not against the package: the fix belongs
+upstream in the crate, and the same patch will be needed by every other
+distro package that vendors it. Note the crate version in the patch header
+so the next vendor tarball refresh shows whether it can be dropped.
+Then add a line for it to the table in 'rustaudit'.

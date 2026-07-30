@@ -1,0 +1,66 @@
+#!/bin/bash
+# RUSTC_WRAPPER that records a fingerprint of every crate rustc produces.
+# Diffing the two logs of two rbk builds names the *first* crate that differs,
+# which is the rust equivalent of autoprovenance and much cheaper than
+# bisecting with rebuilds.
+#
+# usage inside a build:
+#   export RUSTCWRAP_LOG=/home/abuild/rustcwrap   # must survive the build
+#   export RUSTC_WRAPPER=/path/to/rustcwrap
+#   <normal build>
+# then, after both builds:
+#   diff -ru buildA/rustcwrap buildB/rustcwrap
+#
+# The log is one file per crate so that parallel rustc calls cannot
+# interleave. Each file holds:
+#   metadata <-C metadata value>       - changes if inputs/flags/env changed
+#   flags    <normalized rustc flags>
+#   <sha256> <output file basename>    - one line per emitted artifact
+#
+# Rule of thumb when reading the diff:
+#   only 'metadata' differs      -> an env var or path reached rustc, look at
+#                                   the build script output of that crate
+#   only some sha256 differ      -> that crate's own codegen is unstable
+#   the first differing crate in dependency order is the culprit; everything
+#   downstream of it differs as a consequence.
+
+rustc="$1" ; shift
+: ${RUSTCWRAP_LOG:=/tmp/rustcwrap}
+
+crate= outdir= extra= meta=
+prev=
+for a in "$@" ; do
+    case "$prev" in
+        --crate-name) crate="$a" ;;
+        --out-dir) outdir="$a" ;;
+    esac
+    case "$a" in
+        metadata=*) meta="${a#metadata=}" ;;
+        extra-filename=*) extra="${a#extra-filename=}" ;;
+    esac
+    prev="$a"
+done
+
+"$rustc" "$@"
+ret=$?
+
+# --print=cfg and friends have no output dir and nothing to fingerprint
+if [ $ret = 0 ] && [ -n "$crate" ] && [ -n "$outdir" ] && [ -d "$outdir" ] ; then
+    mkdir -p "$RUSTCWRAP_LOG"
+    f="$RUSTCWRAP_LOG/$crate$extra"
+    {
+        echo "metadata $meta"
+        # keep the flags readable but drop what legitimately differs:
+        # absolute paths, the metadata hash and the -C extra-filename suffix
+        echo "flags    $(printf '%s\n' "$@" |
+            grep -v '^/' |
+            sed -e "s/$meta/HASH/g" -e 's!=/[^ ]*!=PATH!' |
+            tr '\n' ' ')"
+        # -L/--extern paths are absolute and uninteresting; the artifacts are not
+        ls "$outdir" 2>/dev/null | grep -F -e "$extra" | sort |
+            while read -r o ; do
+                echo "$(sha256sum < "$outdir/$o" | cut -d' ' -f1) $o"
+            done
+    } > "$f" 2>/dev/null
+fi
+exit $ret
