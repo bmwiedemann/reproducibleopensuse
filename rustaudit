@@ -1,0 +1,126 @@
+#!/bin/bash
+# Static audit of an unpacked rust source tree for known reproducibility problems.
+# Run it in the dir that has Cargo.lock and vendor/ (i.e. after %prep or 'qs').
+# Costs a second, while a rbk round trip costs many minutes,
+# so run this before starting a build-based search.
+#
+# usage: rustaudit [sourcedir]
+#
+# If a target/ dir from a previous build is present, the scan is limited to
+# the crates whose build scripts actually ran, which cuts most of the noise.
+# Output is sorted so that two runs can be diffed.
+# exit 0 always - this is advisory output, not a test
+
+cd "${1:-.}" || exit 1
+: ${vendor:=vendor}
+
+hr() { echo ; echo "== $* ==" ; }
+
+[ -e Cargo.lock ] || echo "warning: no Cargo.lock here - are you in the unpacked source dir?"
+
+# Crates that never get compiled on a linux x86_64 build - pure noise.
+notbuilt='winapi|windows[-_]|wasm|js-sys|web-sys|jni|libfuzzer|redox|wasi|emscripten|android|apple|xcode'
+
+# If a build already happened, only these crates ran a build script.
+ranlist=$(ls -d target/*/build/*/ 2>/dev/null | sed -e 's!.*/build/!!' -e 's!-[0-9a-f]*/$!!' | sort -u)
+if [ -n "$ranlist" ] ; then
+    echo "note: limiting build.rs scan to the $(echo "$ranlist"|wc -l) build scripts that ran in target/"
+fi
+wasbuilt() { # $1 = path to a build.rs
+    [ -z "$ranlist" ] && return 0
+    local c=$(echo "$1" | sed -e "s!^\./$vendor/!!" -e 's!/build.rs$!!' -e 's!-[0-9][^-]*$!!')
+    echo "$ranlist" | grep -qxF "$c"
+}
+
+hr "known toolchain fixes"
+# Version numbers are useless for git-sourced crates and for backported fixes,
+# so probe for the *content* of the fix instead.
+# format: cratedirglob|file-relative-to-crate|marker regex|fix reference
+while IFS='|' read -r glob file marker ref ; do
+    [ -z "$glob" ] && continue
+    found=0
+    for d in $vendor/$glob ; do
+        [ -d "$d" ] || continue
+        found=1
+        if [ ! -e "$d/$file" ] ; then
+            echo "?? $(basename $d): no $file - marker unchecked, $ref"
+        elif grep -qE "$marker" "$d/$file" ; then
+            echo "ok $(basename $d): fix present"
+        else
+            echo "!! $(basename $d): fix MISSING - no '$marker' in $file"
+            echo "!!   -> $ref"
+        fi
+    done
+    [ $found = 0 ] && echo ".. ${glob%-\*}: not vendored"
+done <<'EOF' | sort -r
+glib-macros-*|src/properties.rs|BTreeMap|https://github.com/gtk-rs/gtk-rs-core/pull/1840
+rust-i18n-*|src/lib.rs|BTreeMap|https://github.com/longbridge/rust-i18n/pull/104
+rust-i18n-support-*|src/lib.rs|BTreeMap|https://github.com/longbridge/rust-i18n/pull/104
+i18n-embed-fl-*|src/lib.rs|BTreeMap|https://github.com/kellpossible/cargo-i18n/pull/151
+build-time-*|src/lib.rs|SOURCE_DATE_EPOCH|https://github.com/AlephAlpha/build-time/pull/5
+libgit2-sys-*|build.rs|sort|https://github.com/rust-lang/git2-rs/pull/619
+rust-embed-impl-*|src/lib.rs|sort|https://pyrossh.dev/repos/rust-embed/commits/5574de9c39b988573e88145c6235e8ab3ff4eab7
+rust-embed-utils-*|src/lib.rs|sort|https://pyrossh.dev/repos/rust-embed/commits/5574de9c39b988573e88145c6235e8ab3ff4eab7
+lzma-sys-*|build.rs|sort|https://github.com/alexcrichton/xz2-rs/pull/102
+liblzma-sys-*|build.rs|sort|https://github.com/alexcrichton/xz2-rs/pull/102
+EOF
+
+hr "build metadata crates (embed build date, git state or NUM_JOBS)"
+# These are the crates whose whole purpose is to bake volatile state into the
+# binary. Most honour SOURCE_DATE_EPOCH by now - verify that it reaches cargo.
+for c in built vergen vergen-gitcl vergen-git2 vergen-gix build-time shadow-rs \
+         git-version rustc_version_runtime chrono-tz-build ; do
+    for d in $vendor/$c-[0-9]* ; do
+        [ -d "$d" ] || continue
+        printf '%s used by:' "$(basename $d)"
+        perl -e '
+            my ($want)=@ARGV; my $name; my %seen;
+            open(F, "<", "Cargo.lock") or exit;
+            while(<F>) {
+                $name=$1 if /^name = "(.*)"/;
+                print " $name" if /^\s"\Q$want\E[ "]/ and $name ne $want and !$seen{$name}++;
+            }' "$c"
+        echo
+    done
+done
+
+hr "build.rs: nondeterministic input"
+find . -name build.rs -not -path "./target/*" -not -path "*/tests/*" -not -path "*/examples/*" |
+    grep -Ev "/($notbuilt)" | sort |
+while read -r f ; do
+    wasbuilt "$f" || continue
+    hits=$(grep -nE 'read_dir|WalkDir|glob\(|Hash(Map|Set)|SystemTime::now|Instant::now|(Utc|Local)::now|"NUM_JOBS"|CARGO_MAKEFLAGS|available_parallelism|num_cpus|rand::|thread_rng|rng\(\)|gethostname' "$f" |
+           grep -Ev 'rerun-if-changed|rustc-check-cfg|^\s*[0-9]+:\s*(//|\*)|DeterministicState')
+    [ -z "$hits" ] && continue
+    echo "-- $f"
+    echo "$hits" | sed -e 's/^/   /' | head -6
+done
+
+hr "proc-macro crates: nondeterministic codegen"
+# Not covered by the usual build.rs recipe: proc macros run at compile time
+# and their token output order lands in the binary just the same.
+grep -l 'proc-macro = true' $vendor/*/Cargo.toml 2>/dev/null | sort |
+while read -r t ; do
+    d=$(dirname "$t")
+    echo "$d" | grep -Eq "/($notbuilt)" && continue
+    hits=$(grep -rnE '\b(HashMap|HashSet)\b' $d/src/ 2>/dev/null | sort |
+           grep -Ev 'BTreeMap|BTreeSet|IndexMap|DeterministicState|:\s*(///|//!|//|\*)')
+    [ -z "$hits" ] && continue
+    echo "-- $(basename $d)"
+    echo "$hits" | sed -e "s!^$d/!   !" | head -3
+done
+
+hr "git-sourced vendored crates"
+# A version number does not tell you whether an upstream fix is in here.
+# Check with: git -C $clone merge-base --is-ancestor $fixcommit $rev && echo in
+grep -o 'git+[^"]*' Cargo.lock 2>/dev/null | sort -u | sed -e 's/^/   /'
+
+hr "hints"
+cat <<'EOF'
+   !! lines first, then 'build metadata crates', then the rest.
+   'used by' tells you which plugin/binary should show the diff.
+   Cross-check a suspect with: cargo tree -i <crate>
+   Both rbk builds unpack the same tarballs, so vendored *content* is
+   equal - only readdir order, the clock, NUM_JOBS, hostname, pid and
+   ASLR differ. That rules out a lot of what this scan reports.
+EOF
