@@ -1,0 +1,127 @@
+#!/usr/bin/python3
+"""Summarize two reproducible-faketools-rustc logs into the crate to blame.
+
+A raw 'diff -ruN' over the two log trees is thousands of lines because every
+crate downstream of the culprit differs as a consequence. This ranks instead.
+
+usage:
+  rustcwrapdiff DIR_A DIR_B
+  rustcwrapdiff            # defaults to the two mounted build roots of rbk
+
+Output, most useful first:
+  * crates whose -C metadata or flags differ - an env var or path reached
+    rustc, look at that crate's build script output rather than its code
+  * crates whose own artifacts differ, with the differing file names
+  * a tally of which crate owns the differing object files across all logs;
+    the crate at the top of that tally is normally the root cause, because
+    its code is linked into every plugin that differs
+"""
+import os
+import re
+import sys
+from collections import Counter
+
+DEFAULT = ['/var/tmp/build-root.4/.mount/home/abuild/rpmbuild/rustcwrap',
+           '/var/tmp/build-root.4b/.mount/home/abuild/rpmbuild/rustcwrap']
+
+# gstburn.burn_ndarray-1898862791b8708c.burn_ndarray.eab0-cgu.0.rcgu.o
+OWNER = re.compile(r'^(?:[a-zA-Z0-9_]+\.)?([a-zA-Z0-9_]+)-[0-9a-f]{8,}')
+
+
+def load(path):
+    """crate -> (metadata, flags, {artifact: sha})"""
+    out = {}
+    if not os.path.isdir(path):
+        sys.exit(f'not a directory: {path}\n(is the build root mounted?)')
+    for name in os.listdir(path):
+        meta = flags = ''
+        arts = {}
+        try:
+            with open(os.path.join(path, name), errors='replace') as f:
+                for line in f:
+                    line = line.rstrip('\n')
+                    if line.startswith('metadata '):
+                        meta = line[9:]
+                    elif line.startswith('flags '):
+                        flags = line[6:].strip()
+                    elif ' ' in line:
+                        sha, _, art = line.partition(' ')
+                        if len(sha) == 64:
+                            arts[art] = sha
+        except OSError:
+            continue
+        out[name] = (meta, flags, arts)
+    return out
+
+
+def main():
+    dirs = sys.argv[1:3] or DEFAULT
+    a, b = load(dirs[0]), load(dirs[1])
+
+    only_a = sorted(set(a) - set(b))
+    only_b = sorted(set(b) - set(a))
+    shared = sorted(set(a) & set(b))
+
+    envdiff, selfdiff, mixed = [], [], []
+    owners = Counter()
+    for c in shared:
+        (ma, fa, aa), (mb, fb, ab) = a[c], b[c]
+        if ma != mb or fa != fb:
+            envdiff.append((c, 'metadata' if ma != mb else 'flags'))
+        bad = sorted(k for k in set(aa) | set(ab) if aa.get(k) != ab.get(k))
+        if not bad:
+            continue
+        # A log whose differing artifacts all belong to the crate itself is a
+        # real per-crate difference. One that lists other crates' object files
+        # is a link step, so it differs only because an input to it did.
+        stem = re.sub(r'-[0-9a-f]{8,}$', '', c)
+        def owned_by_self(k):
+            m = OWNER.match(k)
+            return (m and m.group(1) in (stem, 'lib' + stem)) or \
+                   k.startswith(stem + '.') or k.startswith('lib' + stem + '.')
+        if all(owned_by_self(k) for k in bad):
+            selfdiff.append((c, bad))
+        else:
+            mixed.append((c, bad))
+        for k in bad:
+            m = OWNER.match(k)
+            owners[m.group(1) if m else k] += 1
+
+    print(f'{len(shared)} crates in both, {len(only_a)} only in A, '
+          f'{len(only_b)} only in B')
+
+    if envdiff:
+        print('\n== metadata/flags differ (an env var or path reached rustc) ==')
+        for c, what in envdiff:
+            print(f'  {c}: {what}')
+
+    if selfdiff:
+        print('\n== SUSPECTS: crates whose own output differs ==')
+        for c, bad in sorted(selfdiff, key=lambda x: len(x[1])):
+            print(f'  {c}')
+            for k in bad[:4]:
+                print(f'      {k}')
+        print('\n-> the most upstream of these is the cause; the rest depend'
+              ' on it.\n   Order them with: cargo tree -i <crate>')
+
+    if mixed:
+        print(f'\n== {len(mixed)} link step(s) differ because an input did ==')
+        print('   (' + ', '.join(c for c, _ in mixed[:12]) +
+              (', ...' if len(mixed) > 12 else '') + ')')
+
+    if not selfdiff and owners:
+        print('\n== no self-contained diff; crates owning differing objects ==')
+        for name, n in owners.most_common(10):
+            print(f'  {n:5d}  {name}')
+
+    if only_a or only_b:
+        print(f'\n== {len(only_a) + len(only_b)} unpaired log file(s) ==')
+        print('   Build-script probes with randomised names (autocfg). If you'
+              '\n   still see these, the build root has an old'
+              ' reproducible-faketools-rustc.')
+
+    if not (envdiff or selfdiff or mixed or only_a or only_b):
+        print('\nno differences')
+
+
+main()

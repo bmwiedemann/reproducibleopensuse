@@ -44,23 +44,41 @@ done
 "$rustc" "$@"
 ret=$?
 
+record=1
 # --print=cfg and friends have no output dir and nothing to fingerprint
-if [ $ret = 0 ] && [ -n "$crate" ] && [ -n "$outdir" ] && [ -d "$outdir" ] ; then
+[ $ret = 0 ] && [ -n "$crate" ] && [ -n "$outdir" ] && [ -d "$outdir" ] || record=
+# Build scripts run rustc too. autocfg probes $OUT_DIR with a randomly named
+# crate, so every probe would add a log file that only exists in one of the two
+# builds. Those are not crate artifacts - skip the whole build-script scratch.
+case "$outdir" in */build/*/out|*/build/*/out/*) record= ;; esac
+
+if [ -n "$record" ] ; then
     mkdir -p "$RUSTCWRAP_LOG"
     f="$RUSTCWRAP_LOG/$crate$extra"
     {
         echo "metadata $meta"
         # keep the flags readable but drop what legitimately differs:
-        # absolute paths, the metadata hash and the -C extra-filename suffix
+        # absolute paths, the metadata hash and the -C extra-filename suffix.
+        # An empty $meta would make sed reuse the previous regex, so guard it.
         echo "flags    $(printf '%s\n' "$@" |
             grep -v '^/' |
-            sed -e "s/$meta/HASH/g" -e 's!=/[^ ]*!=PATH!' |
+            sed -e "s/${meta:-\\\$^}/HASH/g" -e 's!=/[^ ]*!=PATH!' |
             tr '\n' ' ')"
-        # -L/--extern paths are absolute and uninteresting; the artifacts are not
-        ls "$outdir" 2>/dev/null | grep -F -e "$extra" | sort |
-            while read -r o ; do
-                echo "$(sha256sum < "$outdir/$o" | cut -d' ' -f1) $o"
-            done
+        # Artifacts of *this* crate only. cargo shares one out-dir between all
+        # units, so matching loosely would hash every other crate's output too.
+        # Final cdylib/bin links carry no -C extra-filename, hence the fallback.
+        if [ -n "$extra" ] ; then
+            pat="*$extra*"
+        else
+            pat="$crate.*"
+        fi
+        for o in "$outdir"/$pat "$outdir"/lib"$crate".* ; do
+            [ -f "$o" ] || continue
+            case "${o##*/}" in
+                rustc??????|rmeta??????|*.tmp) continue ;;  # rustc scratch
+            esac
+            echo "$(sha256sum < "$o" | cut -d' ' -f1) ${o##*/}"
+        done | sort -k2
     } > "$f" 2>/dev/null
 fi
 exit $ret
