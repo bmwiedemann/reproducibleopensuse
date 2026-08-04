@@ -47,13 +47,16 @@ while IFS='|' read -r glob file marker ref ; do
         elif grep -qE "$marker" "$d/$file" ; then
             echo "ok $(basename $d): fix present"
         else
+            # both lines carry the crate name so the sort below keeps them together
             echo "!! $(basename $d): fix MISSING - no '$marker' in $file"
-            echo "!!   -> $ref"
+            echo "!! $(basename $d):   -> $ref"
         fi
     done
-    [ $found = 0 ] && echo ".. ${glob%-\*}: not vendored"
-done <<'EOF' | sort -r
+    # strip the glob for the label: 'foo-*' and 'foo*' both report as 'foo'
+    [ $found = 0 ] && { n=${glob%\*} ; echo ".. ${n%-}: not vendored" ; }
+done <<'EOF' | LC_ALL=C sort -r
 glib-macros-*|src/properties.rs|BTreeMap|https://github.com/gtk-rs/gtk-rs-core/pull/1840
+fluent-template-macros*|src/lib.rs|paths\.sort|https://github.com/XAMPPRocky/fluent-templates - static_loader! embeds a locale's .ftl files in parallel-walk order
 rust-i18n-*|src/lib.rs|BTreeMap|https://github.com/longbridge/rust-i18n/pull/104
 rust-i18n-support-*|src/lib.rs|BTreeMap|https://github.com/longbridge/rust-i18n/pull/104
 i18n-embed-fl-*|src/lib.rs|BTreeMap|https://github.com/kellpossible/cargo-i18n/pull/151
@@ -102,16 +105,42 @@ for c in built vergen vergen-gitcl vergen-git2 vergen-gix build-time shadow-rs \
     done
 done
 
+# Anything that runs while the package builds and can vary between two runs.
+nondet='read_dir|WalkDir|glob\(|Hash(Map|Set)|SystemTime::now|Instant::now|(Utc|Local)::now|"NUM_JOBS"|CARGO_MAKEFLAGS|available_parallelism|num_cpus|rand::|thread_rng|rng\(\)|gethostname'
+boring='rerun-if-changed|rustc-check-cfg|DeterministicState|:[0-9]+:\s*(///|//!|//|\*)'
+
 hr "build.rs: nondeterministic input"
 find . -name build.rs -not -path "./target/*" -not -path "*/tests/*" -not -path "*/examples/*" |
     grep -Ev "/($notbuilt)" | sort |
 while read -r f ; do
     wasbuilt "$f" || continue
-    hits=$(grep -nE 'read_dir|WalkDir|glob\(|Hash(Map|Set)|SystemTime::now|Instant::now|(Utc|Local)::now|"NUM_JOBS"|CARGO_MAKEFLAGS|available_parallelism|num_cpus|rand::|thread_rng|rng\(\)|gethostname' "$f" |
-           grep -Ev 'rerun-if-changed|rustc-check-cfg|^\s*[0-9]+:\s*(//|\*)|DeterministicState')
+    hits=$(grep -HnE "$nondet" "$f" | grep -Ev "$boring" | sed -e "s!^$f:!!")
     [ -z "$hits" ] && continue
     echo "-- $f"
     echo "$hits" | sed -e 's/^/   /' | head -6
+done
+
+hr "local build-dependency crates: nondeterministic codegen"
+# A build.rs is often a thin wrapper around a helper crate in the same source
+# tree, and the scan above only reads build.rs itself. ruffle's core/build.rs
+# is three calls into core/build_playerglobal, which is where the HashMap that
+# shuffled native_table.rs actually lived.
+find . -name Cargo.toml -not -path "./$vendor/*" -not -path "./target/*" |
+while read -r m ; do
+    perl -ne '
+        $in = /^\s*\[[^]]*build-dependencies(\.|\])/ ? 1 : (/^\s*\[/ ? 0 : $in);
+        print "$ARGV\t$1\n" if $in and /\bpath\s*=\s*"([^"]+)"/;
+    ' "$m"
+done |
+while IFS="$(printf '\t')" read -r m p ; do
+    (cd "$(dirname "$m")/$p" 2>/dev/null && pwd)
+done | sort -u |
+while read -r d ; do
+    [ -d "$d/src" ] || continue
+    hits=$(grep -rnE "$nondet" "$d/src/" 2>/dev/null | grep -Ev "$boring" | sort)
+    [ -z "$hits" ] && continue
+    echo "-- ${d#$PWD/}"
+    echo "$hits" | sed -e "s!^$d/src/!   !" | head -6
 done
 
 hr "proc-macro crates: nondeterministic codegen"
