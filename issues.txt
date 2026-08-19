@@ -1,0 +1,352 @@
+The further down an entry, the closer it is to completion (become reproducible in Factory)
+
+ToDo
+
+
+alex ghc toolchain random build-id
+#lkl asm-diff
++octave-forge-stk octave-forge-ltfat octave-forge-geometry octave-forge-nan random tmp-path toolchain octave
+.kwctl rust minor: HashMap(fixed upstream) + readdir (see d600)
+#eden ASLR into build-id+debuginfo
+#python-rencode CPU -march=native, other
+#scx ordering via bpftool?
+#flacon parallelism+lto
+edk2 %jobs
+..rpm 4.20 embeds mtime in cpio headers - especially bad for tarballs created by runtime service => needed new macro ; compat code broken?
+#sequoia-sq https://gitlab.com/sequoia-pgp/sequoia-sq/-/merge_requests/554 FTBFS-2026 ; https://gitlab.com/sequoia-pgp/sequoia-sq/-/issues/535 FTBFS-2026-10-05
+#ant SDE patch
+ghc-* readdir order (also shows up when comparing podman builds to kvm)
+llvm17 /usr/lib64/libLLVM.so.17 ASLR? CPU?
+#mayavi zip mtimes, core-count,other .py diffs
+#python-pydata-sphinx-theme date+time in .mo
+git-credential-keepassxc rust codegen-units, low-entropy
+git-annex parallelism ghc toolchain, Guix has a fix?
+#rmt-server https://bugzilla.opensuse.org/show_bug.cgi?id=1227542 random timing bug? dir permission issue - not reproducible anymore after 2d? - use dm-delay to reproduce?
+zola unknown rust/llvm 9hashbrown3map28HashMap
+#zed (dropped) unknown rust/llvm in _ZN9hashbrown3map9make_hash17hdf29cea4b21e2095E
+turbo minor ASLR cmake_pch.hxx.gch - see also openttd
+#openttd ASLR debuginfo
+#mingw64-runtime minor .a
+nyxt sbcl toolchain, Scheme/LISP
+ecl random (LISP) via ecl-24.5.10/build/clos/boot.c
+binutils low-entropy PGO ; -readdir? asm see ~/osc/t/openSUSE:Factory:Rings:0-Bootstrap # /usr/lib/build/pkg-diff.sh -a _build.standard.x86_64/binutils/binutils-2.42-0.x86_64.rpm _build.1/binutils/binutils-2.42-0.x86_64.rpm
+#wireplumber parallelism, low-entropy?
+?cmake CMake.qch
+#stl-thumb rust/llvm
+python-orjson rust/gcc13 asm
+#python-pyarrow ASLR
+app-builder minor build-id / debuginfo
+#javadoc toolchain filesys-readdir-order: antlr4 apache-commons-csv ...
+#openjfx filesys + minor mtime/other?
+python-seaborn filesys low-entropy .pyc python3.9
+python-debugpy filesys low-entropy .pyc python3.9
+#parboiled minor jar mtimes
+scala filesys
+#deepin-gir-generator debugsource random order
+#python-frozenlist https://github.com/cython/cython/issues/5949 random path, toolchain random tmp path from https://github.com/sysfce2/python-frozenlist/blob/master/packaging/pep517_backend/_backend.py#L199
+#-julia CPU in openblas + ordering + other = parallelism?
+dbus-sharp2 mono (ignored by build-compare+monodis)
+ceph https://tracker.ceph.com/issues/68778 date ; boost b2 project-cache.jam filesys-readdir-order
+contrast unknown rust/llvm
+deno rust zstd-sys?
+#dmd parallelism + ASLR
+#eclipse .jar files containing .jar files vary in size
+#elixir-ex_doc dropped
+#gammaray .qch order
+ghc sphinx doctrees + ghc-9.6.3/GHC/Runtime/Interpreter.dyn_hi
+#groovy18 order issue in .class file
+installation-images various issues from efi + %post
++java-21-openj9 date TR_BUILD_NAME + other (e.g. jdk race again)
+#jedit javadoc .html date
+#kdevelop5-plugin-php parallelism+ASLR in libkdevphpparser.so via phpparser.cpp
+1370294 ksh year in copyright ; compile time benchmarking ; SIGQUEUE_MAX detection
+/lapce filesys-readdir-order minor
+lazarus 
+ldc order x+?ASLR+time
+libqt5-qtdoc .qhp, .qch (sqlite3), doc order
+
+      * Backport upstream patch to ensure FileAttributeSetTable is filled
+
+        ordered (closes: #1059592).
+
+      * Backport upstream patch to localize SOURCE_DATE_EPOCH to UTC in
+
+        qhelpgenerator (closes: #1059631).
+
+nodejs20 v8_snapshot_blob_data varies
+nodejs21
+nodejs22 variation in node-v22.3.0/out/Release/obj/gen/node_snapshot.cc ASLR+CPU?
+llvm17 debuginfo
+pass-import ASLR order issue - toolchain pandoc?
+pympress date+time from python-Babel?
+
+    https://bugs.debian.org/cgi-bin/bugreport.cgi?att=1;bug=1068795;filename=pympress.diff.txt;msg=5
+
+python-cPyparsing cpython toolchain fix in :test?
+
+
+qgis https://gcc.gnu.org/bugzilla/show_bug.cgi?id=124811 parallelism (via ninja?)
+#qt-creator parallelism in libTracing.so.11.0.2? gone?
+
+
+1370297 sdcc 32bit epoch timestamp ; from https://sourceforge.net/p/gputils/bugs/328/ ?
++smlnj order + EPOCH timestamp
++swipl prolog date + ASLR?other? https://github.com/SWI-Prolog/swipl/pull/32 FTBFS-2029
+termscp rust
+virtualbox copyright year ; _BUILD_STRING date+time ; tar mtime ; g_VTGObjHeader https://www.virtualbox.org/ticket/16854 + https://sourceforge.net/p/gsoap2/patches/185/
+warp filesys maybe https://github.com/briansmith/ring/issues/1625
+wpewebkit copyright year ; varying JSCBytecodeCacheVersion
+xemacs order in lisp/custom-load.el ; .elc ; other
+xemacs-packages readdir+ASLR+CPU in .elc order ; SR 1119571 partial date
+
+
+Analyzed:
+librsvg FTBFS-cpu
+#hyprland-plugins minor lua order in rpm-meta
+python-imagecodecs random cython path
+#forgejo-guardian rust/llvm
+python-pyzmq embedded random /tmp path in debuginfo
+musescore toolchain from cmake unity_build + ASLR?
+python-dtaidistance RECORD contains a hash of dtaidistance/compilation.log that varies
+messagelib toolchain? parallelism in /usr/share/doc/qt6/KPim6MessageViewer.qch
+mvapich3:gnu-hpc-ucx random tmppath from suse-hpc macros.hpc https://github.com/openSUSE/hpc/blob/f2f3d8c/general/macros.hpc#L493 + rpm toolchain
+yast2-firstboot unstable 'file' tiff info embedded in rpm header - different versions?
+dvgt date from toolchain tex sysguide
+paraview uname -r
+1371954 Rivet debuginfo from random tmp .cc filename  ; parallelism, random
+dealii doxygen parallelism/race https://github.com/doxygen/doxygen/issues/11138
+static-initrd:generic https://bugzilla.opensuse.org/show_bug.cgi?id=1234709 date+host+CPU
+xmlgraphics-batik uname -r
+calibre https://lists.fedoraproject.org/archives/list/devel@lists.fedoraproject.org/thread/67ICWGGE3TUPG5RH32GZAXICO4T5BXFG/ CPU-dependent from Qt6 QImage scaler | .png files differ from SSE-4.1
+#ocaml-extlib parallelism/race in debuginfo ? https://github.com/ocaml/dune/issues/9152
+esbuild https://bugzilla.opensuse.org/show_bug.cgi?id=1234374 random go tmp path
+#singularity-ce /dev/(u)random influences debuginfo ; dropped
+asymptote toolchain pdflatex date
+?ginac pdflatex
+?glucat pdflatex
+#unison pdf from pdfTeX - cannot reproduce after 20231122?
+openmpi5 https://github.com/open-mpi/ompi/pull/11847 date+readdir
+coq parallelism from ocaml +maybe others - same as ocaml-camlp-streams?
+grass https://github.com/OSGeo/grass/pull/3415 https://github.com/OSGeo/grass/pull/3417 https://github.com/OSGeo/grass/issues/3038 date+parallelism in r3.mapcalc
+?hevea random ocaml tmp dir from ocamlopt
+mathgl random example .png
+R-base embedded random tmp path in /usr/lib64/R/library/KernSmooth/help/paths.rds; many other
+
+embeds rebuild-counter via %release:
+    apptainer
+    cloud-init
+    containerized-data-importer
+    datamash
+    dracut
+    gnutls
+    google-osconfig-agent
+    java-*-openjdk
+    kernel
+    kubevirt
+    libgcrypt
+    libica
+    mdadm
+    mozilla-nss
+    NetworkManager-l2tp
+    notary
+    ocaml-rpm-macros toolchain?
+    openssl-3
+    pacemaker
+    passt
+    PrusaSlicer
+    rook
+    samba
+    sbcl
+    selinux-policy
+    systemd
+    w3c-markup-validator
+    xen
+
+python-pytest-httpbin FTBFS SSL + j1
+?MozillaFirefox FTBFS-j1
+clisp hostname + uninitialized mem dump
+scheme48 unreproducible scheme dump
+chezscheme scheme .boot files
+emacs .eln ASLR + .pdmp unknown issue (5+6 random bytes) - solvable with dettrace + CPU-override https://mail.gnu.org/archive/html/emacs-devel/2024-10/msg00004.html https://lists.gnu.org/archive/html/emacs-devel/2024-01/msg00464.html https://mail.gnu.org/archive/html/emacs-devel/2024-02/msg00417.html https://mail.gnu.org/archive/html/emacs-devel/2024-05/msg01026.html
+maxima clisp .mem dump
+pgloader from sbcl (lisp dump)
+scsh totally unreproducible scheme image dump
+racket various issues - unknown source - scheme dump
+xindy xindy.mem CLISP memory image data dump + https://sourceforge.net/p/xindy/bugs/65/
+
+
+python-numba toolchain:
+
+    python-iminuit numba toolchain
+
+    python-librosa numba toolchain
+
+    python-xarray-einstats numba toolchain
+
+
+octave-forge-* random path in debuginfo /tmp/oct-XXXXXX/
+ntpsec debugsource time https://gitlab.com/NTPsec/ntpsec/
+
+
+reported in SLE:
+certmonger https://bugzilla.suse.com/show_bug.cgi?id=1246417 FTBFS-2037
+
+
+reported in openSUSE:
+dlib https://bugzilla.opensuse.org/show_bug.cgi?id=1223168 CPU
+neochat https://bugzilla.opensuse.org/show_bug.cgi?id=1248369 Qt qmlcachegen race
+clamav https://bugzilla.opensuse.org/show_bug.cgi?id=1249404 toolchain, random rust
+kf6-breeze-icons https://bugzilla.opensuse.org/show_bug.cgi?id=1251980 parallelism
+opencloud-server https://bugzilla.opensuse.org/show_bug.cgi?id=1252113 random tmp path
+deno https://bugzilla.opensuse.org/show_bug.cgi?id=1252955 rust order
+ceph https://bugzilla.suse.com/show_bug.cgi?id=1237212 random
+s390-tools https://bugzilla.suse.com/show_bug.cgi?id=1246792 rebuild-counter
+nwg-drawer nwg-dock-hyprland: https://bugzilla.opensuse.org/show_bug.cgi?id=1246700 ASLR golang?
+rabbitmq-server https://bugzilla.opensuse.org/show_bug.cgi?id=1245558 timestamps in zip from elixir toolchain ; --enable-deterministic-build helps a bit
+fritzing https://bugzilla.opensuse.org/show_bug.cgi?id=1239967 random
+python313 https://bugzilla.opensuse.org/show_bug.cgi?id=1244680  nogil-base random
+java-21-openjdk date(debuginfo) parallelism+ASLR FTBFS-2034 = https://bugzilla.opensuse.org/show_bug.cgi?id=1213796, date
+tvm https://bugzilla.opensuse.org/show_bug.cgi?id=1237607 verification issue in debuginfo
+libcorrect https://bugzilla.opensuse.org/show_bug.cgi?id=1238370 CPU SSE detection
+tucnak https://bugzilla.opensuse.org/show_bug.cgi?id=1237211 parallelism-race
+python310:doc https://bugzilla.opensuse.org/show_bug.cgi?id=1232750 FTBFS-j1
+python312 https://bugzilla.opensuse.org/show_bug.cgi?id=1230906 pyc embedded mtime
+libreoffice https://bugzilla.opensuse.org/show_bug.cgi?id=1231580 possible rpm/build toolchain corruption bug
+kdevelop-plugin-php https://invent.kde.org/kdevelop/kdevelop-pg-qt/-/issues/2 https://bugzilla.opensuse.org/show_bug.cgi?id=1231627 ASLR, toolchain from kdevelop-pg-qt - same as old kdevelop5-plugin-php
+wine https://bugzilla.opensuse.org/show_bug.cgi?id=1231620 parallelism : old: parallelism, (?needs mingw-binutils update according to msmeissn) ; timestamp in PE .dll + #https://gitlab.winehq.org/wine/wine/-/merge_requests/4035
+python-panel https://bugzilla.opensuse.org/show_bug.cgi?id=1231254 package-lock random port = https://github.com/openSUSE/obs-service-node_modules/issues/41
+perl https://bugzilla.opensuse.org/show_bug.cgi?id=1230137 records kernel version
+systemd https://bugzilla.opensuse.org/show_bug.cgi?id=1228091 pesign verification issue
+kf6-kirigami https://bugzilla.opensuse.org/show_bug.cgi?id=1228131 race parallelism
+python-torch https://bugzilla.opensuse.org/show_bug.cgi?id=1229033 CPU
+crash https://bugzilla.opensuse.org/show_bug.cgi?id=1230281 parallelism, race
+nauty https://bugzilla.opensuse.org/show_bug.cgi?id=1225415 CPU
+python-mpi4py https://bugzilla.suse.com/show_bug.cgi?id=1212698 from gcc?
+tycho + eclipse-jgit https://github.com/openSUSE/build-compare/issues/65 bogus
+
+wsl-appx https://bugzilla.opensuse.org/show_bug.cgi?id=1189698 verification failure - publisher from OBS ssl cert
+libguestfs https://bugzilla.opensuse.org/show_bug.cgi?id=1216986 embeds host /etc/hosts in supermin.d/base.tar.gz ; created.rid date (minor/strip-nd)
+libkolabxml https://bugzilla.opensuse.org/show_bug.cgi?id=1060506 ASLR/CPU order-issue in xsdbin ; partially workarounded?
+grub2 https://bugzilla.opensuse.org/show_bug.cgi?id=1217967 https://bugzilla.opensuse.org/show_bug.cgi?id=1217619 grub.xen tar mtime + (parallelism?) + filesys-readdir-order(from grub_util_fd_readdir) + octal UNIX timestamp  from grub-mkstandalone | grub-mkimage
+ovmf-riscv64-code.bin
+#qt6-webengine https://bugzilla.opensuse.org/show_bug.cgi?id=1217774 qtpdf.index parallelism
+elixir https://bugzilla.opensuse.org/show_bug.cgi?id=1205134 FTBFS-j1 stuck
+llvm13 https://bugzilla.opensuse.org/show_bug.cgi?id=1195427 ASLR
+jboss-websocket-1.0-api https://bugzilla.opensuse.org/show_bug.cgi?id=1233352 uname -r
+kubefirst https://bugzilla.opensuse.org/show_bug.cgi?id=1221680 bug
+python-python-gvm https://bugzilla.opensuse.org/show_bug.cgi?id=1233398 FTBFS-j1
+bash sane-backends https://bugzilla.opensuse.org/show_bug.cgi?id=1268542 gettext-runtime toolchain date
+
+python310 https://bugzilla.opensuse.org/show_bug.cgi?id=1040589 - improvable
+python311
+python312
+python38
+python39
+gcc12
+bash
+
+
+reported upstream:
+python-ruff https://github.com/astral-sh/ruff/issues/12169 python-ruff ASLR
+kf6-syntax-highlighting https://invent.kde.org/frameworks/syntax-highlighting/-/merge_requests/806 date
+kea https://github.com/mesonbuild/meson/issues/14850 kea, toolchain, random https://bugzilla.suse.com/show_bug.cgi?id=1246670 random unique ID
+warzone2100 https://github.com/BinomialLLC/basis_universal/issues/374 parallelism
+pixelorama https://github.com/godotengine/godot/issues/105181 toolchain random ?new issue from SR 1247481? .pxo=.zip - mtime?
+gcc14 https://gcc.gnu.org/bugzilla/show_bug.cgi?id=114895 https://bugzilla.suse.com/show_bug.cgi?id=1223169 FTBFS-2038
+
+qqc2-breeze-style6 parallelism - source diff in BreezeStyle_Button_qml.cpp ?kf6-qqc2-desktop-style qt6-declarative qt-creator qt6-grpc qt6-multimedia qt6-sensors libplasma6  qt6-webengine toolchain issue around qml.cpp generation - parallelism/race https://bugreports.qt.io/browse/QTBUG-121643
+
+kernel-source:kernel-docs parallelism/race bug https://lore.kernel.org/linux-doc/33018311-0bdf-4258-b0c0-428a548c710d@suse.de/T/#t https://github.com/sphinx-doc/sphinx/issues/2946 = https://github.com/sphinx-doc/sphinx/issues/6714 ; workaroundable
+
+ocaml-camlp-streams https://github.com/ocaml/dune/issues/9152 https://github.com/ocaml/camlp-streams/issues/9
+
+sbcl https://sourceforge.net/p/sbcl/mailman/sbcl-devel/thread/3ebdd95c-c498-462f-9cfe-7d05a1ee0044%40suse.de/ report timestamp+other
+lilypond https://sourceforge.net/p/testlilyissues/issues/5328/ https://savannah.gnu.org/patch/?9370 https://codereview.appspot.com/337650043
+python-yt https://github.com/yt-project/yt/issues/4611 parallelism +#=> https://github.com/yt-project/yt/pull/4609 python filesys order
+python3-pyside6 ASLR order from shiboken6
+python3-pyside2 https://bugreports.qt.io/browse/PYSIDE-2508 order
+rash https://github.com/willghatch/racket-rash/issues/52 report parallelism-related non-determinism
+gnu-cobol https://savannah.gnu.org/bugs/index.php?54361 https://bugzilla.opensuse.org/show_bug.cgi?id=1195087
+#luajit https://github.com/LuaJIT/LuaJIT/issues/1008
+boost https://github.com/boostorg/boost/issues/741 2038-date influences order in libboost_log.so.1.82.0
+colord https://github.com/hughsie/colord/issues/174 https://bugzilla.opensuse.org/show_bug.cgi?id=1217747 .icc only-CPU
+neovim https://github.com/neovim/neovim/issues/26387 order issue maybe from gen_api_dispatch.lua
+cosmic-edit https://github.com/pop-os/cosmic-edit/issues/221 hash order issue, rust
+soapy-sdr https://github.com/pothosware/SoapySDR/issues/428 parallelism
+qt6-virtualkeyboard qt6-declarative https://bugreports.qt.io/browse/QTBUG-121643 bug? parallelism
+python-pandas https://github.com/cython/cython/issues/5986 https://github.com/pandas-dev/pandas/issues/60078 toolchain ASLR/other random
+qt6-quick3d parallelism https://bugreports.qt.io/browse/QTBUG-122722 https://bugreports.qt.io/browse/QTBUG-121643
+xiphos/yelp-tools https://gitlab.gnome.org/GNOME/yelp-tools/-/issues/24 toolchain .epub content UUID
+pspp https://savannah.gnu.org/bugs/index.php?65485 bug,parallelism /usr/share/info/pspp.info-1.gz # unreproducible testsuite.log => dropped
+?zls https://github.com/zigtools/zls/issues/2138 https://github.com/zigtools/zls/pull/2000 random path of version_data in debug
+gimp https://gitlab.gnome.org/GNOME/gimp-data/-/issues/7 png date ; partial fixes submitted ; CPU-dependency left
+python-rdflib https://github.com/RDFLib/rdflib/issues/2645 random Graph identifier ?toolchain from python-Sphinx? old SR 1132811
+python31x:doc https://github.com/sphinx-doc/sphinx/issues/13419 Sphinx toolchain race
+linkerd-cli linkerd-cli-edge https://github.com/linkerd/linkerd2/issues/13873 https://bugzilla.opensuse.org/show_bug.cgi?id=1240347 date in generated_multicluster_templates.gogen.go
+rakudo patch-mtime + https://github.com/rakudo/rakudo/issues/5427 + #https://github.com/rakudo/rakudo/pull/5426
+pocketbase https://github.com/pocketbase/pocketbase/issues/7123 FTBFS-2030-03-03
+?python314 https://github.com/python/cpython/issues/138061 random
+
+
+fix submitted upstream:
+gputils https://sourceforge.net/p/gputils/bugs/328/ date
+-?re-flex https://bugzilla.opensuse.org/show_bug.cgi?id=1246164 CPU = - https://github.com/Genivia/RE-flex/issues/233 related:ugrep
+rav1e https://github.com/medek/nasm-rs/pull/47 rust toolchain
+gstreamer-plugins-rs https://gitlab.freedesktop.org/gstreamer/gst-plugins-rs/-/merge_requests/3208 sort
+ghc https://gitlab.haskell.org/ghc/ghc/-/merge_requests/16457 sort, toolchain
+ocaml https://github.com/ocaml/ocaml/pull/14989 race
+freeciv https://redmine.freeciv.org/issues/2122 lua date+hash
+taisei https://github.com/taisei-project/taisei/pull/441 zip mtime
+lutgen-cli https://github.com/ozwaldorf/lutgen-rs/pull/46 nocheck
+piglit https://gitlab.freedesktop.org/mesa/piglit/-/merge_requests/1193 parallelism/race
+
+
+fix merged upstream:
+
+ruffle https://github.com/ruffle-rs/ruffle/pull/24360 rust HashMap
+ruffle https://github.com/XAMPPRocky/fluent-templates/pull/112 readdir toolchain
+libpsl https://github.com/rockdaboot/libpsl/pull/297 date fixup
+ntpsec https://gitlab.com/NTPsec/ntpsec/-/merge_requests/1499 timestamp in debugsource
+yazi/rav1e/built https://bugzilla.opensuse.org/show_bug.cgi?id=1239491 https://github.com/xiph/rav1e/pull/3412 https://github.com/lukaslueg/built/issues/80 toolchain parallelism/core-count >=25.3.2
+python-pyrage https://github.com/kellpossible/cargo-i18n/pull/151 random rust HashMap
+dunst https://github.com/dunst-project/dunst/pull/1435 date >1.12.1
+ooRexx https://sourceforge.net/p/oorexx/bugs/1712/ ASLR ; fixed in 5.0.0?
+OpenRGB https://gitlab.com/CalcProgrammer1/OpenRGB/-/merge_requests/2103 filesys >0.9 >=1.0
+qpid-proton https://github.com/apache/qpid-proton/pull/411 sort >0.39 ?0.40? https://github.com/apache/qpid-proton/tags
+gnucash https://bugs.gnucash.org/show_bug.cgi?id=799623 FTBFS-2038
+llamacpp https://github.com/ggerganov/llama.cpp/pull/11366 CPU march=native  https://github.com/ggerganov/llama.cpp/issues/11306 random + https://github.com/ggerganov/llama.cpp/issues/11317 CPU > 4501
+goldendict-ng https://bugreports.qt.io/browse/QTBUG-115737 qmake toolchain ; also rewritten in goldendict-ng >23.05.03
+whatsie https://github.com/keshavbhatt/whatsie/pull/146 date (needs qmake patch https://codereview.qt-project.org/c/qt/qtbase/+/494174 in qt5)
+mhvtl https://github.com/markh794/mhvtl/pull/128 tar >1.71
+python311:doc https://bugzilla.opensuse.org/show_bug.cgi?id=1227999 date #https://github.com/python/cpython/pull/121872 python311:doc date, audit_events.html https://github.com/python/cpython/issues/121874 html race bug, gzip header mtime https://github.com/sphinx-doc/sphinxcontrib-devhelp/pull/13 https://github.com/sphinx-doc/sphinx/pull/12606
+python314 https://github.com/python/cpython/issues/130979 https://github.com/python/cpython/pull/125261 toolchain, gzip header time
+ccache https://github.com/ccache/ccache/pull/1525 https://github.com/ccache/ccache/issues/1524 FTBFS-2038 > 4.10.2 >=4.11
+python-pygraphviz:doc https://github.com/pygraphviz/pygraphviz/pull/544 >1.14 https://github.com/sphinx-gallery/sphinx-gallery/pull/1385 python-pygraphviz toolchain, benchmark = https://github.com/pygraphviz/pygraphviz/issues/541
+conky https://github.com/brndnmtthws/conky/pull/2096 date (not https://github.com/jgm/pandoc/issues/10423 pandoc toolchain), date+copyright-year in man-page >1.21.7 >=1.22
+elemental-toolkit https://github.com/rancher/elemental-toolkit/pull/2239 tar > 20241202
+openCryptoki https://github.com/opencryptoki/opencryptoki/pull/829 https://github.com/opencryptoki/opencryptoki/pull/828 date/copyright ; date+time > 3.24.0
+cockpit https://github.com/cockpit-project/cockpit/pull/21460 filesys (python) >=324
+tiny https://github.com/osa1/tiny/issues/437 rust HashMap order >=0.13.0
+lowfi https://github.com/servo/string-cache/pull/290 rust
+llvm11-17 https://bugzilla.opensuse.org/show_bug.cgi?id=1199076 https://github.com/llvm/llvm-project/pull/146822 llvm17/rust1.73 https://github.com/rust-lang/rust/issues/128675 https://github.com/llvm/llvm-project/issues/72206 
+identity+mousai/glib-macros https://github.com/gtk-rs/gtk-rs-core/pull/1840 rust HashMap
+FreeDoko https://gitlab.com/dknof/FreeDoko/-/merge_requests/2 date
+gramps https://github.com/gramps-project/gramps/pull/2081 gzip mtime
+nushell starship https://github.com/baoyachi/shadow-rs/pull/235 https://github.com/baoyachi/shadow-rs/issues/234 toolchain, date old: https://github.com/starship/starship/pull/5352 1-byte-diff in .note.ABI-tag
+netdiscover https://github.com/netdiscover-scanner/netdiscover/pull/38 debuginfo mtime/date
+ioquake3 https://github.com/ioquake/ioq3/pull/704 debugsource: date+time
+https://github.com/tesselslate/waywall/pull/58 lua order
+nftables =>ca86f206c92704170a295b8dc7a41f6448835dde `date` via configure.ac nftbuildstamp
+https://gitlab.winehq.org/mono/mono/-/merge_requests/243 https://gitlab.winehq.org/mono/mono/-/work_items/33 old: https://github.com/mono/mono/issues/20172 report unknown/time-based nondeterminism + keepass mono-addins mono-core nunit flickrnet mono PE-header-timestamp, 1024-bit ?PublicKeyToken?, other ; ignored by build-compare+monodis
+python-tokenizer https://github.com/PyO3/pyo3/pull/6076 toolchain (rust HashMap)
+
+
+SR:
+#1244717 1241564 wayprompt + waylock + stacktile + river + zls:  https://github.com/ziglang/zig/issues/22663 zig debuginfo CPU, toolchain
+-? rocclr https://src.opensuse.org/ROCmWork/rocclr/pulls/1 PID
+1368181 java-17-openjdk various backports
+1368504 java-1_8_0-openjdk various backports
+1368243 zig https://codeberg.org/ziglang/zig/issues/36334 https://github.com/ziglang/zig/issues/22839 ASLR in debuginfo
+1370260 gri ps timestamps from tex/dvips + #ToUpstream
+1371702 1371701 mingw32-gmp mingw32-zlib debuginfo .a , toolchain binutils?
+
