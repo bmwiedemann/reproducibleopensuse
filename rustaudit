@@ -55,7 +55,9 @@ while IFS='|' read -r glob file marker ref ; do
     # strip the glob for the label: 'foo-*' and 'foo*' both report as 'foo'
     [ $found = 0 ] && { n=${glob%\*} ; echo ".. ${n%-}: not vendored" ; }
 done <<'EOF' | LC_ALL=C sort -r
+enum_delegate_lib-*|src/macros/register.rs|deterministic_unique_id|https://gitlab.com/dawn_app/enum_delegate - register() names its exported macro with rand::thread_rng() per expansion
 glib-macros-*|src/properties.rs|BTreeMap|https://github.com/gtk-rs/gtk-rs-core/pull/1840
+pyo3-macros-backend-*|src/introspection.rs|BTreeMap|https://github.com/PyO3/pyo3/pull/6076 - fixed in 0.29.0; only matters with feature experimental-inspect
 fluent-template-macros*|src/lib.rs|paths\.sort|https://github.com/XAMPPRocky/fluent-templates - static_loader! embeds a locale's .ftl files in parallel-walk order
 rust-i18n-*|src/lib.rs|BTreeMap|https://github.com/longbridge/rust-i18n/pull/104
 rust-i18n-support-*|src/lib.rs|BTreeMap|https://github.com/longbridge/rust-i18n/pull/104
