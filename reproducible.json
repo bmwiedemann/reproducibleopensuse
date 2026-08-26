@@ -1658,7 +1658,7 @@
       "status" : "reproducible",
       "verifiable" : 2,
       "verified" : 2,
-      "version" : "1.0~rc3+git13.g1e1fb098-13"
+      "version" : "1.0~rc3+git13.g1e1fb098-14"
    },
    {
       "architecture" : "x86_64",
@@ -2065,6 +2065,21 @@
       "verifiable" : 2,
       "verified" : 2,
       "version" : "3.7.7-31"
+   },
+   {
+      "architecture" : "x86_64",
+      "build_date" : 1787738659,
+      "build_duration" : 64,
+      "build_duration4" : 48,
+      "opensuseautoclassify" : null,
+      "opensusesigdate" : "2026-08-24T13:59:50 UTC",
+      "opensusetweaks" : null,
+      "package" : "Regina-REXX",
+      "release" : "openSUSE:Factory",
+      "status" : "reproducible",
+      "verifiable" : 2,
+      "verified" : 2,
+      "version" : "3.9.7-1"
    },
    {
       "architecture" : "x86_64",
@@ -2699,18 +2714,16 @@
    },
    {
       "architecture" : "x86_64",
-      "build_date" : 1771841044,
-      "build_duration" : 230,
-      "build_duration4" : 215,
+      "build_date" : 1787763375,
+      "build_duration" : 142,
+      "build_duration4" : 142,
       "opensuseautoclassify" : null,
-      "opensusesigdate" : "2025-07-24T17:01:24 UTC",
       "opensusetweaks" : null,
       "package" : "TeXmacs",
       "release" : "openSUSE:Factory",
-      "status" : "reproducible",
-      "verifiable" : 2,
-      "verified" : 2,
-      "version" : "2.1.4-4"
+      "status" : "FTBFS",
+      "verified" : null,
+      "version" : "2.1.5-5"
    },
    {
       "architecture" : "x86_64",
@@ -3194,18 +3207,18 @@
    },
    {
       "architecture" : "x86_64",
-      "build_date" : 1775640756,
-      "build_duration" : 193,
-      "build_duration4" : 94,
+      "build_date" : 1787737009,
+      "build_duration" : 266,
+      "build_duration4" : 128,
       "opensuseautoclassify" : null,
-      "opensusesigdate" : "2026-02-16T12:26:45 UTC",
+      "opensusesigdate" : "2026-08-25T11:29:54 UTC",
       "opensusetweaks" : null,
       "package" : "abseil-cpp",
       "release" : "openSUSE:Factory",
       "status" : "reproducible",
       "verifiable" : 2,
       "verified" : 2,
-      "version" : "20260107.1-52"
+      "version" : "20260817.0-53"
    },
    {
       "architecture" : "x86_64",
@@ -5081,18 +5094,18 @@
    },
    {
       "architecture" : "x86_64",
-      "build_date" : 1782832375,
-      "build_duration" : 129,
-      "build_duration4" : 58,
+      "build_date" : 1787737137,
+      "build_duration" : 93,
+      "build_duration4" : 42,
       "opensuseautoclassify" : null,
-      "opensusesigdate" : "2026-06-30T13:17:50 UTC",
+      "opensusesigdate" : "2026-08-25T11:28:24 UTC",
       "opensusetweaks" : null,
       "package" : "amfora",
       "release" : "openSUSE:Factory",
       "status" : "reproducible",
       "verifiable" : 2,
       "verified" : 2,
-      "version" : "1.11.0-5"
+      "version" : "1.11.0-6"
    },
    {
       "architecture" : "x86_64",
@@ -6610,18 +6623,18 @@
    },
    {
       "architecture" : "x86_64",
-      "build_date" : 1783227558,
-      "build_duration" : 90,
-      "build_duration4" : 43,
+      "build_date" : 1787737228,
+      "build_duration" : 60,
+      "build_duration4" : 34,
       "opensuseautoclassify" : null,
-      "opensusesigdate" : "2026-07-04T00:50:11 UTC",
+      "opensusesigdate" : "2026-08-24T13:59:41 UTC",
       "opensusetweaks" : null,
       "package" : "apache2-mod_auth_openidc",
       "release" : "openSUSE:Factory",
       "status" : "reproducible",
       "verifiable" : 2,
       "verified" : 2,
-      "version" : "2.4.19.3-43"
+      "version" : "2.4.20.2-44"
    },
    {
       "architecture" : "x86_64",
@@ -12731,9 +12744,9 @@
    },
    {
       "architecture" : "x86_64",
-      "build_date" : 1787648774,
-      "build_duration" : 552,
-      "build_duration4" : 172,
+      "build_date" : 1787725574,
+      "build_duration" : 1760,
+      "build_duration4" : 534,
       "opensuseautoclassify" : null,
       "opensusesigdate" : "2026-07-26T19:03:17 UTC",
       "opensusetweaks" : null,
@@ -12742,7 +12755,7 @@
       "status" : "reproducible",
       "verifiable" : 2,
       "verified" : 0,
-      "version" : "0.20210430-15"
+      "version" : "0.20260813-16"
    },
    {
       "architecture" : "x86_64",
@@ -14257,18 +14270,18 @@
    },
    {
       "architecture" : "x86_64",
-      "build_date" : 1774791971,
-      "build_duration" : 70,
-      "build_duration4" : 59,
+      "build_date" : 1787737168,
+      "build_duration" : 93,
+      "build_duration4" : 83,
       "opensuseautoclassify" : null,
-      "opensusesigdate" : "2026-01-06T16:49:16 UTC",
+      "opensusesigdate" : "2026-08-25T11:27:59 UTC",
       "opensusetweaks" : null,
       "package" : "c-ares",
       "release" : "openSUSE:Factory",
       "status" : "reproducible",
       "verifiable" : 2,
       "verified" : 2,
-      "version" : "1.34.6-28"
+      "version" : "1.34.8-29"
    },
    {
       "architecture" : "x86_64",
@@ -15670,18 +15683,18 @@
    },
    {
       "architecture" : "x86_64",
-      "build_date" : 1774702847,
-      "build_duration" : 363,
-      "build_duration4" : 163,
+      "build_date" : 1787727035,
+      "build_duration" : 351,
+      "build_duration4" : 133,
       "opensuseautoclassify" : null,
-      "opensusesigdate" : "2026-01-26T10:50:55 UTC",
+      "opensusesigdate" : "2026-08-25T15:36:34 UTC",
       "opensusetweaks" : null,
       "package" : "cdogs-sdl",
       "release" : "openSUSE:Factory",
       "status" : "reproducible",
       "verifiable" : 2,
       "verified" : 2,
-      "version" : "2.4.0-33"
+      "version" : "2.4.0-34"
    },
    {
       "architecture" : "x86_64",
@@ -16548,7 +16561,7 @@
       "release" : "openSUSE:Factory",
       "status" : "FTBFS",
       "verified" : null,
-      "version" : "151.0.7922.173-541"
+      "version" : "151.0.7922.173-542"
    },
    {
       "architecture" : "x86_64",
@@ -16971,18 +16984,18 @@
    },
    {
       "architecture" : "x86_64",
-      "build_date" : 1783263412,
-      "build_duration" : 2035,
-      "build_duration4" : 726,
+      "build_date" : 1787721528,
+      "build_duration" : 1836,
+      "build_duration4" : 530,
       "opensuseautoclassify" : null,
-      "opensusesigdate" : "2026-07-04T03:00:28 UTC",
+      "opensusesigdate" : "2026-08-24T14:09:09 UTC",
       "opensusetweaks" : null,
       "package" : "clamav",
       "release" : "openSUSE:Factory",
       "status" : "reproducible",
       "verifiable" : 2,
       "verified" : 2,
-      "version" : "1.5.3-141"
+      "version" : "1.5.4-142"
    },
    {
       "architecture" : "x86_64",
@@ -17076,7 +17089,7 @@
    },
    {
       "architecture" : "x86_64",
-      "build_date" : 1787710927,
+      "build_date" : 1787762329,
       "build_duration" : 134,
       "build_duration4" : 139,
       "opensuseautoclassify" : null,
@@ -17465,18 +17478,18 @@
    },
    {
       "architecture" : "x86_64",
-      "build_date" : 1787381194,
-      "build_duration" : 352,
-      "build_duration4" : 72,
+      "build_date" : 1787737569,
+      "build_duration" : 287,
+      "build_duration4" : 56,
       "opensuseautoclassify" : null,
-      "opensusesigdate" : "2026-08-21T15:09:03 UTC",
+      "opensusesigdate" : "2026-08-25T15:39:03 UTC",
       "opensusetweaks" : null,
       "package" : "clpeak",
       "release" : "openSUSE:Factory",
       "status" : "reproducible",
       "verifiable" : 2,
       "verified" : 2,
-      "version" : "2.1.2-18"
+      "version" : "2.1.3-19"
    },
    {
       "architecture" : "x86_64",
@@ -17975,18 +17988,18 @@
    },
    {
       "architecture" : "x86_64",
-      "build_date" : 1775698216,
-      "build_duration" : 109,
-      "build_duration4" : 90,
+      "build_date" : 1787737865,
+      "build_duration" : 120,
+      "build_duration4" : 125,
       "opensuseautoclassify" : null,
-      "opensusesigdate" : "2026-02-12T16:51:34 UTC",
+      "opensusesigdate" : "2026-08-25T11:29:26 UTC",
       "opensusetweaks" : null,
       "package" : "coccinelle",
       "release" : "openSUSE:Factory",
       "status" : "reproducible",
       "verifiable" : 2,
       "verified" : 2,
-      "version" : "1.3.1-40"
+      "version" : "1.3.2-41"
    },
    {
       "architecture" : "x86_64",
@@ -18530,18 +18543,18 @@
    },
    {
       "architecture" : "x86_64",
-      "build_date" : 1787493272,
-      "build_duration" : 96,
-      "build_duration4" : 67,
+      "build_date" : 1787737041,
+      "build_duration" : 101,
+      "build_duration4" : 64,
       "opensuseautoclassify" : null,
-      "opensusesigdate" : "2026-08-22T19:40:08 UTC",
+      "opensusesigdate" : "2026-08-24T13:59:54 UTC",
       "opensusetweaks" : null,
       "package" : "comfyui",
       "release" : "openSUSE:Factory",
       "status" : "reproducible",
       "verifiable" : 2,
       "verified" : 2,
-      "version" : "0.33.3-2"
+      "version" : "0.33.3-3"
    },
    {
       "architecture" : "x86_64",
@@ -18981,8 +18994,8 @@
    },
    {
       "architecture" : "x86_64",
-      "build_date" : 1787649013,
-      "build_duration" : 57,
+      "build_date" : 1787737962,
+      "build_duration" : 65,
       "build_duration4" : 41,
       "opensuseautoclassify" : null,
       "opensusesigdate" : "2026-07-27T05:43:30 UTC",
@@ -18992,7 +19005,7 @@
       "status" : "reproducible",
       "verifiable" : 2,
       "verified" : 0,
-      "version" : "2.5.2-5"
+      "version" : "2.6.3-6"
    },
    {
       "architecture" : "x86_64",
@@ -26168,18 +26181,18 @@
    },
    {
       "architecture" : "x86_64",
-      "build_date" : 1775576045,
-      "build_duration" : 707,
-      "build_duration4" : 256,
+      "build_date" : 1787726521,
+      "build_duration" : 910,
+      "build_duration4" : 269,
       "opensuseautoclassify" : null,
-      "opensusesigdate" : "2026-04-07T15:10:17 UTC",
+      "opensusesigdate" : "2026-08-25T15:38:02 UTC",
       "opensusetweaks" : null,
       "package" : "dunelegacy",
       "release" : "openSUSE:Factory",
       "status" : "reproducible",
       "verifiable" : 2,
       "verified" : 2,
-      "version" : "0.99.5-6"
+      "version" : "0.99.5-7"
    },
    {
       "architecture" : "x86_64",
@@ -30737,7 +30750,7 @@
    },
    {
       "architecture" : "x86_64",
-      "build_date" : 1787711010,
+      "build_date" : 1787762411,
       "build_duration" : 124,
       "build_duration4" : 53,
       "opensuseautoclassify" : null,
@@ -33634,18 +33647,18 @@
    },
    {
       "architecture" : "x86_64",
-      "build_date" : 1787169114,
-      "build_duration" : 181,
-      "build_duration4" : 79,
+      "build_date" : 1787738226,
+      "build_duration" : 221,
+      "build_duration4" : 57,
       "opensuseautoclassify" : null,
-      "opensusesigdate" : "2026-08-19T16:44:29 UTC",
+      "opensusesigdate" : "2026-08-24T14:00:52 UTC",
       "opensusetweaks" : null,
       "package" : "frei0r-plugins",
       "release" : "openSUSE:Factory",
       "status" : "reproducible",
       "verifiable" : 2,
       "verified" : 2,
-      "version" : "3.4.0-25"
+      "version" : "3.4.3-26"
    },
    {
       "architecture" : "x86_64",
@@ -33890,18 +33903,18 @@
    },
    {
       "architecture" : "x86_64",
-      "build_date" : 1772227317,
-      "build_duration" : 51,
-      "build_duration4" : 30,
+      "build_date" : 1787738315,
+      "build_duration" : 59,
+      "build_duration4" : 35,
       "opensuseautoclassify" : null,
-      "opensusesigdate" : "2025-11-08T15:39:08 UTC",
+      "opensusesigdate" : "2026-08-25T13:58:32 UTC",
       "opensusetweaks" : null,
       "package" : "fscrypt",
       "release" : "openSUSE:Factory",
       "status" : "reproducible",
       "verifiable" : 2,
       "verified" : 2,
-      "version" : "0.3.6-6"
+      "version" : "0.3.7-7"
    },
    {
       "architecture" : "x86_64",
@@ -38683,18 +38696,18 @@
    },
    {
       "architecture" : "x86_64",
-      "build_date" : 1786988367,
-      "build_duration" : 619,
-      "build_duration4" : 152,
+      "build_date" : 1787738796,
+      "build_duration" : 442,
+      "build_duration4" : 97,
       "opensuseautoclassify" : null,
-      "opensusesigdate" : "2026-08-17T15:25:01 UTC",
+      "opensusesigdate" : "2026-08-24T14:01:51 UTC",
       "opensusetweaks" : null,
       "package" : "gh",
       "release" : "openSUSE:Factory",
       "status" : "reproducible",
       "verifiable" : 2,
       "verified" : 2,
-      "version" : "2.97.0-100"
+      "version" : "2.98.0-101"
    },
    {
       "architecture" : "x86_64",
@@ -45878,18 +45891,18 @@
    },
    {
       "architecture" : "x86_64",
-      "build_date" : 1787595270,
-      "build_duration" : 2300,
-      "build_duration4" : 634,
+      "build_date" : 1787740728,
+      "build_duration" : 1894,
+      "build_duration4" : 428,
       "opensuseautoclassify" : null,
-      "opensusesigdate" : "2026-08-24T10:29:16 UTC",
+      "opensusesigdate" : "2026-08-25T15:44:52 UTC",
       "opensusetweaks" : null,
       "package" : "gitoxide",
       "release" : "openSUSE:Factory",
       "status" : "reproducible",
       "verifiable" : 2,
       "verified" : 2,
-      "version" : "0.57.0-10"
+      "version" : "0.58.0-11"
    },
    {
       "architecture" : "x86_64",
@@ -46403,7 +46416,7 @@
    },
    {
       "architecture" : "x86_64",
-      "build_date" : 1787708287,
+      "build_date" : 1787762470,
       "build_duration" : 30,
       "build_duration4" : 22,
       "opensuseautoclassify" : null,
@@ -46926,7 +46939,7 @@
    },
    {
       "architecture" : "x86_64",
-      "build_date" : 1787708324,
+      "build_date" : 1787762521,
       "build_duration" : 33,
       "build_duration4" : 25,
       "opensuseautoclassify" : null,
@@ -47059,7 +47072,7 @@
    },
    {
       "architecture" : "x86_64",
-      "build_date" : 1787708355,
+      "build_date" : 1787762560,
       "build_duration" : 18,
       "build_duration4" : 18,
       "opensuseautoclassify" : null,
@@ -47102,7 +47115,7 @@
    },
    {
       "architecture" : "x86_64",
-      "build_date" : 1787708384,
+      "build_date" : 1787762592,
       "build_duration" : 17,
       "build_duration4" : 17,
       "opensuseautoclassify" : null,
@@ -47370,7 +47383,7 @@
    },
    {
       "architecture" : "x86_64",
-      "build_date" : 1787708411,
+      "build_date" : 1787762625,
       "build_duration" : 17,
       "build_duration4" : 17,
       "opensuseautoclassify" : null,
@@ -47564,7 +47577,7 @@
    },
    {
       "architecture" : "x86_64",
-      "build_date" : 1787708442,
+      "build_date" : 1787762657,
       "build_duration" : 17,
       "build_duration4" : 17,
       "opensuseautoclassify" : null,
@@ -47697,7 +47710,7 @@
    },
    {
       "architecture" : "x86_64",
-      "build_date" : 1787708471,
+      "build_date" : 1787762689,
       "build_duration" : 18,
       "build_duration4" : 17,
       "opensuseautoclassify" : null,
@@ -48055,7 +48068,7 @@
    },
    {
       "architecture" : "x86_64",
-      "build_date" : 1787708504,
+      "build_date" : 1787762722,
       "build_duration" : 17,
       "build_duration4" : 17,
       "opensuseautoclassify" : null,
@@ -49355,7 +49368,7 @@
       "release" : "openSUSE:Factory",
       "status" : "notforus",
       "verified" : null,
-      "version" : "-60"
+      "version" : "-61"
    },
    {
       "architecture" : "x86_64",
@@ -49398,7 +49411,7 @@
       "release" : "openSUSE:Factory",
       "status" : "notforus",
       "verified" : null,
-      "version" : "-60"
+      "version" : "-61"
    },
    {
       "architecture" : "x86_64",
@@ -50225,18 +50238,18 @@
    },
    {
       "architecture" : "x86_64",
-      "build_date" : 1785408603,
-      "build_duration" : 526,
-      "build_duration4" : 152,
+      "build_date" : 1787716904,
+      "build_duration" : 527,
+      "build_duration4" : 150,
       "opensuseautoclassify" : null,
-      "opensusesigdate" : "2026-07-28T16:31:34 UTC",
+      "opensusesigdate" : "2026-08-25T11:29:58 UTC",
       "opensusetweaks" : null,
       "package" : "goreleaser",
       "release" : "openSUSE:Factory",
       "status" : "reproducible",
       "verifiable" : 2,
       "verified" : 2,
-      "version" : "2.17.1-31"
+      "version" : "2.18.0-32"
    },
    {
       "architecture" : "x86_64",
@@ -54411,18 +54424,18 @@
    },
    {
       "architecture" : "x86_64",
-      "build_date" : 1787260664,
-      "build_duration" : 93,
-      "build_duration4" : 46,
+      "build_date" : 1787740834,
+      "build_duration" : 66,
+      "build_duration4" : 36,
       "opensuseautoclassify" : null,
-      "opensusesigdate" : "2026-08-20T15:19:23 UTC",
+      "opensusesigdate" : "2026-08-25T11:28:06 UTC",
       "opensusetweaks" : null,
       "package" : "hawk-apiserver",
       "release" : "openSUSE:Factory",
       "status" : "reproducible",
       "verifiable" : 2,
       "verified" : 2,
-      "version" : "0.2.2+git.1787135908.0b1b73e-11"
+      "version" : "0.2.3+git.1787575068.680f9de-12"
    },
    {
       "architecture" : "x86_64",
@@ -55144,18 +55157,18 @@
    },
    {
       "architecture" : "x86_64",
-      "build_date" : 1786039307,
-      "build_duration" : 32,
-      "build_duration4" : 26,
+      "build_date" : 1787740885,
+      "build_duration" : 21,
+      "build_duration4" : 18,
       "opensuseautoclassify" : null,
-      "opensusesigdate" : "2026-08-06T14:29:03 UTC",
+      "opensusesigdate" : "2026-08-25T13:58:19 UTC",
       "opensusetweaks" : null,
       "package" : "hfsfuse",
       "release" : "openSUSE:Factory",
       "status" : "reproducible",
       "verifiable" : 2,
       "verified" : 2,
-      "version" : "0.430-9"
+      "version" : "0.435-10"
    },
    {
       "architecture" : "x86_64",
@@ -56874,7 +56887,7 @@
    },
    {
       "architecture" : "x86_64",
-      "build_date" : 1787708542,
+      "build_date" : 1787762759,
       "build_duration" : 18,
       "build_duration4" : 17,
       "opensuseautoclassify" : null,
@@ -58223,18 +58236,18 @@
    },
    {
       "architecture" : "x86_64",
-      "build_date" : 1785955819,
-      "build_duration" : 27,
-      "build_duration4" : 22,
+      "build_date" : 1787740934,
+      "build_duration" : 18,
+      "build_duration4" : 17,
       "opensuseautoclassify" : null,
-      "opensusesigdate" : "2026-08-05T16:08:36 UTC",
+      "opensusesigdate" : "2026-08-25T11:27:59 UTC",
       "opensusetweaks" : null,
       "package" : "imgp",
       "release" : "openSUSE:Factory",
       "status" : "reproducible",
       "verifiable" : 2,
       "verified" : 2,
-      "version" : "2.9-8"
+      "version" : "3.0-9"
    },
    {
       "architecture" : "x86_64",
@@ -61064,7 +61077,7 @@
       "status" : "unreproducible",
       "verifiable" : 0,
       "verified" : 0,
-      "version" : "11.0.28.0-88"
+      "version" : "11.0.28.0-89"
    },
    {
       "architecture" : "x86_64",
@@ -61096,7 +61109,7 @@
       "status" : "unreproducible",
       "verifiable" : 0,
       "verified" : 0,
-      "version" : "17.0.20.0-50"
+      "version" : "17.0.20.0-51"
    },
    {
       "architecture" : "x86_64",
@@ -69311,21 +69324,6 @@
    },
    {
       "architecture" : "x86_64",
-      "build_date" : 1783116345,
-      "build_duration" : 238,
-      "build_duration4" : 88,
-      "opensuseautoclassify" : null,
-      "opensusesigdate" : "2026-07-02T20:17:22 UTC",
-      "opensusetweaks" : null,
-      "package" : "kmime",
-      "release" : "openSUSE:Factory",
-      "status" : "reproducible",
-      "verifiable" : 2,
-      "verified" : 2,
-      "version" : "26.04.3-131"
-   },
-   {
-      "architecture" : "x86_64",
       "build_date" : 1787621630,
       "build_duration" : 114,
       "build_duration4" : 78,
@@ -69416,18 +69414,18 @@
    },
    {
       "architecture" : "x86_64",
-      "build_date" : 1783468083,
-      "build_duration" : 52,
-      "build_duration4" : 37,
+      "build_date" : 1787741014,
+      "build_duration" : 37,
+      "build_duration4" : 30,
       "opensuseautoclassify" : null,
-      "opensusesigdate" : "2026-07-07T19:30:59 UTC",
+      "opensusesigdate" : "2026-08-24T14:00:03 UTC",
       "opensusetweaks" : null,
       "package" : "kmscon",
       "release" : "openSUSE:Factory",
       "status" : "reproducible",
       "verifiable" : 2,
       "verified" : 2,
-      "version" : "10.0.1-13"
+      "version" : "10.0.2-14"
    },
    {
       "architecture" : "x86_64",
@@ -69986,18 +69984,18 @@
    },
    {
       "architecture" : "x86_64",
-      "build_date" : 1787002247,
-      "build_duration" : 95,
-      "build_duration4" : 64,
+      "build_date" : 1787741098,
+      "build_duration" : 52,
+      "build_duration4" : 40,
       "opensuseautoclassify" : null,
-      "opensusesigdate" : "2026-08-17T15:21:56 UTC",
+      "opensusesigdate" : "2026-08-24T14:00:52 UTC",
       "opensusetweaks" : null,
       "package" : "kora-icon-theme",
       "release" : "openSUSE:Factory",
       "status" : "reproducible",
       "verifiable" : 2,
       "verified" : 2,
-      "version" : "2.0.5-11"
+      "version" : "2.0.6-12"
    },
    {
       "architecture" : "x86_64",
@@ -77394,18 +77392,18 @@
    },
    {
       "architecture" : "x86_64",
-      "build_date" : 1775748437,
-      "build_duration" : 169,
-      "build_duration4" : 58,
+      "build_date" : 1787729400,
+      "build_duration" : 303,
+      "build_duration4" : 135,
       "opensuseautoclassify" : null,
-      "opensusesigdate" : "2026-02-27T19:11:33 UTC",
+      "opensusesigdate" : "2026-08-25T13:59:19 UTC",
       "opensusetweaks" : null,
       "package" : "libdjinterop",
       "release" : "openSUSE:Factory",
       "status" : "reproducible",
       "verifiable" : 2,
       "verified" : 2,
-      "version" : "0.26.1-1"
+      "version" : "0.27.1-2"
    },
    {
       "architecture" : "x86_64",
@@ -77994,18 +77992,18 @@
    },
    {
       "architecture" : "x86_64",
-      "build_date" : 1774741793,
-      "build_duration" : 35,
-      "build_duration4" : 32,
+      "build_date" : 1787741167,
+      "build_duration" : 24,
+      "build_duration4" : 24,
       "opensuseautoclassify" : null,
-      "opensusesigdate" : "2026-01-07T15:04:45 UTC",
+      "opensusesigdate" : "2026-08-25T11:27:59 UTC",
       "opensusetweaks" : null,
       "package" : "libevdev",
       "release" : "openSUSE:Factory",
       "status" : "reproducible",
       "verifiable" : 2,
       "verified" : 2,
-      "version" : "1.13.6-25"
+      "version" : "1.13.7-26"
    },
    {
       "architecture" : "x86_64",
@@ -81081,18 +81079,18 @@
    },
    {
       "architecture" : "x86_64",
-      "build_date" : 1774946070,
-      "build_duration" : 25,
-      "build_duration4" : 23,
+      "build_date" : 1787741224,
+      "build_duration" : 26,
+      "build_duration4" : 24,
       "opensuseautoclassify" : null,
-      "opensusesigdate" : "2025-04-08T16:04:35 UTC",
+      "opensusesigdate" : "2026-08-25T11:27:52 UTC",
       "opensusetweaks" : null,
       "package" : "liblqr",
       "release" : "openSUSE:Factory",
       "status" : "reproducible",
       "verifiable" : 2,
       "verified" : 2,
-      "version" : "0.4.2-17"
+      "version" : "0.4.3-18"
    },
    {
       "architecture" : "x86_64",
@@ -82849,18 +82847,18 @@
    },
    {
       "architecture" : "x86_64",
-      "build_date" : 1779956634,
-      "build_duration" : 1325,
-      "build_duration4" : 202,
+      "build_date" : 1787723584,
+      "build_duration" : 1695,
+      "build_duration4" : 353,
       "opensuseautoclassify" : null,
-      "opensusesigdate" : "2026-05-20T14:55:25 UTC",
+      "opensusesigdate" : "2026-08-25T11:33:19 UTC",
       "opensusetweaks" : null,
       "package" : "libopenmpt",
       "release" : "openSUSE:Factory",
       "status" : "reproducible",
       "verifiable" : 2,
       "verified" : 2,
-      "version" : "0.8.7-59"
+      "version" : "0.8.9-60"
    },
    {
       "architecture" : "x86_64",
@@ -84651,18 +84649,18 @@
    },
    {
       "architecture" : "x86_64",
-      "build_date" : 1782838543,
-      "build_duration" : 1370,
-      "build_duration4" : 397,
+      "build_date" : 1787728966,
+      "build_duration" : 1900,
+      "build_duration4" : 547,
       "opensuseautoclassify" : null,
-      "opensusesigdate" : "2026-06-30T13:23:35 UTC",
+      "opensusesigdate" : "2026-08-25T11:33:32 UTC",
       "opensusetweaks" : null,
       "package" : "librdkafka",
       "release" : "openSUSE:Factory",
       "status" : "reproducible",
       "verifiable" : 2,
       "verified" : 2,
-      "version" : "2.14.2-22"
+      "version" : "2.15.0-23"
    },
    {
       "architecture" : "x86_64",
@@ -85653,18 +85651,18 @@
    },
    {
       "architecture" : "x86_64",
-      "build_date" : 1774718761,
+      "build_date" : 1787717609,
       "build_duration" : 38,
-      "build_duration4" : 33,
+      "build_duration4" : 31,
       "opensuseautoclassify" : null,
-      "opensusesigdate" : "2025-01-10T01:36:15 UTC",
+      "opensusesigdate" : "2026-08-25T11:27:51 UTC",
       "opensusetweaks" : null,
       "package" : "libsigsegv",
       "release" : "openSUSE:Factory",
       "status" : "reproducible",
       "verifiable" : 2,
       "verified" : 2,
-      "version" : "2.14-12"
+      "version" : "2.15-13"
    },
    {
       "architecture" : "x86_64",
@@ -85878,18 +85876,18 @@
    },
    {
       "architecture" : "x86_64",
-      "build_date" : 1784574309,
+      "build_date" : 1787741361,
       "build_duration" : 103,
       "build_duration4" : 75,
       "opensuseautoclassify" : null,
-      "opensusesigdate" : "2026-07-20T08:14:36 UTC",
+      "opensusesigdate" : "2026-08-25T11:29:06 UTC",
       "opensusetweaks" : null,
       "package" : "libsoup",
       "release" : "openSUSE:Factory",
       "status" : "reproducible",
       "verifiable" : 2,
       "verified" : 2,
-      "version" : "3.6.6-171"
+      "version" : "3.6.6-172"
    },
    {
       "architecture" : "x86_64",
@@ -86118,18 +86116,18 @@
    },
    {
       "architecture" : "x86_64",
-      "build_date" : 1783603635,
-      "build_duration" : 2836,
-      "build_duration4" : 623,
+      "build_date" : 1787743651,
+      "build_duration" : 2260,
+      "build_duration4" : 495,
       "opensuseautoclassify" : null,
-      "opensusesigdate" : "2026-07-08T19:43:29 UTC",
+      "opensusesigdate" : "2026-08-25T15:50:01 UTC",
       "opensusetweaks" : null,
       "package" : "libstorage-ng",
       "release" : "openSUSE:Factory",
       "status" : "reproducible",
       "verifiable" : 2,
       "verified" : 2,
-      "version" : "4.5.341-348"
+      "version" : "4.5.342-349"
    },
    {
       "architecture" : "x86_64",
@@ -87019,18 +87017,18 @@
    },
    {
       "architecture" : "x86_64",
-      "build_date" : 1783687584,
-      "build_duration" : 39,
-      "build_duration4" : 28,
+      "build_date" : 1787743763,
+      "build_duration" : 26,
+      "build_duration4" : 22,
       "opensuseautoclassify" : null,
-      "opensusesigdate" : "2026-07-09T20:21:32 UTC",
+      "opensusesigdate" : "2026-08-25T11:27:59 UTC",
       "opensusetweaks" : null,
       "package" : "libva",
       "release" : "openSUSE:Factory",
       "status" : "reproducible",
       "verifiable" : 2,
       "verified" : 2,
-      "version" : "2.24.0-78"
+      "version" : "2.24.1-79"
    },
    {
       "architecture" : "x86_64",
@@ -88650,7 +88648,7 @@
    },
    {
       "architecture" : "x86_64",
-      "build_date" : 1787708609,
+      "build_date" : 1787762829,
       "build_duration" : 18,
       "build_duration4" : 17,
       "opensuseautoclassify" : null,
@@ -89650,7 +89648,7 @@
       "status" : "reproducible",
       "verifiable" : 2,
       "verified" : 2,
-      "version" : "21.1.2-16"
+      "version" : "21.1.2-17"
    },
    {
       "architecture" : "x86_64",
@@ -93833,18 +93831,18 @@
    },
    {
       "architecture" : "x86_64",
-      "build_date" : 1780189508,
-      "build_duration" : 404,
-      "build_duration4" : 157,
+      "build_date" : 1787744069,
+      "build_duration" : 270,
+      "build_duration4" : 108,
       "opensuseautoclassify" : null,
-      "opensusesigdate" : "2026-05-30T21:28:18 UTC",
+      "opensusesigdate" : "2026-08-25T15:36:48 UTC",
       "opensusetweaks" : null,
       "package" : "marknote",
       "release" : "openSUSE:Factory",
       "status" : "reproducible",
       "verifiable" : 2,
       "verified" : 2,
-      "version" : "1.6.0-10"
+      "version" : "1.6.0-11"
    },
    {
       "architecture" : "x86_64",
@@ -101984,18 +101982,18 @@
    },
    {
       "architecture" : "x86_64",
-      "build_date" : 1787241801,
-      "build_duration" : 1516,
-      "build_duration4" : 242,
+      "build_date" : 1787745196,
+      "build_duration" : 1083,
+      "build_duration4" : 185,
       "opensuseautoclassify" : null,
-      "opensusesigdate" : "2026-08-20T14:49:41 UTC",
+      "opensusesigdate" : "2026-08-24T14:06:10 UTC",
       "opensusetweaks" : null,
       "package" : "netbird",
       "release" : "openSUSE:Factory",
       "status" : "reproducible",
       "verifiable" : 2,
       "verified" : 2,
-      "version" : "0.77.0-43"
+      "version" : "0.77.1-44"
    },
    {
       "architecture" : "x86_64",
@@ -102418,7 +102416,7 @@
    },
    {
       "architecture" : "x86_64",
-      "build_date" : 1787708673,
+      "build_date" : 1787762919,
       "build_duration" : 68,
       "build_duration4" : 58,
       "opensuseautoclassify" : null,
@@ -104308,18 +104306,18 @@
    {
       "architecture" : "x86_64",
       "build_compare_status" : "unreproducible",
-      "build_date" : 1787027947,
-      "build_duration" : 13492,
-      "build_duration4" : 4381,
+      "build_date" : 1787754496,
+      "build_duration" : 9253,
+      "build_duration4" : 2796,
       "opensuseautoclassify" : null,
-      "opensusesigdate" : "2026-08-17T16:11:35 UTC",
+      "opensusesigdate" : "2026-08-24T14:52:29 UTC",
       "opensusetweaks" : null,
       "package" : "nushell",
       "release" : "openSUSE:Factory",
       "status" : "unreproducible",
       "verifiable" : 0,
       "verified" : 0,
-      "version" : "0.115.0-30"
+      "version" : "0.115.1-31"
    },
    {
       "architecture" : "x86_64",
@@ -106518,18 +106516,18 @@
    },
    {
       "architecture" : "x86_64",
-      "build_date" : 1772096120,
-      "build_duration" : 159,
-      "build_duration4" : 110,
+      "build_date" : 1787748633,
+      "build_duration" : 166,
+      "build_duration4" : 118,
       "opensuseautoclassify" : null,
-      "opensusesigdate" : "2025-08-27T20:27:13 UTC",
+      "opensusesigdate" : "2026-08-25T11:55:01 UTC",
       "opensusetweaks" : null,
       "package" : "octave-forge-communications",
       "release" : "openSUSE:Factory",
       "status" : "reproducible",
       "verifiable" : 2,
       "verified" : 2,
-      "version" : "1.2.7-8"
+      "version" : "1.2.7-9"
    },
    {
       "architecture" : "x86_64",
@@ -106728,18 +106726,18 @@
    },
    {
       "architecture" : "x86_64",
-      "build_date" : 1775066821,
-      "build_duration" : 80,
-      "build_duration4" : 59,
+      "build_date" : 1787748434,
+      "build_duration" : 65,
+      "build_duration4" : 50,
       "opensuseautoclassify" : null,
-      "opensusesigdate" : "2026-03-30T09:33:02 UTC",
+      "opensusesigdate" : "2026-08-25T11:53:52 UTC",
       "opensusetweaks" : null,
       "package" : "octave-forge-general",
       "release" : "openSUSE:Factory",
       "status" : "reproducible",
       "verifiable" : 2,
       "verified" : 2,
-      "version" : "2.1.3-7"
+      "version" : "2.1.4-8"
    },
    {
       "architecture" : "x86_64",
@@ -106819,17 +106817,18 @@
    },
    {
       "architecture" : "x86_64",
-      "build_date" : 1772097522,
-      "build_duration" : 576,
-      "build_duration4" : 234,
+      "build_date" : 1787748335,
+      "build_duration" : 720,
+      "build_duration4" : 296,
       "opensuseautoclassify" : null,
-      "opensusesigdate" : "2025-08-27T20:25:15 UTC",
+      "opensusesigdate" : "2026-08-25T11:57:42 UTC",
       "opensusetweaks" : null,
       "package" : "octave-forge-instrument-control",
       "release" : "openSUSE:Factory",
-      "status" : "FTBFS",
+      "status" : "reproducible",
+      "verifiable" : 2,
       "verified" : 2,
-      "version" : "0.9.5-12"
+      "version" : "0.10.1-13"
    },
    {
       "architecture" : "x86_64",
@@ -106954,18 +106953,18 @@
    },
    {
       "architecture" : "x86_64",
-      "build_date" : 1777156827,
-      "build_duration" : 99,
-      "build_duration4" : 72,
+      "build_date" : 1787747584,
+      "build_duration" : 62,
+      "build_duration4" : 46,
       "opensuseautoclassify" : null,
-      "opensusesigdate" : "2026-04-25T19:58:58 UTC",
+      "opensusesigdate" : "2026-08-25T11:53:49 UTC",
       "opensusetweaks" : null,
       "package" : "octave-forge-miscellaneous",
       "release" : "openSUSE:Factory",
       "status" : "reproducible",
       "verifiable" : 2,
       "verified" : 2,
-      "version" : "1.3.2-5"
+      "version" : "1.3.3-6"
    },
    {
       "architecture" : "x86_64",
@@ -107030,18 +107029,18 @@
    },
    {
       "architecture" : "x86_64",
-      "build_date" : 1772098148,
-      "build_duration" : 40,
-      "build_duration4" : 31,
+      "build_date" : 1787747485,
+      "build_duration" : 47,
+      "build_duration4" : 39,
       "opensuseautoclassify" : null,
-      "opensusesigdate" : "2025-08-29T16:46:45 UTC",
+      "opensusesigdate" : "2026-08-25T11:53:33 UTC",
       "opensusetweaks" : null,
       "package" : "octave-forge-netcdf",
       "release" : "openSUSE:Factory",
       "status" : "reproducible",
       "verifiable" : 2,
       "verified" : 2,
-      "version" : "1.0.18-10"
+      "version" : "1.0.20-11"
    },
    {
       "architecture" : "x86_64",
@@ -107105,18 +107104,18 @@
    },
    {
       "architecture" : "x86_64",
-      "build_date" : 1772098661,
-      "build_duration" : 237,
-      "build_duration4" : 227,
+      "build_date" : 1787747376,
+      "build_duration" : 281,
+      "build_duration4" : 242,
       "opensuseautoclassify" : null,
-      "opensusesigdate" : "2025-09-16T16:32:55 UTC",
+      "opensusesigdate" : "2026-08-25T11:56:37 UTC",
       "opensusetweaks" : null,
       "package" : "octave-forge-parallel",
       "release" : "openSUSE:Factory",
       "status" : "reproducible",
       "verifiable" : 2,
       "verified" : 2,
-      "version" : "4.0.2-14"
+      "version" : "4.0.2-15"
    },
    {
       "architecture" : "x86_64",
@@ -107256,18 +107255,18 @@
    },
    {
       "architecture" : "x86_64",
-      "build_date" : 1772834237,
-      "build_duration" : 36,
-      "build_duration4" : 28,
+      "build_date" : 1787747065,
+      "build_duration" : 42,
+      "build_duration4" : 35,
       "opensuseautoclassify" : null,
-      "opensusesigdate" : "2026-02-28T06:54:02 UTC",
+      "opensusesigdate" : "2026-08-25T11:53:33 UTC",
       "opensusetweaks" : null,
       "package" : "octave-forge-strings",
       "release" : "openSUSE:Factory",
       "status" : "reproducible",
       "verifiable" : 2,
       "verified" : 2,
-      "version" : "1.3.1-5"
+      "version" : "1.3.2-6"
    },
    {
       "architecture" : "x86_64",
@@ -107871,18 +107870,18 @@
    },
    {
       "architecture" : "x86_64",
-      "build_date" : 1783155308,
-      "build_duration" : 6325,
-      "build_duration4" : 2054,
+      "build_date" : 1787736758,
+      "build_duration" : 7816,
+      "build_duration4" : 2892,
       "opensuseautoclassify" : null,
-      "opensusesigdate" : "2026-07-02T18:45:01 UTC",
+      "opensusesigdate" : "2026-08-25T12:43:35 UTC",
       "opensusetweaks" : null,
       "package" : "onnxruntime",
       "release" : "openSUSE:Factory",
       "status" : "reproducible",
       "verifiable" : 2,
       "verified" : 2,
-      "version" : "1.27.0-2"
+      "version" : "1.27.0-3"
    },
    {
       "architecture" : "x86_64",
@@ -108285,17 +108284,17 @@
    },
    {
       "architecture" : "x86_64",
-      "build_date" : 1787452238,
-      "build_duration" : 25899,
-      "build_duration4" : 4978,
+      "build_date" : 1787747528,
+      "build_duration" : 4025,
+      "build_duration4" : 7629,
       "opensuseautoclassify" : null,
-      "opensusesigdate" : "2026-08-21T16:36:26 UTC",
+      "opensusesigdate" : "2026-08-24T15:25:32 UTC",
       "opensusetweaks" : null,
       "package" : "openai-codex",
       "release" : "openSUSE:Factory",
       "status" : "FTBFS",
-      "verified" : 0,
-      "version" : "0.149.0-2"
+      "verified" : 2,
+      "version" : "0.149.1-3"
    },
    {
       "architecture" : "x86_64",
@@ -108580,7 +108579,7 @@
       "status" : "reproducible",
       "verifiable" : 2,
       "verified" : 2,
-      "version" : "1.18.21-4"
+      "version" : "1.18.22-5"
    },
    {
       "architecture" : "x86_64",
@@ -136528,18 +136527,18 @@
    },
    {
       "architecture" : "x86_64",
-      "build_date" : 1784699992,
-      "build_duration" : 86,
-      "build_duration4" : 41,
+      "build_date" : 1787746892,
+      "build_duration" : 73,
+      "build_duration4" : 34,
       "opensuseautoclassify" : null,
-      "opensusesigdate" : "2026-07-21T21:10:27 UTC",
+      "opensusesigdate" : "2026-08-25T11:28:16 UTC",
       "opensusetweaks" : null,
       "package" : "pgbackrest",
       "release" : "openSUSE:Factory",
       "status" : "reproducible",
       "verifiable" : 2,
       "verified" : 2,
-      "version" : "2.59.0-24"
+      "version" : "2.59.1-25"
    },
    {
       "architecture" : "x86_64",
@@ -137273,18 +137272,18 @@
    },
    {
       "architecture" : "x86_64",
-      "build_date" : 1777148371,
-      "build_duration" : 232,
-      "build_duration4" : 64,
+      "build_date" : 1787746775,
+      "build_duration" : 184,
+      "build_duration4" : 43,
       "opensuseautoclassify" : null,
-      "opensusesigdate" : "2026-04-03T01:34:54 UTC",
+      "opensusesigdate" : "2026-08-24T14:00:52 UTC",
       "opensusetweaks" : null,
       "package" : "phraze",
       "release" : "openSUSE:Factory",
       "status" : "reproducible",
       "verifiable" : 2,
       "verified" : 2,
-      "version" : "0.3.9-11"
+      "version" : "0.3.28-12"
    },
    {
       "architecture" : "x86_64",
@@ -137318,18 +137317,18 @@
    },
    {
       "architecture" : "x86_64",
-      "build_date" : 1787110520,
-      "build_duration" : 177,
-      "build_duration4" : 95,
+      "build_date" : 1787746557,
+      "build_duration" : 107,
+      "build_duration4" : 77,
       "opensuseautoclassify" : null,
-      "opensusesigdate" : "2026-08-18T15:19:56 UTC",
+      "opensusesigdate" : "2026-08-25T11:31:11 UTC",
       "opensusetweaks" : null,
       "package" : "pi-coding-agent",
       "release" : "openSUSE:Factory",
       "status" : "reproducible",
       "verifiable" : 2,
       "verified" : 2,
-      "version" : "0.84.2-2"
+      "version" : "0.84.3-3"
    },
    {
       "architecture" : "x86_64",
@@ -137483,18 +137482,18 @@
    },
    {
       "architecture" : "x86_64",
-      "build_date" : 1787615578,
+      "build_date" : 1787732322,
       "build_duration" : 38,
       "build_duration4" : 31,
       "opensuseautoclassify" : null,
-      "opensusesigdate" : "2026-08-21T15:06:03 UTC",
+      "opensusesigdate" : "2026-08-25T11:29:56 UTC",
       "opensusetweaks" : null,
       "package" : "picsart-gen-ai",
       "release" : "openSUSE:Factory",
       "status" : "reproducible",
       "verifiable" : 2,
       "verified" : 2,
-      "version" : "2.68.1-2"
+      "version" : "2.69.0-3"
    },
    {
       "architecture" : "x86_64",
@@ -138415,18 +138414,18 @@
    },
    {
       "architecture" : "x86_64",
-      "build_date" : 1786381024,
-      "build_duration" : 190,
-      "build_duration4" : 83,
+      "build_date" : 1787732402,
+      "build_duration" : 223,
+      "build_duration4" : 120,
       "opensuseautoclassify" : null,
-      "opensusesigdate" : "2026-08-09T22:36:15 UTC",
+      "opensusesigdate" : "2026-08-25T15:37:19 UTC",
       "opensusetweaks" : null,
       "package" : "plasma6-browser-integration",
       "release" : "openSUSE:Factory",
       "status" : "reproducible",
       "verifiable" : 2,
       "verified" : 2,
-      "version" : "6.7.4-46"
+      "version" : "6.7.4-47"
    },
    {
       "architecture" : "x86_64",
@@ -141891,18 +141890,18 @@
    },
    {
       "architecture" : "x86_64",
-      "build_date" : 1771664607,
-      "build_duration" : 81,
-      "build_duration4" : 43,
+      "build_date" : 1787746380,
+      "build_duration" : 124,
+      "build_duration4" : 73,
       "opensuseautoclassify" : null,
-      "opensusesigdate" : "2024-12-02T16:09:05 UTC",
+      "opensusesigdate" : "2026-08-24T11:33:09 UTC",
       "opensusetweaks" : null,
       "package" : "pstoedit",
       "release" : "openSUSE:Factory",
       "status" : "reproducible",
       "verifiable" : 2,
       "verified" : 2,
-      "version" : "4.02-38"
+      "version" : "4.3-39"
    },
    {
       "architecture" : "x86_64",
@@ -141996,18 +141995,18 @@
    },
    {
       "architecture" : "x86_64",
-      "build_date" : 1786854609,
-      "build_duration" : 31,
-      "build_duration4" : 29,
+      "build_date" : 1787732539,
+      "build_duration" : 29,
+      "build_duration4" : 24,
       "opensuseautoclassify" : null,
-      "opensusesigdate" : "2026-08-15T20:54:49 UTC",
+      "opensusesigdate" : "2026-08-25T11:28:01 UTC",
       "opensusetweaks" : null,
       "package" : "publicsuffix",
       "release" : "openSUSE:Factory",
       "status" : "reproducible",
       "verifiable" : 2,
       "verified" : 2,
-      "version" : "20260814-127"
+      "version" : "20260819-128"
    },
    {
       "architecture" : "x86_64",
@@ -143147,7 +143146,7 @@
    },
    {
       "architecture" : "x86_64",
-      "build_date" : 1787708804,
+      "build_date" : 1787763070,
       "build_duration" : 47,
       "build_duration4" : 37,
       "opensuseautoclassify" : null,
@@ -144630,19 +144629,18 @@
    },
    {
       "architecture" : "x86_64",
-      "build_compare_status" : "unreproducible",
-      "build_date" : 1780655543,
-      "build_duration" : 1838,
-      "build_duration4" : 760,
+      "build_date" : 1787728828,
+      "build_duration" : 2054,
+      "build_duration4" : 845,
       "opensuseautoclassify" : null,
-      "opensusesigdate" : "2026-06-01T16:21:25 UTC",
+      "opensusesigdate" : "2026-08-25T16:12:08 UTC",
       "opensusetweaks" : null,
       "package" : "python-PyMuPDF",
       "release" : "openSUSE:Factory",
-      "status" : "unreproducible",
-      "verifiable" : 0,
-      "verified" : 0,
-      "version" : "1.27.2.2-32"
+      "status" : "reproducible",
+      "verifiable" : 2,
+      "verified" : 2,
+      "version" : "1.27.2.2-33"
    },
    {
       "architecture" : "x86_64",
@@ -153328,6 +153326,21 @@
    },
    {
       "architecture" : "x86_64",
+      "build_date" : 1787741653,
+      "build_duration" : 23,
+      "build_duration4" : 21,
+      "opensuseautoclassify" : null,
+      "opensusesigdate" : "2026-08-25T15:45:45 UTC",
+      "opensusetweaks" : null,
+      "package" : "python-azure-mgmt-powerplatform",
+      "release" : "openSUSE:Factory",
+      "status" : "reproducible",
+      "verifiable" : 2,
+      "verified" : 2,
+      "version" : "1.0.0~b1-1"
+   },
+   {
+      "architecture" : "x86_64",
       "build_date" : 1775666373,
       "build_duration" : 37,
       "build_duration4" : 36,
@@ -155578,6 +155591,21 @@
    },
    {
       "architecture" : "x86_64",
+      "build_date" : 1787741599,
+      "build_duration" : 59,
+      "build_duration4" : 25,
+      "opensuseautoclassify" : null,
+      "opensusesigdate" : "2026-08-25T15:57:32 UTC",
+      "opensusetweaks" : null,
+      "package" : "python-big",
+      "release" : "openSUSE:Factory",
+      "status" : "reproducible",
+      "verifiable" : 2,
+      "verified" : 2,
+      "version" : "0.14-1"
+   },
+   {
+      "architecture" : "x86_64",
       "build_date" : 1782600021,
       "build_duration" : 72,
       "build_duration4" : 38,
@@ -155845,6 +155873,21 @@
       "verifiable" : 2,
       "verified" : 2,
       "version" : "1.9.0-25"
+   },
+   {
+      "architecture" : "x86_64",
+      "build_date" : 1787741496,
+      "build_duration" : 25,
+      "build_duration4" : 25,
+      "opensuseautoclassify" : null,
+      "opensusesigdate" : "2026-08-25T15:57:06 UTC",
+      "opensusetweaks" : null,
+      "package" : "python-blobfile",
+      "release" : "openSUSE:Factory",
+      "status" : "reproducible",
+      "verifiable" : 2,
+      "verified" : 2,
+      "version" : "3.3.0-2"
    },
    {
       "architecture" : "x86_64",
@@ -157724,18 +157767,18 @@
    },
    {
       "architecture" : "x86_64",
-      "build_date" : 1780943090,
-      "build_duration" : 103,
-      "build_duration4" : 52,
+      "build_date" : 1787741439,
+      "build_duration" : 56,
+      "build_duration4" : 22,
       "opensuseautoclassify" : null,
-      "opensusesigdate" : "2026-06-05T13:12:00 UTC",
+      "opensusesigdate" : "2026-08-25T15:57:40 UTC",
       "opensusetweaks" : null,
       "package" : "python-cloudpickle",
       "release" : "openSUSE:Factory",
       "status" : "reproducible",
       "verifiable" : 2,
       "verified" : 2,
-      "version" : "3.1.2-30"
+      "version" : "3.1.2-31"
    },
    {
       "architecture" : "x86_64",
@@ -158114,33 +158157,33 @@
    },
    {
       "architecture" : "x86_64",
-      "build_date" : 1787400829,
-      "build_duration" : 34,
-      "build_duration4" : 28,
+      "build_date" : 1787741349,
+      "build_duration" : 22,
+      "build_duration4" : 21,
       "opensuseautoclassify" : null,
-      "opensusesigdate" : "2026-08-21T15:06:05 UTC",
+      "opensusesigdate" : "2026-08-24T13:59:54 UTC",
       "opensusetweaks" : null,
       "package" : "python-comfy-aimdo",
       "release" : "openSUSE:Factory",
       "status" : "reproducible",
       "verifiable" : 2,
-      "verified" : 2,
-      "version" : "0.4.13-1"
+      "verified" : 1,
+      "version" : "0.4.14-2"
    },
    {
       "architecture" : "x86_64",
-      "build_date" : 1787466764,
+      "build_date" : 1787735189,
       "build_duration" : 36,
       "build_duration4" : 30,
       "opensuseautoclassify" : null,
-      "opensusesigdate" : "2026-08-21T15:06:05 UTC",
+      "opensusesigdate" : "2026-08-24T13:59:52 UTC",
       "opensusetweaks" : null,
       "package" : "python-comfy-angle",
       "release" : "openSUSE:Factory",
       "status" : "reproducible",
       "verifiable" : 2,
-      "verified" : 2,
-      "version" : "0.1.0-1"
+      "verified" : 1,
+      "version" : "0.1.1-2"
    },
    {
       "architecture" : "x86_64",
@@ -158189,48 +158232,48 @@
    },
    {
       "architecture" : "x86_64",
-      "build_date" : 1787401109,
-      "build_duration" : 59,
-      "build_duration4" : 47,
+      "build_date" : 1787741300,
+      "build_duration" : 28,
+      "build_duration4" : 24,
       "opensuseautoclassify" : null,
-      "opensusesigdate" : "2026-08-21T15:14:59 UTC",
+      "opensusesigdate" : "2026-08-25T15:54:19 UTC",
       "opensusetweaks" : null,
       "package" : "python-comfyui-workflow-templates",
       "release" : "openSUSE:Factory",
       "status" : "reproducible",
       "verifiable" : 2,
       "verified" : 2,
-      "version" : "0.11.44-1"
+      "version" : "0.11.46-2"
    },
    {
       "architecture" : "x86_64",
-      "build_date" : 1787401142,
-      "build_duration" : 34,
-      "build_duration4" : 26,
+      "build_date" : 1787735259,
+      "build_duration" : 33,
+      "build_duration4" : 28,
       "opensuseautoclassify" : null,
-      "opensusesigdate" : "2026-08-21T15:06:05 UTC",
+      "opensusesigdate" : "2026-08-25T15:45:41 UTC",
       "opensusetweaks" : null,
       "package" : "python-comfyui-workflow-templates-core",
       "release" : "openSUSE:Factory",
       "status" : "reproducible",
       "verifiable" : 2,
       "verified" : 2,
-      "version" : "0.3.315-1"
+      "version" : "0.3.320-2"
    },
    {
       "architecture" : "x86_64",
-      "build_date" : 1787401183,
-      "build_duration" : 68,
-      "build_duration4" : 41,
+      "build_date" : 1787741242,
+      "build_duration" : 42,
+      "build_duration4" : 31,
       "opensuseautoclassify" : null,
-      "opensusesigdate" : "2026-08-21T15:06:14 UTC",
+      "opensusesigdate" : "2026-08-25T15:45:54 UTC",
       "opensusetweaks" : null,
       "package" : "python-comfyui-workflow-templates-json",
       "release" : "openSUSE:Factory",
       "status" : "reproducible",
       "verifiable" : 2,
       "verified" : 2,
-      "version" : "0.1.50-1"
+      "version" : "0.1.55-2"
    },
    {
       "architecture" : "x86_64",
@@ -158249,18 +158292,18 @@
    },
    {
       "architecture" : "x86_64",
-      "build_date" : 1787458267,
-      "build_duration" : 89,
-      "build_duration4" : 50,
+      "build_date" : 1787739875,
+      "build_duration" : 99,
+      "build_duration4" : 59,
       "opensuseautoclassify" : null,
-      "opensusesigdate" : "2026-08-21T15:06:23 UTC",
+      "opensusesigdate" : "2026-08-25T15:46:11 UTC",
       "opensusetweaks" : null,
       "package" : "python-comfyui-workflow-templates-media-assets-01",
       "release" : "openSUSE:Factory",
       "status" : "reproducible",
       "verifiable" : 2,
       "verified" : 2,
-      "version" : "0.1.30-1"
+      "version" : "0.1.33-2"
    },
    {
       "architecture" : "x86_64",
@@ -159119,18 +159162,18 @@
    },
    {
       "architecture" : "x86_64",
-      "build_date" : 1775123683,
-      "build_duration" : 27,
-      "build_duration4" : 22,
+      "build_date" : 1787741171,
+      "build_duration" : 20,
+      "build_duration4" : 19,
       "opensuseautoclassify" : null,
-      "opensusesigdate" : "2026-04-01T21:35:46 UTC",
+      "opensusesigdate" : "2026-08-25T15:45:41 UTC",
       "opensusetweaks" : null,
       "package" : "python-cssselect",
       "release" : "openSUSE:Factory",
       "status" : "reproducible",
       "verifiable" : 2,
       "verified" : 2,
-      "version" : "1.4.0-16"
+      "version" : "1.5.0-17"
    },
    {
       "architecture" : "x86_64",
@@ -162822,6 +162865,21 @@
    },
    {
       "architecture" : "x86_64",
+      "build_date" : 1787741119,
+      "build_duration" : 20,
+      "build_duration4" : 20,
+      "opensuseautoclassify" : null,
+      "opensusesigdate" : "2026-08-24T13:59:55 UTC",
+      "opensusetweaks" : null,
+      "package" : "python-easydict",
+      "release" : "openSUSE:Factory",
+      "status" : "reproducible",
+      "verifiable" : 2,
+      "verified" : 1,
+      "version" : "1.13-1"
+   },
+   {
+      "architecture" : "x86_64",
       "build_date" : 1775692860,
       "build_duration" : 22,
       "build_duration4" : 19,
@@ -163002,33 +163060,33 @@
    },
    {
       "architecture" : "x86_64",
-      "build_date" : 1775739660,
-      "build_duration" : 62,
-      "build_duration4" : 47,
+      "build_date" : 1787741070,
+      "build_duration" : 43,
+      "build_duration4" : 44,
       "opensuseautoclassify" : null,
-      "opensusesigdate" : "2024-11-11T12:49:42 UTC",
+      "opensusesigdate" : "2026-08-25T16:02:11 UTC",
       "opensusetweaks" : null,
       "package" : "python-edk2toolext",
       "release" : "openSUSE:Factory",
       "status" : "reproducible",
       "verifiable" : 2,
       "verified" : 2,
-      "version" : "0.28.0-2"
+      "version" : "0.31.1-3"
    },
    {
       "architecture" : "x86_64",
-      "build_date" : 1775675863,
-      "build_duration" : 37,
-      "build_duration4" : 28,
+      "build_date" : 1787735540,
+      "build_duration" : 62,
+      "build_duration4" : 58,
       "opensuseautoclassify" : null,
-      "opensusesigdate" : "2024-11-06T16:48:35 UTC",
+      "opensusesigdate" : "2026-08-25T15:57:16 UTC",
       "opensusetweaks" : null,
       "package" : "python-edk2toollib",
       "release" : "openSUSE:Factory",
       "status" : "reproducible",
       "verifiable" : 2,
       "verified" : 2,
-      "version" : "0.21.9-2"
+      "version" : "0.23.16-3"
    },
    {
       "architecture" : "x86_64",
@@ -163737,7 +163795,7 @@
    },
    {
       "architecture" : "x86_64",
-      "build_date" : 1787708763,
+      "build_date" : 1787763024,
       "build_duration" : 37,
       "build_duration4" : 30,
       "opensuseautoclassify" : null,
@@ -164830,18 +164888,18 @@
    },
    {
       "architecture" : "x86_64",
-      "build_date" : 1775657186,
-      "build_duration" : 25,
-      "build_duration4" : 24,
+      "build_date" : 1787740996,
+      "build_duration" : 18,
+      "build_duration4" : 16,
       "opensuseautoclassify" : null,
-      "opensusesigdate" : "2026-02-11T17:58:36 UTC",
+      "opensusesigdate" : "2026-08-25T15:45:39 UTC",
       "opensusetweaks" : null,
       "package" : "python-flit-core",
       "release" : "openSUSE:Factory",
       "status" : "reproducible",
       "verifiable" : 2,
       "verified" : 2,
-      "version" : "3.12.0-23"
+      "version" : "4.0.2-24"
    },
    {
       "architecture" : "x86_64",
@@ -165370,9 +165428,9 @@
    },
    {
       "architecture" : "x86_64",
-      "build_date" : 1787562872,
-      "build_duration" : 165,
-      "build_duration4" : 39,
+      "build_date" : 1787764562,
+      "build_duration" : 145,
+      "build_duration4" : 28,
       "opensuseautoclassify" : null,
       "opensusetweaks" : null,
       "package" : "python-futurist",
@@ -165786,6 +165844,22 @@
       "verifiable" : 2,
       "verified" : 2,
       "version" : "0.4-2"
+   },
+   {
+      "architecture" : "x86_64",
+      "build_compare_status" : "unreproducible",
+      "build_date" : 1787740712,
+      "build_duration" : 27,
+      "build_duration4" : 31,
+      "opensuseautoclassify" : null,
+      "opensusesigdate" : "2026-08-24T14:00:03 UTC",
+      "opensusetweaks" : null,
+      "package" : "python-gguf",
+      "release" : "openSUSE:Factory",
+      "status" : "unreproducible",
+      "verifiable" : 0,
+      "verified" : 0,
+      "version" : "0.19.0-1"
    },
    {
       "architecture" : "x86_64",
@@ -166448,9 +166522,9 @@
    },
    {
       "architecture" : "x86_64",
-      "build_date" : 1787696431,
-      "build_duration" : 40,
-      "build_duration4" : 33,
+      "build_date" : 1787764619,
+      "build_duration" : 26,
+      "build_duration4" : 26,
       "opensuseautoclassify" : null,
       "opensusetweaks" : null,
       "package" : "python-google-cloud-kms-inventory",
@@ -166926,18 +167000,18 @@
    },
    {
       "architecture" : "x86_64",
-      "build_date" : 1787519008,
-      "build_duration" : 273,
-      "build_duration4" : 52,
+      "build_date" : 1787740594,
+      "build_duration" : 260,
+      "build_duration4" : 40,
       "opensuseautoclassify" : null,
-      "opensusesigdate" : "2026-08-21T20:23:23 UTC",
+      "opensusesigdate" : "2026-08-25T16:01:25 UTC",
       "opensusetweaks" : null,
       "package" : "python-graphifyy",
       "release" : "openSUSE:Factory",
       "status" : "reproducible",
       "verifiable" : 2,
       "verified" : 2,
-      "version" : "0.9.48-1"
+      "version" : "0.9.49-2"
    },
    {
       "architecture" : "x86_64",
@@ -168472,18 +168546,18 @@
    },
    {
       "architecture" : "x86_64",
-      "build_date" : 1775647348,
-      "build_duration" : 24,
-      "build_duration4" : 21,
+      "build_date" : 1787740303,
+      "build_duration" : 23,
+      "build_duration4" : 23,
       "opensuseautoclassify" : null,
-      "opensusesigdate" : "2025-07-10T21:54:41 UTC",
+      "opensusesigdate" : "2026-08-25T15:45:41 UTC",
       "opensusetweaks" : null,
       "package" : "python-humanfriendly",
       "release" : "openSUSE:Factory",
       "status" : "reproducible",
       "verifiable" : 2,
       "verified" : 2,
-      "version" : "10.0-22"
+      "version" : "10.0-23"
    },
    {
       "architecture" : "x86_64",
@@ -168533,9 +168607,9 @@
    {
       "architecture" : "x86_64",
       "build_compare_status" : "unreproducible",
-      "build_date" : 1786042092,
-      "build_duration" : 180,
-      "build_duration4" : 61,
+      "build_date" : 1787734894,
+      "build_duration" : 138,
+      "build_duration4" : 43,
       "opensuseautoclassify" : "1 0 0 0 0 0 0 1 0 0 0 1 99 ",
       "opensusesigdate" : "2026-08-06T14:31:26 UTC",
       "opensusetweaks" : null,
@@ -174580,6 +174654,36 @@
    },
    {
       "architecture" : "x86_64",
+      "build_date" : 1787735921,
+      "build_duration" : 237,
+      "build_duration4" : 121,
+      "opensuseautoclassify" : null,
+      "opensusesigdate" : "2026-08-24T14:04:58 UTC",
+      "opensusetweaks" : null,
+      "package" : "python-modelscope",
+      "release" : "openSUSE:Factory",
+      "status" : "reproducible",
+      "verifiable" : 2,
+      "verified" : 1,
+      "version" : "1.39.1-1"
+   },
+   {
+      "architecture" : "x86_64",
+      "build_date" : 1787735962,
+      "build_duration" : 49,
+      "build_duration4" : 35,
+      "opensuseautoclassify" : null,
+      "opensusesigdate" : "2026-08-24T14:00:02 UTC",
+      "opensusetweaks" : null,
+      "package" : "python-modelscope-hub",
+      "release" : "openSUSE:Factory",
+      "status" : "reproducible",
+      "verifiable" : 2,
+      "verified" : 1,
+      "version" : "0.2.0-1"
+   },
+   {
+      "architecture" : "x86_64",
       "build_date" : 1785432683,
       "build_duration" : 382,
       "build_duration4" : 223,
@@ -175945,18 +176049,18 @@
    },
    {
       "architecture" : "x86_64",
-      "build_date" : 1786804006,
-      "build_duration" : 79,
-      "build_duration4" : 61,
+      "build_date" : 1787736903,
+      "build_duration" : 101,
+      "build_duration4" : 85,
       "opensuseautoclassify" : null,
-      "opensusesigdate" : "2026-08-13T11:29:55 UTC",
+      "opensusesigdate" : "2026-08-24T14:22:20 UTC",
       "opensusetweaks" : null,
       "package" : "python-nltk",
       "release" : "openSUSE:Factory",
       "status" : "reproducible",
       "verifiable" : 2,
-      "verified" : 2,
-      "version" : "3.10.2-25"
+      "verified" : 1,
+      "version" : "3.10.3-26"
    },
    {
       "architecture" : "x86_64",
@@ -178135,18 +178239,18 @@
    },
    {
       "architecture" : "x86_64",
-      "build_date" : 1785812562,
-      "build_duration" : 1764,
-      "build_duration4" : 612,
+      "build_date" : 1787736608,
+      "build_duration" : 2819,
+      "build_duration4" : 1089,
       "opensuseautoclassify" : null,
-      "opensusesigdate" : "2026-08-01T20:16:34 UTC",
+      "opensusesigdate" : "2026-08-25T15:54:57 UTC",
       "opensusetweaks" : null,
       "package" : "python-pandas",
       "release" : "openSUSE:Factory",
       "status" : "reproducible",
       "verifiable" : 2,
       "verified" : 2,
-      "version" : "3.0.5-84"
+      "version" : "3.0.5-85"
    },
    {
       "architecture" : "x86_64",
@@ -178599,18 +178703,18 @@
    },
    {
       "architecture" : "x86_64",
-      "build_date" : 1772102663,
-      "build_duration" : 23,
-      "build_duration4" : 19,
+      "build_date" : 1787740239,
+      "build_duration" : 22,
+      "build_duration4" : 21,
       "opensuseautoclassify" : null,
-      "opensusesigdate" : "2025-09-22T14:51:30 UTC",
+      "opensusesigdate" : "2026-08-25T15:54:13 UTC",
       "opensusetweaks" : null,
       "package" : "python-patchy",
       "release" : "openSUSE:Factory",
       "status" : "reproducible",
       "verifiable" : 2,
       "verified" : 2,
-      "version" : "2.10.0-6"
+      "version" : "3.1.0-7"
    },
    {
       "architecture" : "x86_64",
@@ -179079,18 +179183,18 @@
    },
    {
       "architecture" : "x86_64",
-      "build_date" : 1775645395,
+      "build_date" : 1787736692,
       "build_duration" : 39,
-      "build_duration4" : 48,
+      "build_duration4" : 39,
       "opensuseautoclassify" : null,
-      "opensusesigdate" : "2024-11-14T15:30:03 UTC",
+      "opensusesigdate" : "2026-08-25T16:01:42 UTC",
       "opensusetweaks" : null,
       "package" : "python-perky",
       "release" : "openSUSE:Factory",
       "status" : "reproducible",
       "verifiable" : 2,
       "verified" : 2,
-      "version" : "0.9.3-3"
+      "version" : "0.10-4"
    },
    {
       "architecture" : "x86_64",
@@ -180669,18 +180773,18 @@
    },
    {
       "architecture" : "x86_64",
-      "build_date" : 1780006868,
-      "build_duration" : 685,
-      "build_duration4" : 36,
+      "build_date" : 1787737484,
+      "build_duration" : 285,
+      "build_duration4" : 45,
       "opensuseautoclassify" : null,
-      "opensusesigdate" : "2026-05-18T16:04:27 UTC",
+      "opensusesigdate" : "2026-08-24T14:02:29 UTC",
       "opensusetweaks" : null,
       "package" : "python-psycopg",
       "release" : "openSUSE:Factory",
       "status" : "reproducible",
       "verifiable" : 2,
-      "verified" : 2,
-      "version" : "3.3.4-14"
+      "verified" : 1,
+      "version" : "3.3.4-15"
    },
    {
       "architecture" : "x86_64",
@@ -180774,18 +180878,18 @@
    },
    {
       "architecture" : "x86_64",
-      "build_date" : 1775669018,
-      "build_duration" : 35,
-      "build_duration4" : 22,
+      "build_date" : 1787736771,
+      "build_duration" : 46,
+      "build_duration4" : 38,
       "opensuseautoclassify" : null,
-      "opensusesigdate" : "2025-06-11T15:01:40 UTC",
+      "opensusesigdate" : "2026-08-25T15:53:58 UTC",
       "opensusetweaks" : null,
       "package" : "python-ptyprocess",
       "release" : "openSUSE:Factory",
       "status" : "reproducible",
       "verifiable" : 2,
       "verified" : 2,
-      "version" : "0.7.0-12"
+      "version" : "0.7.0-13"
    },
    {
       "architecture" : "x86_64",
@@ -182603,18 +182707,18 @@
    },
    {
       "architecture" : "x86_64",
-      "build_date" : 1783611701,
-      "build_duration" : 194,
-      "build_duration4" : 31,
+      "build_date" : 1787740183,
+      "build_duration" : 154,
+      "build_duration4" : 26,
       "opensuseautoclassify" : null,
-      "opensusesigdate" : "2026-07-08T15:54:11 UTC",
+      "opensusesigdate" : "2026-08-25T15:58:42 UTC",
       "opensusetweaks" : null,
       "package" : "python-pygal",
       "release" : "openSUSE:Factory",
       "status" : "reproducible",
       "verifiable" : 2,
       "verified" : 2,
-      "version" : "3.1.3-16"
+      "version" : "3.1.3-17"
    },
    {
       "architecture" : "x86_64",
@@ -183503,18 +183607,18 @@
    },
    {
       "architecture" : "x86_64",
-      "build_date" : 1783361379,
-      "build_duration" : 61,
-      "build_duration4" : 32,
+      "build_date" : 1787739999,
+      "build_duration" : 38,
+      "build_duration4" : 24,
       "opensuseautoclassify" : null,
-      "opensusesigdate" : "2026-07-06T10:40:30 UTC",
+      "opensusesigdate" : "2026-08-24T13:59:59 UTC",
       "opensusetweaks" : null,
       "package" : "python-pymdown-extensions",
       "release" : "openSUSE:Factory",
       "status" : "reproducible",
       "verifiable" : 2,
-      "verified" : 2,
-      "version" : "11.0.1-25"
+      "verified" : 1,
+      "version" : "11.0.2-26"
    },
    {
       "architecture" : "x86_64",
@@ -183952,18 +184056,18 @@
    },
    {
       "architecture" : "x86_64",
-      "build_date" : 1783697697,
-      "build_duration" : 105,
+      "build_date" : 1787736892,
+      "build_duration" : 108,
       "build_duration4" : 34,
       "opensuseautoclassify" : null,
-      "opensusesigdate" : "2026-07-09T20:27:52 UTC",
+      "opensusesigdate" : "2026-08-24T14:00:26 UTC",
       "opensusetweaks" : null,
       "package" : "python-pypdf",
       "release" : "openSUSE:Factory",
       "status" : "reproducible",
       "verifiable" : 2,
-      "verified" : 2,
-      "version" : "6.14.2-23"
+      "verified" : 0,
+      "version" : "6.16.2-24"
    },
    {
       "architecture" : "x86_64",
@@ -184297,18 +184401,18 @@
    },
    {
       "architecture" : "x86_64",
-      "build_date" : 1772098340,
-      "build_duration" : 22,
-      "build_duration4" : 18,
+      "build_date" : 1787739932,
+      "build_duration" : 21,
+      "build_duration4" : 19,
       "opensuseautoclassify" : null,
-      "opensusesigdate" : "2025-09-25T17:01:46 UTC",
+      "opensusesigdate" : "2026-08-25T15:53:52 UTC",
       "opensusetweaks" : null,
       "package" : "python-pyquery",
       "release" : "openSUSE:Factory",
       "status" : "reproducible",
       "verifiable" : 2,
       "verified" : 2,
-      "version" : "2.0.1-27"
+      "version" : "2.1.0-28"
    },
    {
       "architecture" : "x86_64",
@@ -187745,18 +187849,18 @@
    },
    {
       "architecture" : "x86_64",
-      "build_date" : 1780008128,
-      "build_duration" : 38,
-      "build_duration4" : 30,
+      "build_date" : 1787739879,
+      "build_duration" : 23,
+      "build_duration4" : 21,
       "opensuseautoclassify" : null,
-      "opensusesigdate" : "2026-05-25T20:01:48 UTC",
+      "opensusesigdate" : "2026-08-25T15:54:19 UTC",
       "opensusetweaks" : null,
       "package" : "python-python-rpm-spec",
       "release" : "openSUSE:Factory",
       "status" : "reproducible",
       "verifiable" : 2,
       "verified" : 2,
-      "version" : "0.17.0-9"
+      "version" : "0.17.0-10"
    },
    {
       "architecture" : "x86_64",
@@ -188525,18 +188629,18 @@
    },
    {
       "architecture" : "x86_64",
-      "build_date" : 1785965254,
-      "build_duration" : 170,
-      "build_duration4" : 55,
+      "build_date" : 1787739826,
+      "build_duration" : 143,
+      "build_duration4" : 40,
       "opensuseautoclassify" : null,
-      "opensusesigdate" : "2026-08-05T16:10:16 UTC",
+      "opensusesigdate" : "2026-08-25T15:58:29 UTC",
       "opensusetweaks" : null,
       "package" : "python-pyzmq",
       "release" : "openSUSE:Factory",
       "status" : "reproducible",
       "verifiable" : 2,
       "verified" : 2,
-      "version" : "27.1.0-62"
+      "version" : "27.2.0-63"
    },
    {
       "architecture" : "x86_64",
@@ -188840,18 +188944,18 @@
    },
    {
       "architecture" : "x86_64",
-      "build_date" : 1775141727,
-      "build_duration" : 37,
-      "build_duration4" : 33,
+      "build_date" : 1787739655,
+      "build_duration" : 23,
+      "build_duration4" : 21,
       "opensuseautoclassify" : null,
-      "opensusesigdate" : "2026-04-02T12:14:53 UTC",
+      "opensusesigdate" : "2026-08-25T15:56:59 UTC",
       "opensusetweaks" : null,
       "package" : "python-queuelib",
       "release" : "openSUSE:Factory",
       "status" : "reproducible",
       "verifiable" : 2,
       "verified" : 2,
-      "version" : "1.9.0-8"
+      "version" : "1.10.0-9"
    },
    {
       "architecture" : "x86_64",
@@ -190355,18 +190459,18 @@
    },
    {
       "architecture" : "x86_64",
-      "build_date" : 1782809935,
-      "build_duration" : 29,
-      "build_duration4" : 29,
+      "build_date" : 1787739600,
+      "build_duration" : 18,
+      "build_duration4" : 18,
       "opensuseautoclassify" : null,
-      "opensusesigdate" : "2026-06-29T15:29:06 UTC",
+      "opensusesigdate" : "2026-08-25T11:18:39 UTC",
       "opensusetweaks" : null,
       "package" : "python-rpm-macros",
       "release" : "openSUSE:Factory",
       "status" : "reproducible",
       "verifiable" : 2,
       "verified" : 2,
-      "version" : "20260601.4a231f4-62"
+      "version" : "20260821.08c5ec8-63"
    },
    {
       "architecture" : "x86_64",
@@ -190955,18 +191059,18 @@
    },
    {
       "architecture" : "x86_64",
-      "build_date" : 1786596466,
-      "build_duration" : 895,
-      "build_duration4" : 278,
+      "build_date" : 1787739552,
+      "build_duration" : 912,
+      "build_duration4" : 276,
       "opensuseautoclassify" : null,
-      "opensusesigdate" : "2026-08-11T15:41:20 UTC",
+      "opensusesigdate" : "2026-08-25T15:51:01 UTC",
       "opensusetweaks" : null,
       "package" : "python-scikit-learn",
       "release" : "openSUSE:Factory",
       "status" : "reproducible",
       "verifiable" : 2,
       "verified" : 2,
-      "version" : "1.9.0-38"
+      "version" : "1.9.0-39"
    },
    {
       "architecture" : "x86_64",
@@ -191523,6 +191627,21 @@
       "verifiable" : 2,
       "verified" : 2,
       "version" : "1.7.1-6"
+   },
+   {
+      "architecture" : "x86_64",
+      "build_date" : 1787739742,
+      "build_duration" : 2214,
+      "build_duration4" : 1808,
+      "opensuseautoclassify" : null,
+      "opensusesigdate" : "2026-08-25T20:28:33 UTC",
+      "opensusetweaks" : null,
+      "package" : "python-sglang",
+      "release" : "openSUSE:Factory",
+      "status" : "reproducible",
+      "verifiable" : 2,
+      "verified" : 2,
+      "version" : "0.5.18-2"
    },
    {
       "architecture" : "x86_64",
@@ -192381,18 +192500,18 @@
    },
    {
       "architecture" : "x86_64",
-      "build_date" : 1781775849,
-      "build_duration" : 38,
-      "build_duration4" : 32,
+      "build_date" : 1787738314,
+      "build_duration" : 42,
+      "build_duration4" : 38,
       "opensuseautoclassify" : null,
-      "opensusesigdate" : "2026-06-16T14:43:47 UTC",
+      "opensusesigdate" : "2026-08-25T15:53:54 UTC",
       "opensusetweaks" : null,
       "package" : "python-socksio",
       "release" : "openSUSE:Factory",
       "status" : "reproducible",
       "verifiable" : 2,
       "verified" : 2,
-      "version" : "1.0.0-1"
+      "version" : "1.0.0-2"
    },
    {
       "architecture" : "x86_64",
@@ -193176,18 +193295,18 @@
    },
    {
       "architecture" : "x86_64",
-      "build_date" : 1775748048,
-      "build_duration" : 24,
-      "build_duration4" : 23,
+      "build_date" : 1787738607,
+      "build_duration" : 23,
+      "build_duration4" : 22,
       "opensuseautoclassify" : null,
-      "opensusesigdate" : "2025-06-13T17:10:13 UTC",
+      "opensusesigdate" : "2026-08-25T15:57:09 UTC",
       "opensusetweaks" : null,
       "package" : "python-sphinxcontrib-github-alt",
       "release" : "openSUSE:Factory",
       "status" : "reproducible",
       "verifiable" : 2,
       "verified" : 2,
-      "version" : "1.2-6"
+      "version" : "1.2-7"
    },
    {
       "architecture" : "x86_64",
@@ -195273,18 +195392,18 @@
    },
    {
       "architecture" : "x86_64",
-      "build_date" : 1774943130,
-      "build_duration" : 24,
-      "build_duration4" : 22,
+      "build_date" : 1787738554,
+      "build_duration" : 23,
+      "build_duration4" : 23,
       "opensuseautoclassify" : null,
-      "opensusesigdate" : "2025-04-11T14:57:59 UTC",
+      "opensusesigdate" : "2026-08-25T15:54:03 UTC",
       "opensusetweaks" : null,
       "package" : "python-threadpoolctl",
       "release" : "openSUSE:Factory",
       "status" : "reproducible",
       "verifiable" : 2,
       "verified" : 2,
-      "version" : "3.6.0-11"
+      "version" : "3.6.0-12"
    },
    {
       "architecture" : "x86_64",
@@ -195390,6 +195509,21 @@
       "verifiable" : 2,
       "verified" : 2,
       "version" : "0.5.0-4"
+   },
+   {
+      "architecture" : "x86_64",
+      "build_date" : 1787738438,
+      "build_duration" : 96,
+      "build_duration4" : 58,
+      "opensuseautoclassify" : null,
+      "opensusesigdate" : "2026-08-25T20:11:52 UTC",
+      "opensusetweaks" : null,
+      "package" : "python-timm",
+      "release" : "openSUSE:Factory",
+      "status" : "reproducible",
+      "verifiable" : 2,
+      "verified" : 2,
+      "version" : "1.0.28-2"
    },
    {
       "architecture" : "x86_64",
@@ -195750,6 +195884,21 @@
       "status" : "FTBFS",
       "verified" : 2,
       "version" : "2.12.0-11"
+   },
+   {
+      "architecture" : "x86_64",
+      "build_date" : 1787738497,
+      "build_duration" : 65,
+      "build_duration4" : 46,
+      "opensuseautoclassify" : null,
+      "opensusesigdate" : "2026-08-25T20:12:08 UTC",
+      "opensusetweaks" : null,
+      "package" : "python-torchao",
+      "release" : "openSUSE:Factory",
+      "status" : "reproducible",
+      "verifiable" : 2,
+      "verified" : 2,
+      "version" : "0.18.0-2"
    },
    {
       "architecture" : "x86_64",
@@ -196653,18 +196802,18 @@
    },
    {
       "architecture" : "x86_64",
-      "build_date" : 1787094753,
-      "build_duration" : 35,
-      "build_duration4" : 33,
+      "build_date" : 1787738532,
+      "build_duration" : 20,
+      "build_duration4" : 20,
       "opensuseautoclassify" : null,
-      "opensusesigdate" : "2026-08-18T14:54:26 UTC",
+      "opensusesigdate" : "2026-08-25T15:53:53 UTC",
       "opensusetweaks" : null,
       "package" : "python-typing_extensions",
       "release" : "openSUSE:Factory",
       "status" : "reproducible",
       "verifiable" : 2,
       "verified" : 2,
-      "version" : "4.16.0-33"
+      "version" : "4.16.0-34"
    },
    {
       "architecture" : "x86_64",
@@ -196980,6 +197129,21 @@
       "verifiable" : 2,
       "verified" : 2,
       "version" : "0.5-9"
+   },
+   {
+      "architecture" : "x86_64",
+      "build_date" : 1787738563,
+      "build_duration" : 35,
+      "build_duration4" : 36,
+      "opensuseautoclassify" : null,
+      "opensusesigdate" : "2026-08-25T15:45:41 UTC",
+      "opensusetweaks" : null,
+      "package" : "python-unipatch",
+      "release" : "openSUSE:Factory",
+      "status" : "reproducible",
+      "verifiable" : 2,
+      "verified" : 2,
+      "version" : "1.0.0-1"
    },
    {
       "architecture" : "x86_64",
@@ -199565,17 +199729,15 @@
    },
    {
       "architecture" : "x86_64",
-      "build_compare_status" : "unreproducible",
       "build_date" : 1775154347,
-      "build_duration" : 775,
-      "build_duration4" : 256,
+      "build_duration" : 397,
+      "build_duration4" : 397,
       "opensuseautoclassify" : null,
       "opensusesigdate" : "2026-04-02T14:17:33 UTC",
       "opensusetweaks" : null,
       "package" : "python-yt",
       "release" : "openSUSE:Factory",
-      "status" : "unreproducible",
-      "verifiable" : 0,
+      "status" : "nobinaries",
       "verified" : 0,
       "version" : "4.4.2-17"
    },
@@ -200274,18 +200436,18 @@
    {
       "architecture" : "x86_64",
       "build_compare_status" : "unreproducible",
-      "build_date" : 1784814114,
-      "build_duration" : 547,
-      "build_duration4" : 1101,
+      "build_date" : 1787746159,
+      "build_duration" : 453,
+      "build_duration4" : 790,
       "opensuseautoclassify" : null,
-      "opensusesigdate" : "2026-07-22T17:52:03 UTC",
+      "opensusesigdate" : "2026-08-25T15:50:39 UTC",
       "opensusetweaks" : null,
       "package" : "python314",
       "release" : "openSUSE:Factory",
       "status" : "unreproducible",
       "verifiable" : 0,
       "verified" : 0,
-      "version" : "3.14.6-38"
+      "version" : "3.14.7-39"
    },
    {
       "architecture" : "x86_64",
@@ -202403,7 +202565,7 @@
    },
    {
       "architecture" : "x86_64",
-      "build_date" : 1787708872,
+      "build_date" : 1787763146,
       "build_duration" : 31,
       "build_duration4" : 24,
       "opensuseautoclassify" : null,
@@ -204280,18 +204442,18 @@
    },
    {
       "architecture" : "x86_64",
-      "build_date" : 1786044004,
-      "build_duration" : 72,
-      "build_duration4" : 37,
+      "build_date" : 1787738702,
+      "build_duration" : 66,
+      "build_duration4" : 38,
       "opensuseautoclassify" : null,
-      "opensusesigdate" : "2026-08-06T14:40:44 UTC",
+      "opensusesigdate" : "2026-08-24T14:00:05 UTC",
       "opensusetweaks" : null,
       "package" : "remind",
       "release" : "openSUSE:Factory",
       "status" : "reproducible",
       "verifiable" : 2,
       "verified" : 2,
-      "version" : "6.2.10-74"
+      "version" : "6.3.0-75"
    },
    {
       "architecture" : "x86_64",
@@ -204864,18 +205026,18 @@
    },
    {
       "architecture" : "x86_64",
-      "build_date" : 1785770423,
-      "build_duration" : 193,
-      "build_duration4" : 101,
+      "build_date" : 1787738822,
+      "build_duration" : 294,
+      "build_duration4" : 126,
       "opensuseautoclassify" : null,
-      "opensusesigdate" : "2026-08-02T21:32:20 UTC",
+      "opensusesigdate" : "2026-08-25T15:55:19 UTC",
       "opensusetweaks" : null,
       "package" : "rhythmbox",
       "release" : "openSUSE:Factory",
       "status" : "reproducible",
       "verifiable" : 2,
       "verified" : 2,
-      "version" : "3.5.0-108"
+      "version" : "3.5.1-109"
    },
    {
       "architecture" : "x86_64",
@@ -205240,7 +205402,7 @@
    },
    {
       "architecture" : "x86_64",
-      "build_date" : 1787708907,
+      "build_date" : 1787763180,
       "build_duration" : 40,
       "build_duration4" : 26,
       "opensuseautoclassify" : null,
@@ -218694,18 +218856,18 @@
    },
    {
       "architecture" : "x86_64",
-      "build_date" : 1783685011,
-      "build_duration" : 564,
-      "build_duration4" : 190,
+      "build_date" : 1787739033,
+      "build_duration" : 386,
+      "build_duration4" : 132,
       "opensuseautoclassify" : null,
-      "opensusesigdate" : "2026-07-09T20:23:36 UTC",
+      "opensusesigdate" : "2026-08-25T15:37:30 UTC",
       "opensusetweaks" : null,
       "package" : "spirv-llvm-translator",
       "release" : "openSUSE:Factory",
       "status" : "reproducible",
       "verifiable" : 2,
       "verified" : 2,
-      "version" : "22.1.4-32"
+      "version" : "22.1.5-33"
    },
    {
       "architecture" : "x86_64",
@@ -219354,18 +219516,18 @@
    },
    {
       "architecture" : "x86_64",
-      "build_date" : 1775266348,
-      "build_duration" : 25,
-      "build_duration4" : 21,
+      "build_date" : 1787739070,
+      "build_duration" : 24,
+      "build_duration4" : 22,
       "opensuseautoclassify" : null,
-      "opensusesigdate" : "2026-02-27T21:32:54 UTC",
+      "opensusesigdate" : "2026-08-24T14:00:05 UTC",
       "opensusetweaks" : null,
       "package" : "sshguard",
       "release" : "openSUSE:Factory",
       "status" : "reproducible",
       "verifiable" : 2,
-      "verified" : 1,
-      "version" : "2.4.3-19"
+      "verified" : 2,
+      "version" : "2.5.1-20"
    },
    {
       "architecture" : "x86_64",
@@ -221813,18 +221975,18 @@
    },
    {
       "architecture" : "x86_64",
-      "build_date" : 1786010027,
-      "build_duration" : 305,
-      "build_duration4" : 122,
+      "build_date" : 1787739210,
+      "build_duration" : 306,
+      "build_duration4" : 121,
       "opensuseautoclassify" : null,
-      "opensusesigdate" : "2026-08-05T16:29:50 UTC",
+      "opensusesigdate" : "2026-08-25T11:30:44 UTC",
       "opensusetweaks" : null,
       "package" : "swtpm",
       "release" : "openSUSE:Factory",
       "status" : "reproducible",
       "verifiable" : 2,
       "verified" : 2,
-      "version" : "0.10.1-27"
+      "version" : "0.10.2-28"
    },
    {
       "architecture" : "x86_64",
@@ -223608,7 +223770,7 @@
       "status" : "reproducible",
       "verifiable" : 2,
       "verified" : 2,
-      "version" : "7.0.9-165"
+      "version" : "7.1.1-166"
    },
    {
       "architecture" : "x86_64",
@@ -230267,18 +230429,18 @@
    },
    {
       "architecture" : "x86_64",
-      "build_date" : 1780084710,
-      "build_duration" : 28,
-      "build_duration4" : 25,
+      "build_date" : 1787739419,
+      "build_duration" : 23,
+      "build_duration4" : 19,
       "opensuseautoclassify" : null,
-      "opensusesigdate" : "2026-05-14T19:53:35 UTC",
+      "opensusesigdate" : "2026-08-25T11:27:56 UTC",
       "opensusetweaks" : null,
       "package" : "ucode-intel",
       "release" : "openSUSE:Factory",
       "status" : "reproducible",
       "verifiable" : 2,
       "verified" : 2,
-      "version" : "20260512-82"
+      "version" : "20260812-83"
    },
    {
       "architecture" : "x86_64",
@@ -235352,18 +235514,17 @@
    },
    {
       "architecture" : "x86_64",
-      "build_date" : 1786585476,
-      "build_duration" : 34998,
-      "build_duration4" : 9925,
+      "build_date" : 1787748721,
+      "build_duration" : 10379,
+      "build_duration4" : 19028,
       "opensuseautoclassify" : null,
       "opensusesigdate" : "unknown",
       "opensusetweaks" : null,
       "package" : "webkitgtk",
       "release" : "openSUSE:Factory",
-      "status" : "reproducible",
-      "verifiable" : 2,
+      "status" : "nobinaries",
       "verified" : 2,
-      "version" : "2.52.5-7"
+      "version" : "2.52.6-8"
    },
    {
       "architecture" : "x86_64",
@@ -235983,9 +236144,9 @@
    {
       "architecture" : "x86_64",
       "build_compare_status" : "reproducible",
-      "build_date" : 1787009340,
-      "build_duration" : 330,
-      "build_duration4" : 151,
+      "build_date" : 1787724438,
+      "build_duration" : 132,
+      "build_duration4" : 98,
       "opensuseautoclassify" : null,
       "opensusesigdate" : "2026-08-17T15:46:30 UTC",
       "opensusetweaks" : null,

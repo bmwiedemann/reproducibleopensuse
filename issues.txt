@@ -59,7 +59,6 @@ installation-images various issues from efi + %post
 +java-21-openj9 date TR_BUILD_NAME + other (e.g. jdk race again)
 #jedit javadoc .html date
 #kdevelop5-plugin-php parallelism+ASLR in libkdevphpparser.so via phpparser.cpp
-1370294 ksh year in copyright ; compile time benchmarking ; SIGQUEUE_MAX detection
 /lapce filesys-readdir-order minor
 lazarus 
 ldc order x+?ASLR+time
@@ -85,14 +84,14 @@ pympress date+time from python-Babel?
 python-cPyparsing cpython toolchain fix in :test?
 
 
+
 #qt-creator parallelism in libTracing.so.11.0.2? gone?
 
 
-1370297 sdcc 32bit epoch timestamp ; from https://sourceforge.net/p/gputils/bugs/328/ ?
 +smlnj order + EPOCH timestamp
 +swipl prolog date + ASLR?other? https://github.com/SWI-Prolog/swipl/pull/32 FTBFS-2029
 termscp rust
-virtualbox copyright year ; _BUILD_STRING date+time ; tar mtime ; g_VTGObjHeader https://www.virtualbox.org/ticket/16854 + https://sourceforge.net/p/gsoap2/patches/185/
+
 warp filesys maybe https://github.com/briansmith/ring/issues/1625
 wpewebkit copyright year ; varying JSCBytecodeCacheVersion
 xemacs order in lisp/custom-load.el ; .elc ; other
@@ -103,6 +102,8 @@ Analyzed:
 librsvg FTBFS-cpu
 #hyprland-plugins minor lua order in rpm-meta
 python-imagecodecs random cython path
+python-hunter cython toolchain ASLR - set order in PEP-626 node positions leaks into __Pyx_TraceLine offsets -> RECORD hash of hunter/_predicates.c ; fixed by python-Cython/reproducible-node-positions.patch = https://github.com/cython/cython/issues/6118
+python-kwant cython toolchain - same Cython node-position set order as python-hunter, but reaches the .so via the CYTHON_PROFILE trace hooks ; fixed by python-Cython/reproducible-node-positions.patch
 #forgejo-guardian rust/llvm
 python-pyzmq embedded random /tmp path in debuginfo
 musescore toolchain from cmake unity_build + ASLR?
@@ -112,21 +113,18 @@ mvapich3:gnu-hpc-ucx random tmppath from suse-hpc macros.hpc https://github.com/
 yast2-firstboot unstable 'file' tiff info embedded in rpm header - different versions?
 dvgt date from toolchain tex sysguide
 paraview uname -r
-1371954 Rivet debuginfo from random tmp .cc filename  ; parallelism, random
-dealii doxygen parallelism/race https://github.com/doxygen/doxygen/issues/11138
+#dealii doxygen parallelism/race https://github.com/doxygen/doxygen/issues/11138
 static-initrd:generic https://bugzilla.opensuse.org/show_bug.cgi?id=1234709 date+host+CPU
 xmlgraphics-batik uname -r
 calibre https://lists.fedoraproject.org/archives/list/devel@lists.fedoraproject.org/thread/67ICWGGE3TUPG5RH32GZAXICO4T5BXFG/ CPU-dependent from Qt6 QImage scaler | .png files differ from SSE-4.1
 #ocaml-extlib parallelism/race in debuginfo ? https://github.com/ocaml/dune/issues/9152
-esbuild https://bugzilla.opensuse.org/show_bug.cgi?id=1234374 random go tmp path
 #singularity-ce /dev/(u)random influences debuginfo ; dropped
 asymptote toolchain pdflatex date
 ?ginac pdflatex
 ?glucat pdflatex
 #unison pdf from pdfTeX - cannot reproduce after 20231122?
-openmpi5 https://github.com/open-mpi/ompi/pull/11847 date+readdir
+#openmpi5 https://github.com/open-mpi/ompi/pull/11847 date+readdir
 coq parallelism from ocaml +maybe others - same as ocaml-camlp-streams?
-grass https://github.com/OSGeo/grass/pull/3415 https://github.com/OSGeo/grass/pull/3417 https://github.com/OSGeo/grass/issues/3038 date+parallelism in r3.mapcalc
 ?hevea random ocaml tmp dir from ocamlopt
 mathgl random example .png
 R-base embedded random tmp path in /usr/lib64/R/library/KernSmooth/help/paths.rds; many other
@@ -167,7 +165,7 @@ clisp hostname + uninitialized mem dump
 scheme48 unreproducible scheme dump
 chezscheme scheme .boot files
 emacs .eln ASLR + .pdmp unknown issue (5+6 random bytes) - solvable with dettrace + CPU-override https://mail.gnu.org/archive/html/emacs-devel/2024-10/msg00004.html https://lists.gnu.org/archive/html/emacs-devel/2024-01/msg00464.html https://mail.gnu.org/archive/html/emacs-devel/2024-02/msg00417.html https://mail.gnu.org/archive/html/emacs-devel/2024-05/msg01026.html
-maxima clisp .mem dump
+maxima clisp .mem dump + gzip mtime + bug SR 1373751
 pgloader from sbcl (lisp dump)
 scsh totally unreproducible scheme image dump
 racket various issues - unknown source - scheme dump
@@ -212,7 +210,7 @@ python310:doc https://bugzilla.opensuse.org/show_bug.cgi?id=1232750 FTBFS-j1
 python312 https://bugzilla.opensuse.org/show_bug.cgi?id=1230906 pyc embedded mtime
 libreoffice https://bugzilla.opensuse.org/show_bug.cgi?id=1231580 possible rpm/build toolchain corruption bug
 kdevelop-plugin-php https://invent.kde.org/kdevelop/kdevelop-pg-qt/-/issues/2 https://bugzilla.opensuse.org/show_bug.cgi?id=1231627 ASLR, toolchain from kdevelop-pg-qt - same as old kdevelop5-plugin-php
-wine https://bugzilla.opensuse.org/show_bug.cgi?id=1231620 parallelism : cscript.exe build-id only: quoted #include "ihost.h" in programs/wscript/wscript.h lets cscript (PARENTSRC=../wscript) pick up wscript/ihost.h instead of its own generated cscript/ihost.h depending on -j ; fixed by reproducible-cscript-ihost.patch (angle brackets, same as dlls/xaudio2_7/xaudio_private.h), rbk-verified identical 2026-08-25, not submitted yet ; old: timestamp in PE .dll + #https://gitlab.winehq.org/wine/wine/-/merge_requests/4035 (closed unmerged, was the bison -d race, superseded by split .tab.h/.tab.c rules in makedep)
+wine https://bugzilla.opensuse.org/show_bug.cgi?id=1231620 parallelism : old: parallelism, (?needs mingw-binutils update according to msmeissn) ; timestamp in PE .dll + #https://gitlab.winehq.org/wine/wine/-/merge_requests/4035
 python-panel https://bugzilla.opensuse.org/show_bug.cgi?id=1231254 package-lock random port = https://github.com/openSUSE/obs-service-node_modules/issues/41
 perl https://bugzilla.opensuse.org/show_bug.cgi?id=1230137 records kernel version
 systemd https://bugzilla.opensuse.org/show_bug.cgi?id=1228091 pesign verification issue
@@ -261,7 +259,7 @@ ocaml-camlp-streams https://github.com/ocaml/dune/issues/9152 https://github.com
 
 sbcl https://sourceforge.net/p/sbcl/mailman/sbcl-devel/thread/3ebdd95c-c498-462f-9cfe-7d05a1ee0044%40suse.de/ report timestamp+other
 lilypond https://sourceforge.net/p/testlilyissues/issues/5328/ https://savannah.gnu.org/patch/?9370 https://codereview.appspot.com/337650043
-python-yt https://github.com/yt-project/yt/issues/4611 parallelism +#=> https://github.com/yt-project/yt/pull/4609 python filesys order
+python-yt https://github.com/yt-project/yt/issues/4611 parallelism +#=> https://github.com/yt-project/yt/pull/4609 python filesys order ; 2026-08-26 two local rbk runs (-j4/-j1 and -j7/-j6) were bit-identical on 4.4.2 - recheck OBS before closing
 python3-pyside6 ASLR order from shiboken6
 python3-pyside2 https://bugreports.qt.io/browse/PYSIDE-2508 order
 rash https://github.com/willghatch/racket-rash/issues/52 report parallelism-related non-determinism
@@ -285,24 +283,23 @@ linkerd-cli linkerd-cli-edge https://github.com/linkerd/linkerd2/issues/13873 ht
 rakudo patch-mtime + https://github.com/rakudo/rakudo/issues/5427 + #https://github.com/rakudo/rakudo/pull/5426
 pocketbase https://github.com/pocketbase/pocketbase/issues/7123 FTBFS-2030-03-03
 ?python314 https://github.com/python/cpython/issues/138061 random
+jemalloc CPU configure AC_RUN_IFELSE probes the build CPU twice (rdtscp; cpuid 0x80000008 -> LG_VADDR) => JEMALLOC_HAVE_RDTSCP in jemalloc_internal_defs.h, debuginfo+build-id; reproducible-no-build-cpu-probe.patch verified, needs upstream PR + SR
 
 
 fix submitted upstream:
-gputils https://sourceforge.net/p/gputils/bugs/328/ date
+1370297 gputils https://sourceforge.net/p/gputils/bugs/328/ date
+1373163 go1.27 https://github.com/golang/go/pull/81041 toolchain random
 -?re-flex https://bugzilla.opensuse.org/show_bug.cgi?id=1246164 CPU = - https://github.com/Genivia/RE-flex/issues/233 related:ugrep
 rav1e https://github.com/medek/nasm-rs/pull/47 rust toolchain
-gstreamer-plugins-rs https://gitlab.freedesktop.org/gstreamer/gst-plugins-rs/-/merge_requests/3208 sort
-ghc https://gitlab.haskell.org/ghc/ghc/-/merge_requests/16457 sort, toolchain
-ocaml https://github.com/ocaml/ocaml/pull/14989 race
-freeciv https://redmine.freeciv.org/issues/2122 lua date+hash
-taisei https://github.com/taisei-project/taisei/pull/441 zip mtime
 lutgen-cli https://github.com/ozwaldorf/lutgen-rs/pull/46 nocheck
-piglit https://gitlab.freedesktop.org/mesa/piglit/-/merge_requests/1193 parallelism/race
+virtualbox virtualbox copyright year ; _BUILD_STRING date+time ; tar mtime ; g_VTGObjHeader https://www.virtualbox.org/ticket/16854 + https://sourceforge.net/p/gsoap2/patches/185/ https://github.com/VirtualBox/virtualbox/pull/827 random UUID https://github.com/bmwiedemann/virtualbox/pull/new/copyright https://github.com/bmwiedemann/virtualbox/pull/new/mtime
+zabbix https://github.com/zabbix/zabbix/pull/184 date
+xpenguins https://gitlab.com/wvermin/xpenguins/-/merge_requests/1 date
+grass https://github.com/OSGeo/grass/pull/7849 date/mtime ; old https://github.com/OSGeo/grass/pull/3415 https://github.com/OSGeo/grass/pull/3417 https://github.com/OSGeo/grass/issues/3038 date+parallelism in r3.mapcalc
 
 
 fix merged upstream:
 
-qgis/kate/ktextaddons/PCH-users https://gcc.gnu.org/bugzilla/show_bug.cgi?id=124811 gcc toolchain ASLR debuginfo (.debug_loclists via DECL_UID); gcc master cc08be7bf549, gcc-16 5e8bef95e4b4 >16.2.0; not in Factory's gcc16 16.2.0+git9497 snapshot, backport carried in openSUSE:Factory/gcc16
 ruffle https://github.com/ruffle-rs/ruffle/pull/24360 rust HashMap
 ruffle https://github.com/XAMPPRocky/fluent-templates/pull/112 readdir toolchain
 libpsl https://github.com/rockdaboot/libpsl/pull/297 date fixup
@@ -313,6 +310,12 @@ dunst https://github.com/dunst-project/dunst/pull/1435 date >1.12.1
 ooRexx https://sourceforge.net/p/oorexx/bugs/1712/ ASLR ; fixed in 5.0.0?
 OpenRGB https://gitlab.com/CalcProgrammer1/OpenRGB/-/merge_requests/2103 filesys >0.9 >=1.0
 qpid-proton https://github.com/apache/qpid-proton/pull/411 sort >0.39 ?0.40? https://github.com/apache/qpid-proton/tags
+taisei https://github.com/taisei-project/taisei/pull/441 zip mtime
+freeciv https://redmine.freeciv.org/issues/2122 lua date+hash
+ocaml https://github.com/ocaml/ocaml/pull/14989 race
+piglit https://gitlab.freedesktop.org/mesa/piglit/-/merge_requests/1193 parallelism/race
+gstreamer-plugins-rs https://gitlab.freedesktop.org/gstreamer/gst-plugins-rs/-/merge_requests/3208 sort
+ghc https://gitlab.haskell.org/ghc/ghc/-/merge_requests/16457 sort, toolchain ; Merged in e8d1a0d6
 gnucash https://bugs.gnucash.org/show_bug.cgi?id=799623 FTBFS-2038
 llamacpp https://github.com/ggerganov/llama.cpp/pull/11366 CPU march=native  https://github.com/ggerganov/llama.cpp/issues/11306 random + https://github.com/ggerganov/llama.cpp/issues/11317 CPU > 4501
 goldendict-ng https://bugreports.qt.io/browse/QTBUG-115737 qmake toolchain ; also rewritten in goldendict-ng >23.05.03
@@ -339,6 +342,8 @@ https://github.com/tesselslate/waywall/pull/58 lua order
 nftables =>ca86f206c92704170a295b8dc7a41f6448835dde `date` via configure.ac nftbuildstamp
 https://gitlab.winehq.org/mono/mono/-/merge_requests/243 https://gitlab.winehq.org/mono/mono/-/work_items/33 old: https://github.com/mono/mono/issues/20172 report unknown/time-based nondeterminism + keepass mono-addins mono-core nunit flickrnet mono PE-header-timestamp, 1024-bit ?PublicKeyToken?, other ; ignored by build-compare+monodis
 python-tokenizer https://github.com/PyO3/pyo3/pull/6076 toolchain (rust HashMap)
+qgis/kate/ktextaddons/PCH-users https://gcc.gnu.org/bugzilla/show_bug.cgi?id=124811 gcc toolchain ASLR debuginfo (.debug_loclists via DECL_UID); gcc master cc08be7bf549, gcc-16 5e8bef95e4b4 >16.2.0; not in Factory's gcc16 16.2.0+git9497 snapshot, backport carried in openSUSE:Factory/gcc16 checkout
+libbluray/meson https://github.com/mesonbuild/meson/pull/16145 jar zipfile, toolchain
 
 
 SR:
@@ -349,4 +354,8 @@ SR:
 1368243 zig https://codeberg.org/ziglang/zig/issues/36334 https://github.com/ziglang/zig/issues/22839 ASLR in debuginfo
 1370260 gri ps timestamps from tex/dvips + #ToUpstream
 1371702 1371701 mingw32-gmp mingw32-zlib debuginfo .a , toolchain binutils?
+1370298 1370294 ksh year in copyright ; compile time benchmarking ; SIGQUEUE_MAX detection
+1371954 Rivet debuginfo from random tmp .cc filename  ; parallelism, random
+1370297 sdcc 32bit epoch timestamp ; from https://sourceforge.net/p/gputils/bugs/328/ ?
+esbuild https://src.opensuse.org/javascript/esbuild/pulls/2 golang/cgo/gcc LTO random path https://bugzilla.opensuse.org/show_bug.cgi?id=1234374 random go tmp path
 
