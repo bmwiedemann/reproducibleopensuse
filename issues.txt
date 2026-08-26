@@ -85,7 +85,6 @@ pympress date+time from python-Babel?
 python-cPyparsing cpython toolchain fix in :test?
 
 
-qgis https://gcc.gnu.org/bugzilla/show_bug.cgi?id=124811 parallelism (via ninja?)
 #qt-creator parallelism in libTracing.so.11.0.2? gone?
 
 
@@ -213,7 +212,7 @@ python310:doc https://bugzilla.opensuse.org/show_bug.cgi?id=1232750 FTBFS-j1
 python312 https://bugzilla.opensuse.org/show_bug.cgi?id=1230906 pyc embedded mtime
 libreoffice https://bugzilla.opensuse.org/show_bug.cgi?id=1231580 possible rpm/build toolchain corruption bug
 kdevelop-plugin-php https://invent.kde.org/kdevelop/kdevelop-pg-qt/-/issues/2 https://bugzilla.opensuse.org/show_bug.cgi?id=1231627 ASLR, toolchain from kdevelop-pg-qt - same as old kdevelop5-plugin-php
-wine https://bugzilla.opensuse.org/show_bug.cgi?id=1231620 parallelism : old: parallelism, (?needs mingw-binutils update according to msmeissn) ; timestamp in PE .dll + #https://gitlab.winehq.org/wine/wine/-/merge_requests/4035
+wine https://bugzilla.opensuse.org/show_bug.cgi?id=1231620 parallelism : cscript.exe build-id only: quoted #include "ihost.h" in programs/wscript/wscript.h lets cscript (PARENTSRC=../wscript) pick up wscript/ihost.h instead of its own generated cscript/ihost.h depending on -j ; fixed by reproducible-cscript-ihost.patch (angle brackets, same as dlls/xaudio2_7/xaudio_private.h), rbk-verified identical 2026-08-25, not submitted yet ; old: timestamp in PE .dll + #https://gitlab.winehq.org/wine/wine/-/merge_requests/4035 (closed unmerged, was the bison -d race, superseded by split .tab.h/.tab.c rules in makedep)
 python-panel https://bugzilla.opensuse.org/show_bug.cgi?id=1231254 package-lock random port = https://github.com/openSUSE/obs-service-node_modules/issues/41
 perl https://bugzilla.opensuse.org/show_bug.cgi?id=1230137 records kernel version
 systemd https://bugzilla.opensuse.org/show_bug.cgi?id=1228091 pesign verification issue
@@ -303,6 +302,7 @@ piglit https://gitlab.freedesktop.org/mesa/piglit/-/merge_requests/1193 parallel
 
 fix merged upstream:
 
+qgis/kate/ktextaddons/PCH-users https://gcc.gnu.org/bugzilla/show_bug.cgi?id=124811 gcc toolchain ASLR debuginfo (.debug_loclists via DECL_UID); gcc master cc08be7bf549, gcc-16 5e8bef95e4b4 >16.2.0; not in Factory's gcc16 16.2.0+git9497 snapshot, backport carried in openSUSE:Factory/gcc16
 ruffle https://github.com/ruffle-rs/ruffle/pull/24360 rust HashMap
 ruffle https://github.com/XAMPPRocky/fluent-templates/pull/112 readdir toolchain
 libpsl https://github.com/rockdaboot/libpsl/pull/297 date fixup
