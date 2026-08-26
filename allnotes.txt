@@ -2677,6 +2677,10 @@ found range good=1677932468 bad=1677934393 (2023-03-04T12:53:13)
 
 
 
+==> ./ghc-DAV/.rb.notes <==
+#=> https://gitlab.haskell.org/ghc/ghc/-/merge_requests/16457 sort, toolchain ghc = https://gitlab.haskell.org/ghc/ghc/-/work_items/27612
+
+
 ==> ./ghc-bootstrap/.rb.notes <==
 FTBFS-CPU
 [   83s] /home/abuild/rpmbuild/BUILD/ghc-bootstrap-9.10.1-build/BUILDROOT/opt/lib/ghc-9.10.1/bin/ghc-pkg: CPU ISA level is lower than required
@@ -2686,6 +2690,13 @@ in /usr/lib/ghc-8.2.1/package.conf.d/package.cache
 from
 [  141s] [pid  1992] execve("/bin/sh", ["/bin/sh", "-c", "\"/home/abuild/rpmbuild/BUILDROOT/ghc-bootstrap-8.2.1-0.x86_64/usr/lib/ghc-8.2.1/bin/ghc-pkg\" --force --global-package-db \"/home/abuild/rpmbuild/BUILDROOT/ghc-bootstrap-8.2.1-0.x86_64/usr/lib/ghc-8.2.1/package.conf.d\" update rts/dist/package.conf.install"], 0x560b6abd68d0 /* 57 vars */) = 0 
 
+
+==> ./ghc-cmdargs/.rb.notes <==
+ghc toolchain. draft fix exists
+
+
+==> ./ghc-dbus/.rb.notes <==
+ghc toolchain. draft fix exists
 
 ==> ./ghc-hledger-lib/.rb.notes <==
 ghc toolchain
@@ -2707,6 +2718,9 @@ ghc toolchain? debuginfo=--debuginfo ; nothing helps ; minor
 
 ==> ./ghc-yaml/.rb.notes <==
 ghc toolchain? debuginfo=--debuginfo ; nothing helps
+
+==> ./ghc-yesod-core/.rb.notes <==
+ghc toolchain. draft fix exists
 
 ==> ./ghc-yesod/.rb.notes <==
 parallelism in ghc
@@ -3654,6 +3668,10 @@ ghc toolchain
 ghc toolchain
 
 
+==> ./hlint/.rb.notes <==
+ghc toolchain. draft fix exists
+
+
 ==> ./hppc/.rb.notes <==
 java date+time
 
@@ -4281,6 +4299,9 @@ jar + filesys + javadoc date
 => strip-nd
 
 
+==> ./jemalloc/.rb.notes <==
+CPU
+
 ==> ./jemmy/.rb.notes <==
 .jar semi-issue
 
@@ -4555,6 +4576,10 @@ kde_package_app_templates(TEMPLATES ${APPTEMPLATE_DIRS} INSTALL_DIR ${KDE_INSTAL
 from
 /usr/share/ECM/kde-modules/KDEPackageAppTemplates.cmake:#   kde_package_app_templates(TEMPLATES <template> [<template> [...]]
 from extra-cmake-modules-5.36.0-1.1
+
+==> ./kate/.rb.notes <==
+Binary files /var/tmp/build-root.11/.mount/home/abuild/rpmbuild/BUILD/kate-26.08.0-build/kate-26.08.0/build/addons/katesql/CMakeFiles/katesqlplugin.dir/queryhelpers/queryselectorpopup.cpp.o and /var/tmp/build-root.11b/.mount/home/abuild/rpmbuild/BUILD/kate-26.08.0-build/kate-26.08.0/build/addons/katesql/CMakeFiles/katesqlplugin.dir/queryhelpers/queryselectorpopup.cpp.o differ
+
 
 ==> ./kbd/.rb.notes <==
 => SR 1265521 1265349 1265750 https://bugzilla.opensuse.org/show_bug.cgi?id=1240348
@@ -6929,6 +6954,12 @@ found range good=1825967754 bad=1825969679
 ==> ./nedit/.rb.notes <==
 +/usr/share/doc/packages/nedit/nedit.doc embedded date 2x
 
+==> ./nekobox/.rb.notes <==
+toolchain: CPU core count in .src.rpm
+-ninja -C "$(realpath build)" -v -j 4
++ninja -C "$(realpath build)" -v -j 1
+
+
 ==> ./nekohtml/.rb.notes <==
 random ; maven java
 +++ new//usr/share/maven-metadata/nekohtml.xml  2019-11-12 12:00:00.000000000 +0
@@ -8557,6 +8588,9 @@ only on adrian:
 
 
 
+==> ./prismlauncher/.rb.notes <==
+jar from cmake toolchain ; draft patch exists
+
 ==> ./procmail/.rb.notes <==
 => SR 850841 verification error from preinstallimage
 asm diffs
@@ -8898,7 +8932,7 @@ python3 pyc toolchain ASLR
 
 
 ==> ./python-PyMuPDF/.rb.notes <==
-=> SR 1373241 issue in .a file / RECORD
+=> SR 1373372 1373241 issue in .a file / RECORD
 
 
 ==> ./python-PyMySQL/.rb.notes <==
@@ -9749,6 +9783,7 @@ python3.10 toolchain pyc ASLR
 solved upstream
 
 ==> ./python-hunter/.rb.notes <==
+toolchain cython ; draft patch exists
 RECORD file records hash of hunter/_predicates.c
 from cython
 -  __Pyx_TraceLine(1,15,0,__PYX_ERR(1, 1, __pyx_L1_error))
@@ -9887,6 +9922,8 @@ remaining flaky test:
 cpython pyc ASLR
 
 ==> ./python-kwant/.rb.notes <==
+toolchain Cython ; same as python-hunter 
+
 parallelism+ASLR+CPU ?
 +++ /var/tmp/build-root.1b/.mount/home/abuild/rpmbuild/BUILD/python-kwant-1.5.0-build/kwant-1.5.0/kwant/linalg/_mumps.c 2042-03-10 22:53:43.438000000 +0000
 @@ -14730,7 +14730,7 @@
@@ -9895,8 +9932,6 @@ parallelism+ASLR+CPU ?
  */
 -  __Pyx_TraceLine(1,0,0,__PYX_ERR(1, 1, __pyx_L1_error))
 +  __Pyx_TraceLine(1,6,0,__PYX_ERR(1, 1, __pyx_L1_error))
-
-from
 
 ==> ./python-langgraph/.rb.notes <==
 => SR 1371636 nocheck
@@ -11223,6 +11258,12 @@ time FTBFS
 ==> ./python-veusz/.rb.notes <==
 #=> https://github.com/veusz/veusz/pull/479 sort readdir
 /usr/lib64/python3.8/site-packages/veusz/helpers/qtloops.cpython-38-x86_64-linux-gnu.so differs in assembler output
+
+
+==> ./python-vllm/.rb.notes <==
+toolchain: CPU core count in .src.rpm
+-export MAX_JOBS=4
++export MAX_JOBS=1
 
 
 ==> ./python-waitress/.rb.notes <==
@@ -13778,7 +13819,9 @@ date
 needs https://codereview.qt-project.org/gitweb?p=qt%2Fqtbase.git;a=commit;h=297fe90329782d35dc4f155185ded045551ef52f backported into libqt5-qtbase 
 
 ==> ./wine/.rb.notes <==
-= https://bugzilla.opensuse.org/show_bug.cgi?id=1231620 wine parallelism
+=> https://gitlab.winehq.org/wine/wine/-/merge_requests/11754 => https://bugs.winehq.org/show_bug.cgi?id=60238
+old: = https://bugzilla.opensuse.org/show_bug.cgi?id=1231620 wine parallelism
+cscript.exe build-id only: quoted #include "ihost.h" in programs/wscript/wscript.h lets cscript (PARENTSRC=../wscript) pick up wscript/ihost.h instead of its own generated cscript/ihost.h depending on -j ; fixed by reproducible-cscript-ihost.patch (angle brackets, same as dlls/xaudio2_7/xaudio_private.h), rbk-verified identical 2026-08-25, not submitted yet ; old: timestamp in PE .dll + #https://gitlab.winehq.org/wine/wine/-/merge_requests/4035 (closed unmerged, was the bison -d race, superseded by split .tab.h/.tab.c rules in makedep)
 
 from "x86_64-w64-mingw32-gcc", "-c", "-o", "libs/adsiid/x86_64-windows/adsiid.o", "libs/adsiid/adsiid.c", "-Ilibs/adsiid", "-Iinclude", "-Iinclude/msvcrt", "-D_MSVCR_VER=0", "-D__WINESRC__", "-D__WINE_PE_BUILD", "-Wall", "-fno-strict-aliasing", "-Wdeclaration-after-statement", "-Wempty-body", "-Wignored-qualifiers", "-Winit-self", "-Wno-packed-not-aligned", "-Wshift-overflow=2", "-Wstrict-prototypes", "-Wtype-limits", "-Wunused-but-set-parameter", "-Wvla", "-Wwrite-strings", "-Wpointer-arith", "-Wlogical-op", "-Wabsolute-value", "-Wenum-conversion", "-Wno-misleading-indentation", "-Wformat-overflow", "-Wnonnull", "-mcx16", "-mcmodel=small", "-gdwarf-4", "-g", "-O2"] - started
     by pid=143824 dir=/home/abuild/rpmbuild/BUILD/wine-9.19 exec="/usr/bin/make", ["make", "install", "DESTDIR=/home/abuild/rpmbuild/BUILDROOT/wine-9.19-0.x86_64"] - started
@@ -13786,8 +13829,6 @@ from "x86_64-w64-mingw32-gcc", "-c", "-o", "libs/adsiid/x86_64-windows/adsiid.o"
 
 cscript.exe varies in build_id only
 from "/usr/bin/x86_64-w64-mingw32-gcc", "-Wl,--file-alignment,0x1000", "-mconsole", "-municode", "-nodefaultlibs", "-nostartfiles", "-Wl,--exclude-all-symbols", "-Wl,--nxcompat", "-Wl,--dynamicbase", "-Wl,--disable-auto-image-base", "-o", "programs/cscript/x86_64-windows/cscript.exe", "-L./dlls", "-Wl,--entry,wmainCRTStartup", "tmp670d63ba/cscript-00000000.spec.o", "programs/cscript/x86_64-windows/arguments.o", "programs/cscript/x86_64-windows/host.o", "programs/cscript/x86_64-windows/main.o", "libs/uuid/x86_64-windows/libuuid.a", "dlls/shell32/x86_64-windows/libshell32.a", "dlls/oleaut32/x86_64-windows/liboleaut32.a", "dlls/ole32/x86_64-windows/libole32.a", "dlls/user32/x86_64-windows/libuser32.a", "dlls/advapi32/x86_64-windows/libadvapi32.a", "dlls/winecrt0/x86_64-windows/libwinecrt0.a", "dlls/ucrtbase/x86_64-windows/libucrtbase.a", "dlls/kernel32/x86_64-windows/libkernel32.a", "dlls/ntdll/x86_64-windows/libntdll.a", "/usr/lib64/gcc/x86_64-w64-mingw32/13.2.0/libgcc.a"
-
-#old:
 
 ==> ./wireplumber/.rb.notes <==
 parallelism: searchindex.js varies, toolchain python-Sphinx
@@ -14073,6 +14114,9 @@ from
 configure.ac
 
 
+==> ./xpenguins/.rb.notes <==
+=> SR 1373826 => https://gitlab.com/wvermin/xpenguins/-/merge_requests/1
+
 ==> ./xpp3/.rb.notes <==
 javadoc jar
 
@@ -14214,6 +14258,9 @@ debuginfo=--debuginfo rbk
 ==> ./zip/.rb.notes <==
 => SR 954053 zip toolchain filesys
 readd function could use scandir in unix/unix.c
+
+==> ./zizmor/.rb.notes <==
+rust
 
 ==> ./zlib/.rb.notes <==
 FTBFS-j1
