@@ -1,0 +1,425 @@
+#!/usr/bin/python3
+"""Merge reproducible.json + issues.txt + allnotes.txt into per-package work items.
+
+Produces a triage index plus one self-contained task brief per still-unreproducible
+package, so that parts of the list can be handed to (AI) agents for fixing.
+
+Usage: rbtodo [outdir]     (default outdir: ./rbtodo.out)
+"""
+import json, os, re, sys, collections
+
+HERE = os.path.dirname(os.path.abspath(__file__))
+OUT = sys.argv[1] if len(sys.argv) > 1 else os.path.join(HERE, 'rbtodo.out')
+
+def readfile(name):
+    with open(os.path.join(HERE, name), encoding='utf-8', errors='replace') as f:
+        return f.read()
+
+pkgs = json.loads(readfile('reproducible.json'))
+allnames = set(p['package'] for p in pkgs)
+unrep = {p['package']: p for p in pkgs if p['status'] == 'unreproducible'}
+
+# ---------------------------------------------------------------- allnotes.txt
+# `find -maxdepth 2 -name .rb.notes | sort | xargs head` output (10 lines/package)
+notes, cur = {}, None
+for line in readfile('allnotes.txt').split('\n'):
+    m = re.match(r'^==> \./(.+?)/\.rb\.notes <==$', line)
+    if m:
+        cur = m.group(1)
+        notes[cur] = []
+    elif cur is not None:
+        notes[cur].append(line)
+notes = {k: '\n'.join(v).strip('\n') for k, v in notes.items()}
+
+# ---------------------------------------------------------------- issues.txt
+# Sections say how far a package is towards a fix
+# ("the further down an entry, the closer it is to completion").
+SECTIONS = [
+    ('ToDo',                                 'todo',            'not analyzed yet'),
+    ('Analyzed:',                            'analyzed',        'root cause known, no fix written'),
+    ('embeds rebuild-counter via %release:',  'rebuild-counter', 'embeds the %release rebuild counter', 1),
+    ('python-numba toolchain:',              'analyzed',        'root cause known (numba toolchain)', 1),
+    ('reported in SLE:',                     'reported',        'bug filed at SUSE, no patch yet'),
+    ('reported in openSUSE:',                'reported',        'bug filed at openSUSE, no patch yet'),
+    ('reported upstream:',                   'reported',        'bug filed upstream, no patch yet'),
+    ('fix submitted upstream:',              'patch-submitted', 'patch waits for upstream review'),
+    ('fix merged upstream:',                 'patch-merged',    'merged upstream, needs version update'),
+    ('SR:',                                  'sr-pending',      'submitrequest pending in OBS'),
+]
+SECTIONS = [s if len(s) == 4 else s + (0,) for s in SECTIONS]   # 4th field: indented sub-list only
+SECHEAD = {s[0]: s for s in SECTIONS}
+URL = re.compile(r'https?://\S+')
+COMPARE_OUT = 'https://rb.zq1.de/compare.factory/diffs/%s-compare.out'
+PATCHURL = re.compile(r'(github\.com/\S+/pull/|/-/merge_requests/|merge-requests/|/pull-requests/'
+                      r'|codereview\.|savannah\.gnu\.org/patch/|sourceforge\.net/p/\S+/patches/)')
+BUGURL = re.compile(r'(bugzilla\.|/issues?/|/bugs?/|bugreports\.qt\.io|tracker\.\S+/issues|savannah\.gnu\.org/bugs)')
+SRNUM = re.compile(r'^[#?+.\-]*((?:\d{6,7}\s+)+)')
+MARKER = re.compile(r'^[#?+.\-/]+')
+
+def isglob(tok):
+    return '*' in tok and len(tok.replace('*', '')) >= 3   # a bare '*' is a bullet, not a package
+
+def globmatch(tok, pkg):
+    if not isglob(tok):
+        return False
+    return re.fullmatch(re.escape(tok).replace(r'\*', r'[\w.+-]*'), pkg) is not None
+
+def primary_names(text):
+    """Package names the line is *about*: the leading run of package-ish tokens.
+    Stops at the first word that is neither a known package, a glob, an SR number
+    nor a separator - i.e. at the start of the free-text description or a URL."""
+    out = []
+    s = MARKER.sub('', text)
+    s = SRNUM.sub('', '#' + s)[0:] if False else SRNUM.sub('', s)
+    for raw in s.split():
+        if raw.startswith('http'):
+            break
+        for tok in re.split(r'[/+,]', raw.strip('.,;:')):
+            tok = tok.strip('?#+-.,;:')
+            if not tok:
+                continue
+            base = tok.split(':')[0]          # multibuild flavour: python310:doc
+            if base in allnames or isglob(base) or base == 'python31x':
+                out.append(base)
+            else:
+                return out
+        else:
+            continue
+        break
+    return out
+
+issue_lines = []
+last_entry_indented = False
+section = parent = SECTIONS[0]
+for n, line in enumerate(readfile('issues.txt').split('\n'), 1):
+    s = line.strip()
+    if s in SECHEAD:
+        section = SECHEAD[s]
+        if not section[3]:
+            parent = section
+        continue
+    if section[3] and not line[:1].isspace():
+        section = parent          # sub-list ended, back to the enclosing section
+    if not s or s.startswith('The further down'):
+        continue
+    # indented prose under a top-level entry (quoted changelogs etc) belongs to that entry;
+    # indented *lists* (rebuild-counter, python-numba) are entries of their own
+    if line[:1].isspace() and issue_lines and not last_entry_indented and not primary_names(s):
+        issue_lines[-1]['text'] += ' ' + s
+        continue
+    last_entry_indented = line[:1].isspace()
+    srs = SRNUM.match(s)
+    issue_lines.append(dict(
+        lineno=n, section=section[1], section_desc=section[2], text=s,
+        marked_done=s.startswith('#'),                 # '#' = handled/no longer an issue
+        srs=srs.group(1).split() if srs else [],
+        primary=primary_names(s),
+    ))
+
+def mentions(pkg, text):
+    """pkg named anywhere in the line (outside URLs), incl. glob entries"""
+    for tok in URL.split(text):
+        if re.search(r'(?<![\w.+])' + re.escape(pkg) + r'(?![\w+-])', tok):
+            return True
+        for g in re.findall(r'[A-Za-z0-9][\w.+-]*\*[\w.+-]*', tok):
+            if globmatch(g, pkg):
+                return True
+        if re.match(r'python31\d$', pkg) and re.search(r'(?<![\w.])python31x', tok):
+            return True
+    return False
+
+def is_primary(pkg, il):
+    return any(p == pkg or globmatch(p, pkg) or (p == 'python31x' and re.match(r'python31\d$', pkg))
+               for p in il['primary'])
+
+# ---------------------------------------------------------------- cause tags
+TAGS = [
+    ('date',            r'\bdate\b|timestamp|mtime|\btime\b|copyright|SOURCE_DATE|\bSDE\b|\byear\b|FTBFS-20\d\d|epoch'),
+    ('aslr',            r'\bASLR\b'),
+    ('parallelism',     r'parallel|\brace\b|%jobs|core.count|\bj1\b|_smp_mflags|\bcores?\b'),
+    ('cpu',             r'\bCPU\b|march=native|mtune=native|\bSSE|\bAVX|uname'),
+    ('readdir',         r'readdir|filesys|os\.walk|\bglob\b|listdir|\border(ing)?\b|\bsort(ed)?\b|hash.?order'),
+    ('random',          r'random|/dev/u?random|tmp.?path|tmp.?dir|tmp.?file|low.entropy|\bUUID\b|\bPID\b'),
+    ('rust',            r'\brust\b|HashMap|hashbrown|\bcargo\b|\bllvm\b|codegen-units|\.rlib'),
+    ('toolchain',       r'toolchain'),
+    ('buildid',         r'build.?id|debuginfo|debugsource|debuglink'),
+    ('java',            r'\bjars?\b|javadoc|\.class\b|openjdk|openj9|\bjava\b|\bmaven\b|\bmono\b|dotnet'),
+    ('python',          r'\.pyc\b|python3[.\d]|cython|\bpyo3\b|\bwheel\b|dist-info'),
+    ('golang',          r'\bgo\b|golang|gogen'),
+    ('lisp',            r'\bLISP\b|\bsbcl\b|\bclisp\b|scheme|\.elc\b|\.eln\b|\becl\b|\bmaxima\b|memory image'),
+    ('haskell',         r'\bghc\b|haskell|\bcabal\b'),
+    ('doc',             r'sphinx|doxygen|pdflatex|\btex\b|\.qch\b|\.pdf\b|\.epub\b|man.page|\.info\b|\.mo\b'),
+    ('archive',         r'\bzips?\b|\btar\b|\bcpio\b|gzip|(?<![\w.])\.a\b|\.jar\b'),
+    ('lto-pgo',         r'\blto\b|\bPGO\b|fprofile'),
+    ('qt-qml',          r'\bqml|\bqrc\b|qmlcachegen|\brcc\b|shiboken'),
+    ('hostname',        r'hostname|/etc/hosts'),
+    ('ftbfs',           r'FTBFS'),
+    ('rebuild-counter', r'rebuild.counter|%release'),
+]
+def tags_for(text):
+    return [name for name, rx in TAGS if re.search(rx, text, re.I)]
+
+# ---------------------------------------------------------------- merge
+STATE_RANK = {'unknown': 0, 'todo': 1, 'analyzed': 2, 'rebuild-counter': 3, 'reported': 4,
+              'sr-pending': 5, 'patch-submitted': 6, 'patch-merged': 7}
+items = []
+for name, meta in sorted(unrep.items()):
+    prim, sec = [], []
+    for il in issue_lines:
+        if is_primary(name, il):
+            prim.append(il)
+        elif mentions(name, il['text']):
+            sec.append(il)
+    live = [h for h in prim if not h['marked_done']]
+    stale_done = bool(prim) and not live
+    state = max([h['section'] for h in live] or ['unknown'], key=lambda s: STATE_RANK[s])
+    note = notes.get(name, '')
+    livetext = '\n'.join(h['text'] for h in live)
+    blob = note + '\n' + livetext
+    srs = sorted(set(sum([h['srs'] for h in live], [])))
+    # .rb.notes convention: '=> URL' / '=> SR nnn' = fix submitted, '= URL' = bug
+    # reference, leading '#' = no longer relevant
+    livenote = '\n'.join(l for l in note.split('\n') if not l.startswith('#'))
+    submitted = [l for l in livenote.split('\n') if l.startswith('=>')]
+    haspatch = state in ('patch-submitted', 'patch-merged') \
+        or any(PATCHURL.search(l) for l in submitted)
+    notesrs = sorted(set(re.findall(r'SR (\d{6,7})', '\n'.join(submitted))))
+    patchlinks = sorted(set(u for u in URL.findall(livetext + '\n' + '\n'.join(submitted))
+                            if PATCHURL.search(u)))
+    items.append(dict(
+        package=name, version=meta['version'],
+        # local double-build always differed; build-compare says whether the diff survives filtering
+        severity='hard' if meta.get('build_compare_status') == 'unreproducible' else 'build-compare-filtered',
+        build_compare_status=meta.get('build_compare_status'),
+        # verified==2: rebuilding the OBS binaries in an unvaried env matched bit-by-bit,
+        # so only the varied date/hostname/cores trigger the difference
+        only_under_variation=meta.get('verified') == 2,
+        verified=meta.get('verified'), verifiable=meta.get('verifiable'),
+        build_seconds=meta.get('build_duration'), build_seconds_j4=meta.get('build_duration4'),
+        last_build=meta.get('opensusesigdate'), autoclassify=meta.get('opensuseautoclassify'),
+        state=state, stale_done=stale_done, pending_srs=srs, notes_srs=notesrs,
+        has_upstream_patch=haspatch, patch_links=patchlinks,
+        has_bugreport=bool(BUGURL.search(livetext)),
+        issue_lines=prim, related_lines=sec,
+        notes=note, has_notes=bool(note),
+        local_checkout=os.path.isdir(os.path.join(HERE, 'openSUSE:Factory', name)),
+        compare_out_url=COMPARE_OUT % name,
+        tags=tags_for(URL.sub(' ', blob)) or ['unknown'],
+    ))
+
+def prio(it):
+    if it['has_upstream_patch'] or it['pending_srs'] or it['notes_srs'] or it['state'] == 'sr-pending':
+        return 'P3-waiting'
+    if it['has_bugreport'] or it['state'] == 'reported':
+        return 'P2-reported'
+    if it['state'] in ('analyzed', 'rebuild-counter') or it['has_notes'] or it['stale_done']:
+        return 'P1-analyzed'
+    return 'P0-untouched'
+for it in items:
+    it['priority'] = prio(it)
+
+# ---------------------------------------------------------------- clusters
+STOP = {'python', 'lib', 'perl', 'go', 'node', 'golang', 'gnome', 'kde'}
+def prefixes(n):
+    parts = n.split('-')
+    return ['-'.join(parts[:i]) for i in range(1, len(parts))]
+cnt = collections.Counter(p for it in items for p in prefixes(it['package'])
+                          if p not in STOP and len(p) >= 3)
+clusters = collections.defaultdict(list)
+for it in items:
+    cands = [p for p in prefixes(it['package']) if cnt[p] >= 3]
+    if cands:
+        clusters[max(cands, key=len)].append(it)
+clusters = {k: v for k, v in clusters.items() if len(v) >= 3}
+for it in items:
+    it['cluster'] = next((k for k, v in clusters.items() if it in v), None)
+
+# ---------------------------------------------------------------- output
+for d in ('tasks', 'batches'):
+    os.makedirs(os.path.join(OUT, d), exist_ok=True)
+with open(os.path.join(OUT, 'unreproducible.json'), 'w') as f:
+    json.dump(items, f, indent=1, sort_keys=True)
+COLS = ['priority', 'package', 'version', 'severity', 'state', 'has_upstream_patch', 'pending_srs',
+        'notes_srs', 'has_bugreport', 'has_notes', 'only_under_variation', 'local_checkout',
+        'build_seconds_j4', 'cluster', 'tags']
+with open(os.path.join(OUT, 'unreproducible.tsv'), 'w') as f:
+    f.write('\t'.join(COLS) + '\n')
+    for it in sorted(items, key=lambda i: (i['priority'], i['package'])):
+        f.write('\t'.join(','.join(it[c]) if isinstance(it[c], list) else str(it[c]) for c in COLS) + '\n')
+
+HOWTO = """## How to work on it
+
+    curl -s %(compare_out_url)s | less   # the diff the distro rebuild saw
+    cd openSUSE:Factory/%(package)s || (osc checkout openSUSE:Factory/%(package)s && cd $_)
+    parallelism=7 parallelism2=6 rbk      # build twice with varied date/hostname/cores
+    cat RPMS/*-compare.out                # the remaining diffs
+    autoclassify                          # bitmask of which variations matter (see rbkt)
+    autoprovenance $unreproduciblefile    # which command created it (needs stracebuild once)
+
+`~/reproducibleopensuse/howtodebug` has the full find -> debug -> fix -> submit guide,
+including the usual suspects to grep for (date/%%Y/strftime, readdir/os.walk/glob,
+ASLR, parallelism/race, -march=native, random tmp paths, `Hash[MS]` in rust build.rs).
+
+Fix it with:
+
+    source ~/reproducibleopensuse/helperfuncs ; qs
+    quilt new reproducible.patch ; quilt edit $file ; quilt refresh ; cd ..
+    /usr/lib/build/spec_add_patch reproducible.patch ; rbk
+
+Prefer an upstreamable fix (sort the list, honour SOURCE_DATE_EPOCH, drop the
+unreproducible element) over a downstream-only workaround, and append what you
+learned - including dead ends - to `%(package)s/.rb.notes`.
+"""
+
+def brief(it):
+    o = ['# %s %s - unreproducible (%s)' % (it['package'], it['version'], it['priority']), '']
+    o.append('- upstream/fix state: **%s**%s%s' % (
+        it['state'],
+        ' - upstream patch exists' if it['has_upstream_patch'] else
+        ' - bug reported, no patch' if it['has_bugreport'] else ' - no patch, no bug report',
+        ' - SR %s pending' % ', '.join(it['pending_srs']) if it['pending_srs'] else ''))
+    if it['notes_srs']:
+        o.append('- submitrequests mentioned in the notes: SR %s - check with `osc rq show` '
+                 'whether they are still pending or were accepted long ago (and the issue since regressed)'
+                 % ', '.join(it['notes_srs']))
+    if it['stale_done']:
+        o.append('- **stale entry**: issues.txt marks this as handled (`#`) yet the last rebuild '
+                 'still differed - recheck whether the old fix regressed or the entry is outdated')
+    if it['patch_links']:
+        o.append('- submitted fixes: %s - check whether they are merged, released and '
+                 'actually cover the current diff' % ', '.join(it['patch_links'][:4]))
+    o.append('- suspected causes: %s' % ', '.join(it['tags']))
+    o.append('- severity: %s' % ('real diff, build-compare still reports it' if it['severity'] == 'hard'
+                                 else 'diff is filtered away by build-compare (rpm bits differ, distro tolerates it)'))
+    if it['only_under_variation']:
+        o.append('- rebuilding the OBS binaries in an *unvaried* environment matched bit-by-bit, '
+                 'so the trigger is one of the varied factors (date / hostname / cpu count)')
+    o.append('- rebuild cost: ~%ss single-job, ~%ss with 4 jobs; last OBS build %s'
+             % (it['build_seconds'], it['build_seconds_j4'], it['last_build']))
+    o.append('- local checkout: %s' % ('openSUSE:Factory/%s (present)' % it['package'] if it['local_checkout']
+                                       else 'not checked out yet'))
+    o.append('- published diff of the last distro rebuild: %s' % it['compare_out_url'])
+    if it['autoclassify']:
+        o.append('- autoclassify bitmask: `%s` (see rbkt for the bits)' % it['autoclassify'])
+    if it['cluster']:
+        o.append('- part of the `%s*` cluster - siblings likely share the root cause' % it['cluster'])
+    o.append('')
+    o.append('## issues.txt')
+    o.append('')
+    if it['issue_lines']:
+        for h in it['issue_lines']:
+            o.append('- [%s] %s%s  _(line %d - %s)_' % (h['section'], h['text'],
+                     ' **[marked done]**' if h['marked_done'] else '', h['lineno'], h['section_desc']))
+    else:
+        o.append('Not listed - nobody has triaged this package yet.')
+    if it['related_lines']:
+        o.append('')
+        o.append('Mentioned in passing (other packages with a possibly shared cause):')
+        for h in it['related_lines'][:6]:
+            o.append('- [%s] %s' % (h['section'], h['text'][:200]))
+    o.append('')
+    o.append('## .rb.notes (first 10 lines)')
+    o.append('')
+    o.append('```\n%s\n```' % it['notes'] if it['notes'] else
+             'None - no previous debugging knowledge recorded for this package.')
+    o.append('')
+    o.append(HOWTO % it)
+    return '\n'.join(o) + '\n'
+
+for it in items:
+    with open(os.path.join(OUT, 'tasks', it['package'] + '.md'), 'w') as f:
+        f.write(brief(it))
+
+def line(it):
+    n = it['notes'].split('\n')[0][:80] if it['notes'] else ''
+    return '- **%s** %s [%s] %s%s%s' % (
+        it['package'], it['version'], ', '.join(it['tags']), it['state'],
+        ' - %ss build' % it['build_seconds_j4'] if it['build_seconds_j4'] else '',
+        ' - note: ' + n if n else '')
+
+todo = [it for it in items if it['priority'] != 'P3-waiting']
+bytag = collections.defaultdict(list)
+for it in todo:
+    for t in it['tags']:
+        bytag[t].append(it)
+for tag, group in sorted(bytag.items()):
+    with open(os.path.join(OUT, 'batches', '%s.md' % tag), 'w') as f:
+        f.write('# %s - %d unreproducible packages without an upstream fix\n\n'
+                'One task brief per package in `../tasks/<package>.md`.\n\n' % (tag, len(group)))
+        for it in sorted(group, key=lambda i: (i['priority'], i['package'])):
+            f.write(line(it) + '\n')
+quick = [it for it in todo if (it['build_seconds_j4'] or 9999) <= 300]
+with open(os.path.join(OUT, 'batches', 'quick-builds.md'), 'w') as f:
+    f.write('# quick builds - %d packages that rebuild in <= 5 min with 4 jobs\n\n'
+            'Cheapest iteration loop, good first tasks.\n\n' % len(quick))
+    for it in sorted(quick, key=lambda i: i['build_seconds_j4']):
+        f.write(line(it) + '\n')
+
+PROMPT = """# Handing a package to an agent
+
+Give the agent one file from `tasks/` plus this context:
+
+> You are working on reproducible builds for openSUSE and debug ONE package.
+> Read `rbtodo.out/tasks/<package>.md` for what is known so far, and
+> `~/reproducibleopensuse/howtodebug` for the method.
+> Check and update `.rb.notes` in the package's dir with debugging knowledge.
+> Git clone the relevant upstream repo if needed and create nice upstreamable commits.
+> No verbose inline comments - only surprising behaviour warrants one.
+> Add patches to the specfile. Test-build with
+> `cd $PACKAGEDIR && parallelism=7 parallelism2=6 rbk`; remaining diffs land in
+> `RPMS/*-compare.out`. Report what you changed, what the remaining diff is, and
+> whether the fix belongs upstream or downstream.
+
+Batches in `batches/` group packages by suspected cause - handing one batch to one
+agent works when the root cause is shared (`ghc-*`, `cosmic-*`, `enlightenment-theme-*`,
+the rust/llvm group, the lisp image dumps).
+
+Do not hand out `P3-waiting` packages: a patch or submitrequest is already pending,
+they only need tracking.
+"""
+open(os.path.join(OUT, 'PROMPT.md'), 'w').write(PROMPT)
+
+PRIDESC = collections.OrderedDict([
+    ('P0-untouched', 'untouched: at most a ToDo-line mention, no notes - nobody has debugged these'),
+    ('P1-analyzed', 'cause known or notes exist, but no fix written and nothing reported'),
+    ('P2-reported', 'bug reported (openSUSE / SLE / upstream), still no patch'),
+    ('P3-waiting', 'patch submitted/merged upstream or SR pending - only needs tracking'),
+])
+bypri = collections.defaultdict(list)
+for it in items:
+    bypri[it['priority']].append(it)
+with open(os.path.join(OUT, 'INDEX.md'), 'w') as f:
+    f.write('# openSUSE:Factory - %d packages still unreproducible\n\n' % len(items))
+    f.write('Generated by `rbtodo` from reproducible.json (status), issues.txt (how far towards a\n'
+            'fix) and allnotes.txt (previous debugging knowledge). Per-package briefs in `tasks/`,\n'
+            'cause-grouped worklists in `batches/`, data in `unreproducible.{json,tsv}`,\n'
+            'hand-off instructions in `PROMPT.md`.\n\n')
+    f.write('| priority | packages | meaning |\n|---|---|---|\n')
+    for p, desc in PRIDESC.items():
+        f.write('| %s | %d | %s |\n' % (p, len(bypri[p]), desc))
+    hard = sum(1 for it in items if it['severity'] == 'hard')
+    f.write('\n%d packages differ in ways build-compare still reports, %d only in bits that\n'
+            'build-compare filters away. %d differ only because of the varied date/hostname/cores.\n'
+            % (hard, len(items) - hard, sum(1 for it in items if it['only_under_variation'])))
+    stale = [it for it in items if it['stale_done']]
+    f.write('\n## cause tags (P0-P2 only)\n\n')
+    for tag, group in sorted(bytag.items(), key=lambda kv: -len(kv[1])):
+        f.write('- `batches/%s.md` - %d\n' % (tag, len(group)))
+    f.write('- `batches/quick-builds.md` - %d\n' % len(quick))
+    f.write('\n## clusters worth fixing together\n\n')
+    for k, v in sorted(clusters.items(), key=lambda kv: -len(kv[1])):
+        openv = [it for it in v if it['priority'] != 'P3-waiting']
+        f.write('- `%s*` - %d packages (%d still open): %s\n'
+                % (k, len(v), len(openv), ', '.join(sorted(i['package'] for i in v))))
+    if stale:
+        f.write('\n## stale issues.txt entries (marked `#` done, yet still unreproducible)\n\n')
+        for it in sorted(stale, key=lambda i: i['package']):
+            f.write(line(it) + '\n')
+    for p, desc in PRIDESC.items():
+        f.write('\n## %s - %s\n\n' % (p, desc))
+        for it in sorted(bypri[p], key=lambda i: (i['package'])):
+            f.write(line(it) + '\n')
+
+print('%d unreproducible packages -> %s' % (len(items), OUT))
+for p in PRIDESC:
+    print('  %-14s %3d' % (p, len(bypri[p])))
