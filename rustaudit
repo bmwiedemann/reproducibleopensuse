@@ -56,6 +56,7 @@ while IFS='|' read -r glob file marker ref ; do
     [ $found = 0 ] && { n=${glob%\*} ; echo ".. ${n%-}: not vendored" ; }
 done <<'EOF' | LC_ALL=C sort -r
 enum_delegate_lib-*|src/macros/register.rs|deterministic_unique_id|https://gitlab.com/dawn_app/enum_delegate - register() names its exported macro with rand::thread_rng() per expansion
+labyrinth_macros-*|src/lib.rs|SeededRng|https://gitlab.com/dawn_app/cryptify - flow_stmt! draws its dummy loop from rand::thread_rng() and shuffles the statements, so it expands differently on every compilation
 glib-macros-*|src/properties.rs|BTreeMap|https://github.com/gtk-rs/gtk-rs-core/pull/1840
 pyo3-macros-backend-*|src/introspection.rs|BTreeMap|https://github.com/PyO3/pyo3/pull/6076 - fixed in 0.29.0; only matters with feature experimental-inspect
 fluent-template-macros*|src/lib.rs|paths\.sort|https://github.com/XAMPPRocky/fluent-templates - static_loader! embeds a locale's .ftl files in parallel-walk order
