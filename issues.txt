@@ -28,7 +28,7 @@ turbo minor ASLR cmake_pch.hxx.gch - see also openttd
 #openttd ASLR debuginfo
 #mingw64-runtime minor .a
 nyxt sbcl toolchain, Scheme/LISP
-ecl random (LISP) via ecl-24.5.10/build/clos/boot.c
+ecl ASLR+time (LISP) - fixed locally by reproducible.patch (SOURCE_DATE_EPOCH for unique-init-name, sorted help.doc cdb, +c1-form-hash+ built at load time, uname -a in build-stamp); not submitted yet
 binutils low-entropy PGO ; -readdir? asm see ~/osc/t/openSUSE:Factory:Rings:0-Bootstrap # /usr/lib/build/pkg-diff.sh -a _build.standard.x86_64/binutils/binutils-2.42-0.x86_64.rpm _build.1/binutils/binutils-2.42-0.x86_64.rpm
 #wireplumber parallelism, low-entropy?
 ?cmake CMake.qch
@@ -94,12 +94,15 @@ termscp rust
 
 warp filesys maybe https://github.com/briansmith/ring/issues/1625
 wpewebkit copyright year ; varying JSCBytecodeCacheVersion
-xemacs order in lisp/custom-load.el ; .elc ; other
-xemacs-packages readdir+ASLR+CPU in .elc order ; SR 1119571 partial date
+xemacs .elc from sxhash-on-address in byte-optimize-letX + clock-seeded *gensym-counter* (also per-file) ; custom-load.el was really file-newer-than-file-p truncating st_mtime past 2038 ; build time+host+uname+random-state+dump-id in the dumped image ; all fixed in reproducible.patch + fix2038.patch, NOT submitted ; /usr/bin/xemacs still ASLR-dependent because the portable dumper walks eq hash tables (44 of them) in address order - structural, see .rb.notes
+xemacs-packages DONE (.build-differed=0, needs the fixed xemacs published) - was ASLR in .elc let-binding order (bug is in xemacs, not here) + tex date in tex-ref.dvi ; SR 1119571 partial date
 
 
 Analyzed:
+nst date - the .adoc man page sources carry no revision line, so asciidoc emits no <date> and docbook-xsl's get.refentry.date (common/refentry.xsl) invents the build date, m/d/Y, ignoring SOURCE_DATE_EPOCH ; fixed by nst/reproducible.patch passing a2x -a revdate= derived from SOURCE_DATE_EPOCH, not submitted upstream yet
+liquid-dsp cpu - cmake FindSIMD.cmake CHECK_C_SOURCE_RUNS probes the build host CPU, so BUILD_AVX/AVX512 (and the #if-guarded dotprod kernels) vary; plus cmake_host_system_information HOSTNAME in liquid_build_info ; fixed by liquid-dsp/reproducible.patch, upstream branch reproducible-simd-detection not submitted yet
 librsvg FTBFS-cpu
+budgie-backgrounds cpu - scripts/optimizeImage.sh re-encodes every wallpaper with `mogrify -format jxl`; the lossy libjxl encoder's float heuristics follow the host's SIMD level, so all 18 .jxl differ ("offset 47 (JPEG XL codestream)"). CPU-only: rbkt bit12 -> differed=0. TWO independent dispatch layers, both must be pinned and neither suffices alone: (1) glibc IFUNC libm FMA variants -> GLIBC_TUNABLES=glibc.cpu.hwcaps=-FMA,-FMA4 (as used for colord); (2) Google Highway inside libjxl does its own CPUID check, ignores glibc tunables and has no env knob at all, so it needs a constructor calling hwy::DisableTargets(~(1L<<15)). Not thread count. Fixed by reproducible-pin-simd.c + spec %build exports, verified bit-identical under full rbk variation; downstream workaround only - libjxl#733 wontfix, libjxl#3100 open, the clean fix is for upstream to commit the .jxl and drop the mogrify custom_target ; not submitted yet
 #hyprland-plugins minor lua order in rpm-meta
 python-imagecodecs random cython path
 python-hunter cython toolchain ASLR - set order in PEP-626 node positions leaks into __Pyx_TraceLine offsets -> RECORD hash of hunter/_predicates.c ; fixed by python-Cython/reproducible-node-positions.patch = https://github.com/cython/cython/issues/6118
@@ -119,15 +122,17 @@ xmlgraphics-batik uname -r
 calibre https://lists.fedoraproject.org/archives/list/devel@lists.fedoraproject.org/thread/67ICWGGE3TUPG5RH32GZAXICO4T5BXFG/ CPU-dependent from Qt6 QImage scaler | .png files differ from SSE-4.1
 #ocaml-extlib parallelism/race in debuginfo ? https://github.com/ocaml/dune/issues/9152
 #singularity-ce /dev/(u)random influences debuginfo ; dropped
-asymptote toolchain pdflatex date
+asymptote random - not pdflatex/date after all (PR 351 fixed that part): doc/histogram.asy draws 10000 Gaussrand() samples with no srand(), so the Shimazaki-Shinomoto bin count and the bar heights change every run and the embedded figure in asymptote.pdf differs (/BBox [0 0 400 200] vs [0 0 400 200.07], /Length 2669 vs 2558); asy seeds its mt19937_64 from std::random_device (runmath.in makeRandomSeed) and drawlabel.cc's urand() from the wall clock ; fixed by asymptote/doc-seed-random-figures.patch (srand(1) in histogram.asy, multicontour.asy, triangulate.asy - as doc/irregularcontour.asy already does) plus asymptote/reproducible.patch (both generators honour SOURCE_DATE_EPOCH); needs %autosetup -p1 ; rbk verified bit-identical 2026-08-28, not submitted upstream yet
 ?ginac pdflatex
 ?glucat pdflatex
 #unison pdf from pdfTeX - cannot reproduce after 20231122?
 #openmpi5 https://github.com/open-mpi/ompi/pull/11847 date+readdir
-coq parallelism from ocaml +maybe others - same as ocaml-camlp-streams?
+coq parallelism from ocaml - same as ocaml-camlp-streams (ocaml/ocaml#9345 corner case): clib's Int+Option shadow Stdlib, so an Env_persistent entry in .cmt/bytecode DEBUG depends on whether int.cmi exists yet; fixed downstream by a serial 'dune build -j1 clib/clib.cma' pass ; second bug, same package: clib/hashset.ml holds the hash-consing tables in Weak.t, so whether two structurally equal sub-values are physically shared - and hence written by Marshal as a back-reference or as a fresh copy - depends on when the GC ran; fixed by coq/reproducible-hashcons-strong-tables.patch (shadow Weak with an option array; the 'external unsafe_weak_get = "caml_weak_get"' below it must be replaced too or rocqc SEGVs), = https://github.com/rocq-prover/rocq/issues/11229, not submitted upstream yet
+rocq-stdlib parallelism - not a bug in this package: rocqc writes GC-dependent Marshal sharing into the .vo, so exactly one .vo out of ~800 differed per rebuild, a different one each time (Zmod/ZstarDef.vo, micromega/ZMicromega.vo); the files are structurally identical, only the sharing differs; fixed by coq/reproducible-hashcons-strong-tables.patch, rbk=0 with --prefer-pkgs against the patched rocq, all 4 rpms bit-identical
 ?hevea random ocaml tmp dir from ocamlopt
 mathgl random example .png
-R-base embedded random tmp path in /usr/lib64/R/library/KernSmooth/help/paths.rds; many other
+R-base embedded random tmp path in /usr/lib64/R/library/KernSmooth/help/paths.rds; many other - R CMD INSTALL's random tempdir reaches help/paths.rds *and* the srcfile filename/wd and the attr(Rd,"Rdfile") copy in help/*.rdb; plus Sys.time() in Rd2HTML.Rd's \Sexpr demo and in the methods sourceEnvironment prototype, help2man's .TH date, gzip mtimes on grDevices/afm/*.gz and the libtool build host ; fixed by R-base/reproducible-{rd-paths,build-timestamp,help2man-date,afm-gzip,source-env-date}.patch + a spec sed, rbk=0, not submitted upstream yet
+merkuro parallelism qt-qml - qmlcachegen only AOT-compiles a binding when it can resolve its types, and the qmldir/qmltypes of an imported module come from the build tree, but qt_add_qml_module's cachegen rules DEPENDS only on the module's *own* qmldir/qmltypes (Qt6QmlMacros.cmake), so with -j the applet/mail-settings objects are generated before merkuro_contact/merkuro_mail_static ran qmltyperegistrar and silently fall back to byte code; same class as neochat boo#1248369 and QTBUG-121643 ; fixed by merkuro-cmake-qml-module-build-order.patch adding the three missing add_dependencies() (the mail<->mail.settings import cycle can only be pinned, not resolved), rbk=0, not submitted upstream yet
 
 embeds rebuild-counter via %release:
     apptainer
@@ -162,12 +167,12 @@ embeds rebuild-counter via %release:
 python-pytest-httpbin FTBFS SSL + j1
 ?MozillaFirefox FTBFS-j1
 clisp hostname + uninitialized mem dump
-scheme48 unreproducible scheme dump
-chezscheme scheme .boot files
+scheme48 unreproducible scheme dump - cell-padding garbage patched locally; ASLR + "made by $USER on $date" banner still open, see scheme48/.rb.notes
+chezscheme scheme .boot files - FIXED locally: pin $session-key in s/build.zuo, see chezscheme/.rb.notes
 emacs .eln ASLR + .pdmp unknown issue (5+6 random bytes) - solvable with dettrace + CPU-override https://mail.gnu.org/archive/html/emacs-devel/2024-10/msg00004.html https://lists.gnu.org/archive/html/emacs-devel/2024-01/msg00464.html https://mail.gnu.org/archive/html/emacs-devel/2024-02/msg00417.html https://mail.gnu.org/archive/html/emacs-devel/2024-05/msg01026.html
 maxima clisp .mem dump + gzip mtime + bug SR 1373751
 pgloader from sbcl (lisp dump)
-scsh totally unreproducible scheme image dump
+scsh totally unreproducible scheme image dump - ASLR + scheme48 cell padding patched locally, ~300 pointer words left that move run-to-run, see scsh/.rb.notes
 racket various issues - unknown source - scheme dump
 xindy xindy.mem CLISP memory image data dump + https://sourceforge.net/p/xindy/bugs/65/
 
@@ -267,7 +272,7 @@ gnu-cobol https://savannah.gnu.org/bugs/index.php?54361 https://bugzilla.opensus
 #luajit https://github.com/LuaJIT/LuaJIT/issues/1008
 boost https://github.com/boostorg/boost/issues/741 2038-date influences order in libboost_log.so.1.82.0
 colord https://github.com/hughsie/colord/issues/174 https://bugzilla.opensuse.org/show_bug.cgi?id=1217747 .icc only-CPU
-neovim https://github.com/neovim/neovim/issues/26387 order issue maybe from gen_api_dispatch.lua
+neovim https://github.com/neovim/neovim/issues/26387 LuaJIT PRNG-seeded string hash order, 3 leaks: unsorted vim.tbl_keys() into hashy (option_hash_elems/event_handlers), vim.mpack.encode() map key order in packed_api_metadata, and string.dump() without the LuaJIT "d" deterministic flag for the embedded runtime bytecode ; local reproducible.patch verified differed=0 #ToUpstream
 cosmic-edit https://github.com/pop-os/cosmic-edit/issues/221 hash order issue, rust
 soapy-sdr https://github.com/pothosware/SoapySDR/issues/428 parallelism
 qt6-virtualkeyboard qt6-declarative https://bugreports.qt.io/browse/QTBUG-121643 bug? parallelism
@@ -276,14 +281,15 @@ qt6-quick3d parallelism https://bugreports.qt.io/browse/QTBUG-122722 https://bug
 xiphos/yelp-tools https://gitlab.gnome.org/GNOME/yelp-tools/-/issues/24 toolchain .epub content UUID
 pspp https://savannah.gnu.org/bugs/index.php?65485 bug,parallelism /usr/share/info/pspp.info-1.gz # unreproducible testsuite.log => dropped
 ?zls https://github.com/zigtools/zls/issues/2138 https://github.com/zigtools/zls/pull/2000 random path of version_data in debug
-gimp https://gitlab.gnome.org/GNOME/gimp-data/-/issues/7 png date ; partial fixes submitted ; CPU-dependency left
+gimp https://gitlab.gnome.org/GNOME/gimp-data/-/issues/7 png date ; date+icon parts fixed upstream (3.2.4 sets file-png-export "time" False and ships prebuilt icons) ; CPU-dependency left = the ONLY remaining diff is gimp-splash.png at offset 138, and it is NOT the rendering (pixels bit-identical; babl/gegl/lcms2/pixman all innocent) but zlib-ng: ld.so loads glibc-hwcaps/x86-64-v3/libz.so.1 on a v3 host and the baseline zlib-ng-compat/libz.so.1 otherwise, and the two emit different deflate. Verified native+GLIBC_TUNABLES=glibc.cpu.hwcaps=-FMA,-FMA4 == real qemu64 baseline byte-for-byte (x86-64-v3 requires FMA). Proposed fix = that export in %build; no LD_PRELOAD shim needed unlike budgie-backgrounds ; NOT yet verified by rbk. Affects any build-time PNG/zip/gz distro-wide
 python-rdflib https://github.com/RDFLib/rdflib/issues/2645 random Graph identifier ?toolchain from python-Sphinx? old SR 1132811
 python31x:doc https://github.com/sphinx-doc/sphinx/issues/13419 Sphinx toolchain race
 linkerd-cli linkerd-cli-edge https://github.com/linkerd/linkerd2/issues/13873 https://bugzilla.opensuse.org/show_bug.cgi?id=1240347 date in generated_multicluster_templates.gogen.go
-rakudo patch-mtime + https://github.com/rakudo/rakudo/issues/5427 + #https://github.com/rakudo/rakudo/pull/5426
+rakudo hash order + ASLR: reproducible.patch backports rakudo 5154f2a (hash-order of regex capnames in the settings, fixed upstream in 2025.12, https://github.com/rakudo/rakudo/issues/5427); reproducible-concretization.patch drops %!conc_table, an nqp::objectid-keyed HOW cache that ASLR-leaks into 11 core precomp units - both verified, needs upstream PR for the second one + SR
 pocketbase https://github.com/pocketbase/pocketbase/issues/7123 FTBFS-2030-03-03
 ?python314 https://github.com/python/cpython/issues/138061 random
 jemalloc CPU configure AC_RUN_IFELSE probes the build CPU twice (rdtscp; cpuid 0x80000008 -> LG_VADDR) => JEMALLOC_HAVE_RDTSCP in jemalloc_internal_defs.h, debuginfo+build-id; reproducible-no-build-cpu-probe.patch verified, needs upstream PR + SR
+libtommath nocheck boo#1227364 %check compiles+removes demo/*.o => mtime of the packaged demo/ doc dir depends on --nocheck; rpm>=4.20 copies %doc after %check; spec fix (copy the %doc trees in %install) verified, needs SR
 
 
 fix submitted upstream:
@@ -344,6 +350,8 @@ https://gitlab.winehq.org/mono/mono/-/merge_requests/243 https://gitlab.winehq.o
 python-tokenizer https://github.com/PyO3/pyo3/pull/6076 toolchain (rust HashMap)
 qgis/kate/ktextaddons/PCH-users https://gcc.gnu.org/bugzilla/show_bug.cgi?id=124811 gcc toolchain ASLR debuginfo (.debug_loclists via DECL_UID); gcc master cc08be7bf549, gcc-16 5e8bef95e4b4 >16.2.0; not in Factory's gcc16 16.2.0+git9497 snapshot, backport carried in openSUSE:Factory/gcc16 checkout
 libbluray/meson https://github.com/mesonbuild/meson/pull/16145 jar zipfile, toolchain
+cosmic-bg grok-build toolchain: LLVM unroll/peel iterated a DenseMap of block pointers, so DomTree update order - and the IR - followed ASLR; fixed upstream in llvm 965f9d87adb0 (#188821), in main + release/23.x, MISSING from release/22.x = openSUSE llvm22 + rustc 1.97's bundled LLVM; backport in openSUSE:Factory/cosmic-bg/llvm-unroll-deterministic-order.patch, crate workaround fast_image_resize-deterministic-row-pair.patch until rust is rebuilt; analysis+reproducer in openSUSE:Factory/cosmic-bg/llvm-loop-unroll-nondeterminism.md
+grok-build REPRODUCIBLE 2026-08-28: cryptify::flow_stmt! (vendor/labyrinth_macros-3.0.2) called rand::thread_rng() in the proc macro and shuffled the dummy-loop statements, so xai_grok_pager::build_update_config compiled differently every time; fixed by 0004-labyrinth-macros-deterministic-flow-stmt.patch (seed from crate+call site+input+CRYPTIFY_KEY), together with fast_image_resize-deterministic-row-pair.patch; not yet submitted upstream to gitlab labyrinth/cryptify
 
 
 SR:
