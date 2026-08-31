@@ -1,0 +1,182 @@
+#!/bin/bash
+# Commit local fixes from an openSUSE:Factory package checkout into the
+# collection project home:bmwiedemann:reproducible:distribution2026 .
+#
+# A plain `osc submit` from such a checkout would submit the pristine Factory
+# sources and silently drop the uncommitted local fix, so this stages a
+# checkout of the *target* package, transplants the local delta and commits it
+# directly (like rakudo r2 / ghc r3 were done).
+#
+# Usage: dist2026submit <package>
+#   <package> is a package name, looked up as openSUSE:Factory/<package>
+#   below the current directory or next to this script; a path to a
+#   checkout directory also works, as does running it with no argument
+#   from inside the checkout.
+#   dry=1        stage + validate only, do not commit
+#   msg="..."    override the commit message (default: bullets of the newest
+#                .changes entry)
+#   ring1=1      afterwards copypac the result into ...:distribution2026:ring1
+#                (for toolchain packages that should actually build in OBS)
+#
+# Behaviour distilled from the 2026-08-29 bulk run:
+#  - target missing            -> osc copypac openSUSE:Factory $pkg $prj first
+#  - target is a stale copypac -> refresh with copypac for a clean 1-commit diff
+#  - target has own commits    -> NO copypac (it would wipe fixes already
+#    there); the delta is rebased onto the target instead
+#  - .changes: the locally prepended entry block is prepended to the target's
+#    file (never patched: a hunk anchored on the old top entry would land the
+#    entry below newer ones)
+#  - other tracked files: copied when the target still equals the local base,
+#    otherwise rebased via diff+patch at fuzz 0; any reject aborts the package
+#  - a "previously applied" patch result usually means Factory already
+#    absorbed the fix - then the copypac refresh alone completes the package
+#  - untracked *.patch/*.diff/files referenced by Patch:/Source: tags are
+#    osc-added; big tarballs are skipped via osc co -l and survive the commit
+#    as S(kipped) - never run osc addremove in the staging dir
+
+set -u
+prj=${prj:-home:bmwiedemann:reproducible:distribution2026}
+stage=${stage:-~/.cache/dist2026-stage}
+limit=${limit:-2000000}
+fail=0
+
+srcmd5() { # prj pkg
+    osc api "/source/$1/$2" 2>/dev/null | sed -n '1s/.*srcmd5="\([0-9a-f]*\)".*/\1/p'
+}
+
+do_pkg() {
+    local d pkg srcprj fac tgt sd pristine block f
+    d=$(readlink -f "${1:-.}")
+    cd "$d" || return 1
+    pkg=$(cat .osc/_package 2>/dev/null)
+    srcprj=$(cat .osc/_project 2>/dev/null)
+    if [ -z "$pkg" ]; then echo "$d: not an osc checkout"; return 1; fi
+    if [ "$srcprj" != openSUSE:Factory ]; then
+        echo "$pkg: checkout is of $srcprj, not openSUSE:Factory"; return 1
+    fi
+
+    # collect the local delta
+    local mod=() new=()
+    while read -r st f; do
+        case "$st" in
+            M) mod+=("$f");;
+            A) new+=("$f");;
+            D) echo "$pkg: locally deleted $f - handle by hand"; return 1;;
+        esac
+    done < <(osc status 2>/dev/null | grep -E '^[MAD]')
+    # untracked files that a spec references
+    for f in $(sed -n -E 's/^[[:space:]]*(Patch|Source)[0-9]*[[:space:]]*:[[:space:]]*([^%[:space:]]+)$/\2/pi' ./*.spec 2>/dev/null | xargs -rn1 basename | sort -u); do
+        [ -e "$f" ] || continue
+        grep -qF "name=\"$f\"" .osc/_files && continue
+        printf '%s\n' "${new[@]-}" | grep -qxF "$f" || new+=("$f")
+    done
+    if [ ${#mod[@]} -eq 0 ] && [ ${#new[@]} -eq 0 ]; then
+        echo "$pkg: no local changes"; return 0
+    fi
+
+    # refresh or create the target when that cannot lose anything
+    fac=$(srcmd5 openSUSE:Factory "$pkg")
+    tgt=$(srcmd5 "$prj" "$pkg")
+    if [ -z "$tgt" ]; then
+        echo "$pkg: not in $prj yet, copypac"
+        osc copypac openSUSE:Factory "$pkg" "$prj" >/dev/null || return 1
+    elif [ "$tgt" != "$fac" ]; then
+        # only a target whose last commit is a plain copypac is safe to overwrite
+        if osc log -l1 "$prj" "$pkg" 2>/dev/null | grep -q '^osc copypac from project:openSUSE:Factory'; then
+            echo "$pkg: refreshing stale copypac"
+            osc copypac openSUSE:Factory "$pkg" "$prj" >/dev/null || return 1
+        else
+            echo "$pkg: target has own commits, rebasing onto it (no copypac)"
+        fi
+    fi
+
+    # stage the target
+    sd=$stage/$pkg
+    rm -rf "$sd"
+    osc co -l "$limit" -o "$sd" "$prj" "$pkg" >/dev/null 2>&1 || { echo "$pkg: checkout of $prj/$pkg failed"; return 1; }
+
+    for f in "${mod[@]-}"; do
+        [ -n "$f" ] || continue
+        pristine=.osc/sources/$f
+        if [ ! -e "$sd/$f" ] || cmp -s "$sd/$f" "$pristine"; then
+            cp "$f" "$sd/$f"                       # target still on our base
+        elif cmp -s "$sd/$f" "$f"; then
+            :                                      # already identical
+        elif [[ $f == *.changes ]]; then
+            # prepend our new entry block (local must be pristine + prefix)
+            local ps ls_
+            ps=$(stat -c%s "$pristine"); ls_=$(stat -c%s "$f")
+            if [ "$ls_" -gt "$ps" ] && cmp -s <(tail -c "$ps" "$f") "$pristine"; then
+                head -c $((ls_ - ps)) "$f" > "$sd/.block"
+                # match on the timestamp alone: the same entry may already be
+                # there under a different identity spelling
+                if grep -qF "$(sed -n 2p "$sd/.block" | sed 's/ - .*//')" "$sd/$f"; then
+                    echo "$pkg: $f entry already present"
+                else
+                    cat "$sd/.block" "$sd/$f" > "$sd/.merged" && mv "$sd/.merged" "$sd/$f"
+                fi
+                rm -f "$sd/.block"
+            else
+                echo "$pkg: $f delta is not a prepended block - merge by hand"; return 1
+            fi
+        else
+            # rebase: apply our delta at fuzz 0 onto the newer target file
+            if ! diff -u "$pristine" "$f" | patch -s -F0 --no-backup-if-mismatch -d "$sd" "$f"; then
+                echo "$pkg: rebase of $f failed (Factory may already contain the fix - check the target)"
+                return 1
+            fi
+        fi
+    done
+    for f in "${new[@]-}"; do
+        [ -n "$f" ] || continue
+        if grep -qF "name=\"$f\"" "$sd/.osc/_files"; then
+            cmp -s "$f" "$sd/$f" || cp "$f" "$sd/$f"   # arrived via Factory meanwhile
+        else
+            cp "$f" "$sd/$f" && (cd "$sd" && osc add "$f" >/dev/null)
+        fi
+    done
+
+    # validate before committing
+    if (cd "$sd" && osc status | grep -q '^D'); then
+        echo "$pkg: staging has deletions - refusing"; return 1
+    fi
+    if grep -l '<<<<<<<' "$sd"/*.spec "$sd"/*.changes 2>/dev/null | grep -q .; then
+        echo "$pkg: conflict markers in staging - refusing"; return 1
+    fi
+    for f in $(sed -n -E 's/^[[:space:]]*(Patch|Source)[0-9]*[[:space:]]*:[[:space:]]*([^%[:space:]]+)$/\2/pi' "$sd"/*.spec 2>/dev/null | xargs -rn1 basename | sort -u); do
+        [ -e "$sd/$f" ] || grep -qF "name=\"$f\"" "$sd/.osc/_files" ||
+            { echo "$pkg: spec references missing $f"; return 1; }
+    done
+    if ! (cd "$sd" && osc status | grep -q '^[MA]'); then
+        echo "$pkg: nothing left to commit (target already has the fix)"; return 0
+    fi
+
+    # commit message: bullets of the newest local .changes entry
+    local m=${msg:-}
+    if [ -z "$m" ]; then
+        m=$(awk '/^-------------------------------------------------------------------$/{n++; next} n==1' "$pkg.changes" 2>/dev/null | grep -v '@' | sed '/^$/d')
+        : "${m:=reproducible build fix}"
+    fi
+    if [ "${dry:-0}" = 1 ]; then
+        echo "$pkg: DRY RUN - would commit:"; (cd "$sd" && osc status)
+        return 0
+    fi
+    (cd "$sd" && osc ci --skip-local-service-run -m "$m") || return 1
+    if [ "${ring1:-0}" = 1 ]; then
+        osc copypac "$prj" "$pkg" "$prj:ring1" >/dev/null && echo "$pkg: copied into $prj:ring1"
+    fi
+}
+
+if [ $# -gt 1 ]; then
+    echo "usage: ${0##*/} <package>  (one package per run)" >&2
+    exit 1
+fi
+p=${1:-.}
+if ! [ -d "$p" ]; then # a package name: find its Factory checkout
+    scriptdir=$(dirname "$(readlink -f "$BASH_SOURCE")")
+    for c in "openSUSE:Factory/$p" "$scriptdir/openSUSE:Factory/$p"; do
+        [ -d "$c/.osc" ] && { p=$c; break; }
+    done
+fi
+[ -d "$p" ] || { echo "$1: no checkout found"; exit 1; }
+do_pkg "$p"
