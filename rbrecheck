@@ -1,0 +1,90 @@
+#!/bin/bash
+# rbrecheck - re-verify packages, only hand the still-broken ones to an agent
+#
+# usage: rbrecheck [-a] [-j N] [PKG...]
+#   PKG   packages in $project (default openSUSE:Factory), checked out with
+#         `osc co -l` when missing. Default list: every P3-waiting package from
+#         rbtodo.out/unreproducible.tsv - the ones that only need tracking.
+#   -a    afterwards start one claude session per package that is still
+#         unreproducible or FTBFS (what clauderb used to do unconditionally)
+#   -j N  build N packages at once in slots $slot, $slot+1, ... (default 1)
+#
+# Appends "package verdict differed seconds date" to rbtodo.out/recheck.tsv;
+# rbtodo shows the last verdict in the briefs and the index. The full rbverify
+# output of each package is kept in its dir as .rb.verify.out.
+# Stop early with: touch /tmp/stoprebuild
+
+here=$(dirname "$(readlink -f "$BASH_SOURCE")")
+: ${slot:=4}
+: ${project:=openSUSE:Factory}
+jobs=1
+agent=false
+while getopts "aj:" o ; do
+    case $o in
+        a) agent=true ;;
+        j) jobs=$OPTARG ;;
+        *) exit 64 ;;
+    esac
+done
+shift $((OPTIND-1))
+cd "$here" || exit 1
+[ -e rbtodo.out/unreproducible.tsv ] || ./rbtodo
+if [ $# = 0 ] ; then
+    set -- $(awk -F'\t' '$1=="P3-waiting" {print $2}' rbtodo.out/unreproducible.tsv)
+fi
+: ${report:=rbtodo.out/recheck.tsv}
+[ -e $report ] || printf 'package\tverdict\tdiffered\tseconds\tdate\n' > $report
+rm -f /tmp/stoprebuild
+
+record()
+{
+    ( flock 9 ; printf '%s\t%s\t%s\t%s\t%s\n' "$1" "$2" "$3" "$4" "$(date -u +%FT%TZ)" >&9 ) 9>>$report
+    echo "$2 $1"
+}
+
+recheck()  # pkg slot
+{
+    local p=$1 s=$2 d=$project/$1
+    if grep -qs "^$p$" exceptions/skip* ; then
+        echo "skip $p (exceptions/skip*)"
+        return
+    fi
+    if [ ! -d "$d" ] && ! osc co -l "$project" "$p" >/dev/null 2>&1 ; then
+        record "$p" checkout-failed - -
+        return
+    fi
+    if pgrep -f "build-root\.$s[b/]" >/dev/null ; then
+        record "$p" slot-busy - -
+        return
+    fi
+    slot=$s rbverify "$d" > "$d/.rb.verify.out" 2>&1
+    local ret=$?
+    local verdicts=(reproducible unreproducible FTBFS skipped inconclusive)
+    local seconds=$(sed -n 's/.*seconds=\([0-9]*\).*/\1/p' "$d/.rb.verify.out" | tail -1)
+    record "$p" "${verdicts[$ret]:-error$ret}" "$(cat $d/.build-differed 2>/dev/null || echo -)" "${seconds:--}"
+}
+
+worker()  # slot pkg...
+{
+    local s=$1 ; shift
+    for p ; do
+        [ -e /tmp/stoprebuild ] && break
+        recheck "$p" "$s"
+    done
+}
+
+# round-robin the list over $jobs workers, each with its own build slot
+for ((w=0; w<jobs; w++)) ; do
+    list=()
+    for ((i=w; i<=$#; i+=jobs)) ; do list+=("${@:i+1:1}") ; done
+    worker $((slot+w)) "${list[@]}" &
+done
+wait
+
+$agent || exit 0
+broken=$(awk -F'\t' -v pkgs=" $* " '$2 ~ /^(unreproducible|FTBFS)$/ && index(pkgs, " "$1" ") {print $1}' $report | sort -u)
+[ -n "$broken" ] || exit 0
+./rbtodo
+for p in $broken ; do
+    claude --model opus --effort high "@rbtodo.out/tasks/$p.md Please fix. The verdict of the last local verification build is in $project/$p/.rb.verify.out. Use export slot=$slot $extra"
+done

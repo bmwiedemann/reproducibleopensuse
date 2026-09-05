@@ -5,6 +5,12 @@ Produces a triage index plus one self-contained task brief per still-unreproduci
 package, so that parts of the list can be handed to (AI) agents for fixing.
 
 Usage: rbtodo [outdir]     (default outdir: ./rbtodo.out)
+
+Notation it decodes: issues.txt sections rank progress (SECTIONS below), a leading
+'#' marks an entry as handled; .rb.notes lines starting with '=>' are submitted
+fixes, '=' bug references, '#' no longer relevant. rbtodo.out/recheck.tsv (written
+by rbrecheck) carries the last local verification verdict per package, and the
+memory files in $RBMEMORY are linked into each brief by package name and cause tag.
 """
 import json, os, re, sys, collections
 
@@ -30,6 +36,44 @@ for line in readfile('allnotes.txt').split('\n'):
     elif cur is not None:
         notes[cur].append(line)
 notes = {k: '\n'.join(v).strip('\n') for k, v in notes.items()}
+
+# ---------------------------------------------------------------- memory + recheck.tsv
+# Claude's memory: one mechanism per file. Matched by package name against the
+# name/description lines only (body matches are far too noisy) plus a cause-tag map.
+MEMDIR = os.environ.get('RBMEMORY') or os.path.expanduser(
+    '~/.claude/projects/-home-tester-reproducibleopensuse/memory')
+memories = []
+for fn in sorted(os.listdir(MEMDIR)) if os.path.isdir(MEMDIR) else []:
+    if not fn.endswith('.md') or fn == 'MEMORY.md':
+        continue
+    with open(os.path.join(MEMDIR, fn), encoding='utf-8', errors='replace') as f:
+        head = f.read(2000)
+    m = re.search(r'^description:\s*"?(.*?)"?\s*$', head, re.M)
+    memories.append((fn[:-3], m.group(1) if m else ''))
+MEMSTOP = {'identity', 'form', 'alex'}
+MEMTAGS = {'lisp': ('sbcl-', 'clisp-', 'ecl-', 'chez-', 'scheme48-'), 'haskell': ('ghc-',),
+           'rust': ('llvm-', 'cargo-', 'pyo3-', 'rust-', 'proc-macro-', 'i18n-embed', 'tikv-'),
+           'java': ('jar-',), 'python': ('pyc-', 'pythonhashseed', 'cython-', 'zipapp-', 'stale-record'),
+           'qt-qml': ('qmlcachegen-', 'qt-'), 'golang': ('cgo-', 'gcc-lto-cgo'),
+           'lto-pgo': ('fat-lto', 'firefox-pgo', 'llvm-thinlto', 'spec-define-shadows')}
+def memory_for(pkg, tags):
+    hits = []
+    if len(pkg) >= 5 and pkg not in MEMSTOP:
+        rx = re.compile(r'(?<![\w.+])' + re.escape(pkg) + r'(?![\w+-])', re.I)
+        hits += [m for m in memories if rx.search(m[0]) or rx.search(m[1])]
+    for t in tags:
+        hits += [m for m in memories if m[0].startswith(MEMTAGS.get(t, ()))]
+    return list(dict.fromkeys(hits))
+
+recheck = {}
+try:
+    with open(os.path.join(OUT, 'recheck.tsv'), encoding='utf-8') as f:
+        for row in f:
+            c = row.rstrip('\n').split('\t')
+            if len(c) >= 5 and c[0] != 'package':
+                recheck[c[0]] = dict(verdict=c[1], differed=c[2], seconds=c[3], date=c[4])
+except OSError:
+    pass
 
 # ---------------------------------------------------------------- issues.txt
 # Sections say how far a package is towards a fix
@@ -186,6 +230,7 @@ for name, meta in sorted(unrep.items()):
     notesrs = sorted(set(re.findall(r'SR (\d{6,7})', '\n'.join(submitted))))
     patchlinks = sorted(set(u for u in URL.findall(livetext + '\n' + '\n'.join(submitted))
                             if PATCHURL.search(u)))
+    tags = tags_for(URL.sub(' ', blob)) or ['unknown']
     items.append(dict(
         package=name, version=meta['version'],
         # local double-build always differed; build-compare says whether the diff survives filtering
@@ -204,7 +249,7 @@ for name, meta in sorted(unrep.items()):
         notes=note, has_notes=bool(note),
         local_checkout=os.path.isdir(os.path.join(HERE, 'openSUSE:Factory', name)),
         compare_out_url=COMPARE_OUT % name,
-        tags=tags_for(URL.sub(' ', blob)) or ['unknown'],
+        tags=tags, memory=memory_for(name, tags), recheck=recheck.get(name),
     ))
 
 def prio(it):
@@ -251,8 +296,9 @@ HOWTO = """## How to work on it
 
     curl -s %(compare_out_url)s | less   # the diff the distro rebuild saw
     cd openSUSE:Factory/%(package)s || (osc checkout openSUSE:Factory/%(package)s && cd $_)
-    parallelism=7 parallelism2=6 rbk      # build twice with varied date/hostname/cores
-    cat RPMS/*-compare.out                # the remaining diffs
+    parallelism=7 parallelism2=6 rbverify # build twice with varied date/hostname/cores; prints the verdict,
+                                          # exit 0 reproducible / 1 unreproducible / 2 FTBFS; -r re-reads the last result
+    cat RPMS/*-compare.out                # the remaining diffs (deleted when clean)
     autoclassify                          # bitmask of which variations matter (see rbkt)
     autoprovenance $unreproduciblefile    # which command created it (needs stracebuild once)
 
@@ -264,7 +310,7 @@ Fix it with:
 
     source ~/reproducibleopensuse/helperfuncs ; qs
     quilt new reproducible.patch ; quilt edit $file ; quilt refresh ; cd ..
-    /usr/lib/build/spec_add_patch reproducible.patch ; rbk
+    /usr/lib/build/spec_add_patch reproducible.patch ; rbverify
 
 Prefer an upstreamable fix (sort the list, honour SOURCE_DATE_EPOCH, drop the
 unreproducible element) over a downstream-only workaround, and append what you
@@ -299,6 +345,10 @@ def brief(it):
     o.append('- local checkout: %s' % ('openSUSE:Factory/%s (present)' % it['package'] if it['local_checkout']
                                        else 'not checked out yet'))
     o.append('- published diff of the last distro rebuild: %s' % it['compare_out_url'])
+    if it['recheck']:
+        r = it['recheck']
+        o.append('- last local verification build (rbrecheck): **%s** on %s, %s rpms differed, %ss'
+                 % (r['verdict'], r['date'][:10], r['differed'], r['seconds']))
     if it['autoclassify']:
         o.append('- autoclassify bitmask: `%s` (see rbkt for the bits)' % it['autoclassify'])
     if it['cluster']:
@@ -323,6 +373,15 @@ def brief(it):
     o.append('```\n%s\n```' % it['notes'] if it['notes'] else
              'None - no previous debugging knowledge recorded for this package.')
     o.append('')
+    o.append('## known memory')
+    o.append('')
+    if it['memory']:
+        o.append('Mechanisms already found in earlier sessions - read before debugging:')
+        for slug, desc in it['memory']:
+            o.append('- `%s/%s.md` - %s' % (MEMDIR, slug, desc))
+    else:
+        o.append('No memory file matches this package or its cause tags.')
+    o.append('')
     o.append(HOWTO % it)
     return '\n'.join(o) + '\n'
 
@@ -332,9 +391,11 @@ for it in items:
 
 def line(it):
     n = it['notes'].split('\n')[0][:80] if it['notes'] else ''
-    return '- **%s** %s [%s] %s%s%s' % (
+    r = it['recheck']
+    return '- **%s** %s [%s] %s%s%s%s' % (
         it['package'], it['version'], ', '.join(it['tags']), it['state'],
         ' - %ss build' % it['build_seconds_j4'] if it['build_seconds_j4'] else '',
+        ' - rechecked %s %s' % (r['verdict'], r['date'][:10]) if r else '',
         ' - note: ' + n if n else '')
 
 todo = [it for it in items if it['priority'] != 'P3-waiting']
@@ -366,16 +427,22 @@ Give the agent one file from `tasks/` plus this context:
 > Git clone the relevant upstream repo if needed and create nice upstreamable commits.
 > No verbose inline comments - only surprising behaviour warrants one.
 > Add patches to the specfile. Test-build with
-> `cd $PACKAGEDIR && parallelism=7 parallelism2=6 rbk`; remaining diffs land in
-> `RPMS/*-compare.out`. Report what you changed, what the remaining diff is, and
+> `cd $PACKAGEDIR && parallelism=7 parallelism2=6 rbverify` as one background task
+> (exit 0 reproducible, 1 unreproducible, 2 FTBFS; remaining diffs land in
+> `RPMS/*-compare.out`). Report what you changed, what the remaining diff is, and
 > whether the fix belongs upstream or downstream.
+
+The same text is the project skill `rbdebug` (.claude/skills/rbdebug/SKILL.md);
+`clauderb <pkg>` runs the verification build first and only starts the agent if the
+package is still broken.
 
 Batches in `batches/` group packages by suspected cause - handing one batch to one
 agent works when the root cause is shared (`ghc-*`, `cosmic-*`, `enlightenment-theme-*`,
 the rust/llvm group, the lisp image dumps).
 
 Do not hand out `P3-waiting` packages: a patch or submitrequest is already pending,
-they only need tracking.
+they only need tracking - `rbrecheck` (no arguments) rebuilds them all without an
+agent and records the verdict in `recheck.tsv`, shown as "rechecked ..." above.
 """
 open(os.path.join(OUT, 'PROMPT.md'), 'w').write(PROMPT)
 

@@ -4,8 +4,9 @@
 # returns 1 for an unreproducible build
 # returns 255 for a failed build
 # usage:
-#  CLEAN=1 rbkt 0 0 1 0 0 0 # to build with sorted filesystem
-#  CLEAN=1 rbkt 1 1 1 1 1 1 1 1 1 1 # to build with as little nondeterminism as possible
+#  rbkt 0 0 1 0 0 0 # to build with sorted filesystem
+#  rbkt 1 1 1 1 1 1 1 1 1 1 # to build with as little nondeterminism as possible
+#  CLEAN=0 rbkt ... # reuse the build root instead of --clean (faster, but not a clean A/B)
 #  rbkt 12 is decoded as hex for 0 1 0 0 1
 
 
@@ -14,7 +15,7 @@ sub rbk(@)
 {
     my @tweakbits=@_;
     my @extrapkg=();
-    if($ENV{CLEAN} || $_[2]) { $ENV{clean}="--clean --offline"} else { $ENV{clean}="--offline" }
+    if(!defined $ENV{CLEAN} || $ENV{CLEAN} || $_[2]) { $ENV{clean}="--clean --offline"} else { $ENV{clean}="--offline" }
     # bit 1
     if(shift) { $ENV{datediff}=100 }
     # bit 2
