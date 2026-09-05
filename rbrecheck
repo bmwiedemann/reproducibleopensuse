@@ -3,7 +3,7 @@
 #
 # usage: rbrecheck [-a] [-j N] [PKG...]
 #   PKG   packages in $project (default openSUSE:Factory), checked out with
-#         `osc co -l` when missing. Default list: every P3-waiting package from
+#         `osc co` when missing. Default list: every P3-waiting package from
 #         rbtodo.out/unreproducible.tsv - the ones that only need tracking.
 #   -a    afterwards start one claude session per package that is still
 #         unreproducible or FTBFS (what clauderb used to do unconditionally)
@@ -49,7 +49,7 @@ recheck()  # pkg slot
         echo "skip $p (exceptions/skip*)"
         return
     fi
-    if [ ! -d "$d" ] && ! osc co -l "$project" "$p" >/dev/null 2>&1 ; then
+    if [ ! -d "$d" ] && ! osc co "$project" "$p" >/dev/null 2>&1 ; then
         record "$p" checkout-failed - -
         return
     fi
