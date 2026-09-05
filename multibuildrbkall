@@ -1,32 +1,5 @@
 #!/bin/bash
+# build every _multibuild flavour with rbkt; exit 27 if any is not reproducible
 export CLEAN=1
-: ${project:=openSUSE:Factory}
-pkg=$(basename $(pwd))
-if [[ -e _multibuild ]] ; then
-    [[ $multibuilds ]] ||
-        multibuilds=$(grep -F -v i686 _multibuild | grep -v '<!--' | grep -F -e package -e flavor | sed 's/.*>\([^<>]*\)<.*/\1/')
-else
-    multibuilds=
-fi
-    for multibuild in "" $multibuilds ; do
-        [[ $multibuild =~ test ]] && continue
-	if [[ -n $multibuild ]] ; then
-            oscbuildparams+=" -M=$multibuild "
-            export oscbuildparams
-            if [[ -e $multibuild.spec ]] ; then
-	        export spec=$multibuild.spec
-            fi
-	    osc api "/build/$project/_result?package=$pkg:$multibuild&repository=standard&arch=x86_64" | grep -E 'code="(excluded|disabled|unresolvable)"' && continue
-	else
-	    osc api "/build/$project/_result?package=$pkg&repository=standard&arch=x86_64" | grep -E 'code="(excluded|disabled|unresolvable)"' && continue
-	fi
-	echo "running $pkg $oscbuildparams"
-	mkdir -p RPMS ; echo $multibuild > RPMS/_multibuild
-        if ! rbkt "$@" ; then
-		if [ -n "$multibuild" ] || ! grep -q status.....notforus .build-jsonresult ; then
-			exit 27
-		fi
-	fi
-	echo "success $(basename $(pwd)) $oscbuildparams"
-    done
+multibuildrbkt "$@" || exit 27
 touch .build.multibuildrbkall.succeeded

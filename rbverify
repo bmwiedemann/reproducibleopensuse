@@ -10,9 +10,10 @@
 # exit: 0 reproducible, 1 unreproducible, 2 FTBFS, 3 skipped/not applicable,
 #       4 inconclusive (build flags differ from the previous run, or no result)
 #
-# All rbk/rbkt environment variables pass through (slot, parallelism, nolto,
-# nopgo, debuginfo, oscbuildparams, ...). Build output goes to .rb.verify.log;
-# only the verdict block is printed.
+# Builds every _multibuild flavour (via multibuildrbkt); a failing flavour is
+# named in the verdict. All rbk/rbkt environment variables pass through (slot,
+# parallelism, nolto, nopgo, debuginfo, oscbuildparams, ...). Build output goes
+# to .rb.verify.log; only the verdict block is printed.
 
 rounds=1
 report=false
@@ -27,7 +28,8 @@ shift $((OPTIND-1))
 cd "${1:-.}" || exit 4
 pkg=$(basename "$(pwd)")
 
-rpmbuildflags() { grep -m1 -o 'exec rpmbuild .*' "$1" 2>/dev/null; }
+rpmbuildflags() { echo "flavor=$(cat RPMS/_multibuild 2>/dev/null) $(grep -m1 -o 'exec rpmbuild .*' "$1" 2>/dev/null)"; }
+flavor() { local f=$(cat RPMS/_multibuild 2>/dev/null); [ -n "$f" ] && echo "flavor=$f"; }
 status() { jsonresultcache . >/dev/null 2>&1 ; sed -n 's/.*"status" : "\([a-zA-Z]*\)".*/\1/p' .build-jsonresult 2>/dev/null | head -1; }
 rpmsums() { cat RPMS/checksums RPMS.2/checksums 2>/dev/null | awk '{print $1}' | md5sum | cut -c1-8; }
 value() { cat "$1" 2>/dev/null || echo -; }
@@ -35,7 +37,7 @@ value() { cat "$1" 2>/dev/null || echo -; }
 verdict()
 {
     local st=$(status)
-    echo "rbverify: $pkg status=${st:-none} differed=$(value .build-differed) compare=$(value .build-compare-retval) $*"
+    echo "rbverify: $pkg $(flavor) status=${st:-none} differed=$(value .build-differed) compare=$(value .build-compare-retval) $*"
     case "$st" in
         reproducible) return 0 ;;
         unreproducible)
@@ -70,12 +72,12 @@ prevsums=
 for ((round=1; round<=rounds; round++)) ; do
     touch .rb.verify.start
     start=$(date +%s)
-    rbkt >> .rb.verify.log 2>&1
+    multibuildrbkt >> .rb.verify.log 2>&1
     seconds=$(( $(date +%s) - start ))
     if ! [ .build-differed -nt .rb.verify.start ] ; then
-        # rbk exited before building (exceptions/memory -> 37, no AVX -> 12, preload failure)
-        echo "rbverify: $pkg status=skipped osc-build-retval=$(value .osc-build-retval) - no new result after ${seconds}s, see .rb.verify.log"
-        tail -5 .rb.verify.log
+        # rbk exited before building (exceptions/memory -> 37, no AVX -> 12, preload failure, notforus)
+        echo "rbverify: $pkg $(flavor) status=skipped osc-build-retval=$(value .osc-build-retval) - no new result after ${seconds}s, see .rb.verify.log"
+        grep '^multibuildrbkt:' .rb.verify.log | tail -3
         exit 3
     fi
     sums=$(rpmsums)
@@ -91,7 +93,7 @@ for ((round=1; round<=rounds; round++)) ; do
 done
 
 flags=$(rpmbuildflags RPMS/.build.log)
-if [ -n "$prevflags" ] && [ "$flags" != "$prevflags" ] ; then
+if [ -n "$prevflags" ] && [ "${prevflags%% *}" = "${flags%% *}" ] && [ "$flags" != "$prevflags" ] ; then
     echo "rbverify: WARNING build flags differ from the previous run - a clean result under different flags proves nothing:"
     diff <(tr ' ' '\n' <<<"$prevflags") <(tr ' ' '\n' <<<"$flags") | grep '^[<>]' | head -20
     exit 4

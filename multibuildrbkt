@@ -1,0 +1,42 @@
+#!/bin/bash
+# multibuildrbkt - rbkt over every _multibuild flavour, with rbkt's exit codes
+#
+# 0 = every flavour reproducible, 1 = a flavour is unreproducible, 255 = a
+# flavour failed to build. Stops at the first failing flavour so its results
+# stay in RPMS/ and RPMS.2/ (RPMS/_multibuild names the flavour). Skips "test"
+# flavours, flavours OBS marks excluded/disabled/unresolvable, and a main
+# (flavourless) package that turns out notforus. Without _multibuild this is
+# plain rbkt. All rbk/rbkt variables pass through; oscbuildparams gets -M added.
+: ${project:=openSUSE:Factory}
+pkg=$(basename "$(pwd)")
+baseparams=$oscbuildparams
+basespec=$spec
+if [[ -e _multibuild ]] && [[ -z $multibuilds ]] ; then
+    multibuilds=$(grep -F -v i686 _multibuild | grep -v '<!--' | grep -F -e package -e flavor | sed 's/.*>\([^<>]*\)<.*/\1/')
+fi
+for flavor in "" $multibuilds ; do
+    [[ $flavor =~ test ]] && continue
+    if [[ -n $flavor ]] ; then
+        export oscbuildparams="$baseparams -M=$flavor"
+        if [[ -e $flavor.spec ]] ; then export spec=$flavor.spec ; else spec=$basespec ; fi
+        result="package=$pkg:$flavor"
+    else
+        export oscbuildparams="$baseparams"
+        spec=$basespec
+        result="package=$pkg"
+    fi
+    if osc api "/build/$project/_result?$result&repository=standard&arch=x86_64" 2>/dev/null | grep -qE 'code="(excluded|disabled|unresolvable)"' ; then
+        echo "multibuildrbkt: flavor=${flavor:-main} skipped (OBS: excluded/disabled/unresolvable)"
+        continue
+    fi
+    mkdir -p RPMS ; echo "$flavor" > RPMS/_multibuild
+    rbkt "$@"
+    r=$?
+    if [ $r != 0 ] && [ -z "$flavor" ] && grep -q '"status" : "notforus"' .build-jsonresult 2>/dev/null ; then
+        echo "multibuildrbkt: flavor=main notforus, skipped"
+        continue
+    fi
+    echo "multibuildrbkt: flavor=${flavor:-main} rbkt=$r"
+    [ $r = 0 ] || exit $r
+done
+exit 0
