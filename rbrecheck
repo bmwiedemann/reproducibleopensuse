@@ -45,7 +45,7 @@ record()
 recheck()  # pkg slot
 {
     local p=$1 s=$2 d=$project/$1
-    if grep -qs "^$p$" exceptions/skip* ; then
+    if ! [[ $ALL ]] && grep -qs "^$p$" exceptions/skip* ; then
         echo "skip $p (exceptions/skip*)"
         return
     fi
