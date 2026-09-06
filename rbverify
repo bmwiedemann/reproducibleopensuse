@@ -13,7 +13,9 @@
 # Builds every _multibuild flavour (via multibuildrbkt); a failing flavour is
 # named in the verdict. All rbk/rbkt environment variables pass through (slot,
 # parallelism, nolto, nopgo, debuginfo, oscbuildparams, ...). Build output goes
-# to .rb.verify.log; only the verdict block is printed.
+# to .rb.verify.log; only the verdict block is printed, and also kept in
+# .rb.verify.out (rewritten by every build run, left alone by -r) so that
+# rbrecheck/rbtodo and a later look at the directory see the latest verdict.
 
 rounds=1
 report=false
@@ -33,26 +35,28 @@ flavor() { local f=$(cat RPMS/_multibuild 2>/dev/null); [ -n "$f" ] && echo "fla
 status() { jsonresultcache . >/dev/null 2>&1 ; sed -n 's/.*"status" : "\([a-zA-Z]*\)".*/\1/p' .build-jsonresult 2>/dev/null | head -1; }
 rpmsums() { cat RPMS/checksums RPMS.2/checksums 2>/dev/null | awk '{print $1}' | md5sum | cut -c1-8; }
 value() { cat "$1" 2>/dev/null || echo -; }
+out=.rb.verify.out
+say() { { [ $# -gt 0 ] && printf '%s\n' "$*" || cat ; } | tee -a "$out" ; }  # stdout + .rb.verify.out
 
 verdict()
 {
     local st=$(status)
-    echo "rbverify: $pkg $(flavor) status=${st:-none} differed=$(value .build-differed) compare=$(value .build-compare-retval) $*"
+    say "rbverify: $pkg $(flavor) status=${st:-none} differed=$(value .build-differed) compare=$(value .build-compare-retval) $*"
     case "$st" in
         reproducible) return 0 ;;
         unreproducible)
             local o=RPMS/$pkg-compare.out
             if [ -e "$o" ] ; then
-                grep -E '^(Comparing|RPM |overall)|^[^ ]* differs|differ: byte' "$o" | head -40
+                grep -E '^(Comparing|RPM |overall)|^[^ ]* differs|differ: byte' "$o" | head -40 | say
                 local n=$(grep -cE '^[^ ]* differs' "$o")
-                [ "$n" -gt 40 ] && echo "(... $n differing files, see $o)"
+                [ "$n" -gt 40 ] && say "(... $n differing files, see $o)"
             fi
             return 1 ;;
         FTBFS|waitdep)
             for d in RPMS RPMS.2 ; do
                 if [ "$(value $d/.osc-build-retval)" != 0 ] ; then
-                    echo "--- $d/.build.log (tail) ---"
-                    grep -v '^\[ *[0-9]*s\] *$' $d/.build.log 2>/dev/null | tail -15
+                    say "--- $d/.build.log (tail) ---"
+                    grep -v '^\[ *[0-9]*s\] *$' $d/.build.log 2>/dev/null | tail -15 | say
                     break
                 fi
             done
@@ -63,27 +67,36 @@ verdict()
 }
 
 if $report ; then
+    out=/dev/null  # only read the last result, keep its .rb.verify.out
     verdict
     exit
 fi
+
+# a killed run must not leave the previous verdict behind as if it were current
+echo "rbverify: $pkg running since $(date -u +%FT%TZ) - no verdict yet" > "$out"
 
 prevflags=$(rpmbuildflags RPMS/.build.log)
 prevsums=
 for ((round=1; round<=rounds; round++)) ; do
     touch .rb.verify.start
     start=$(date +%s)
+    logstart=$(cat .rb.verify.log 2>/dev/null | wc -l)
     multibuildrbkt >> .rb.verify.log 2>&1
     seconds=$(( $(date +%s) - start ))
-    if ! [ .build-differed -nt .rb.verify.start ] ; then
-        # rbk exited before building (exceptions/memory -> 37, no AVX -> 12, preload failure, notforus)
-        echo "rbverify: $pkg $(flavor) status=skipped osc-build-retval=$(value .osc-build-retval) - no new result after ${seconds}s, see .rb.verify.log"
-        grep '^multibuildrbkt:' .rb.verify.log | tail -3
+    if ! [ .osc-build-retval -nt .rb.verify.start ] ; then
+        # rbk exited before osc build ran (osc up conflict, exceptions/memory -> 37, no AVX -> 12):
+        # show this run's log lines, the cause is in there. An FTBFS or notforus result
+        # refreshes .osc-build-retval but no .build-differed; verdict() handles those.
+        : > "$out"
+        say "rbverify: $pkg $(flavor) status=skipped osc-build-retval=$(value .osc-build-retval) - no new result after ${seconds}s, see .rb.verify.log"
+        tail -n +$((logstart+1)) .rb.verify.log | grep -v '^processing \|^resuming broken update' | tail -8 | say
         exit 3
     fi
     sums=$(rpmsums)
+    [ $round = 1 ] && : > "$out"  # drop the "running" marker; later rounds append
     if [ -n "$prevsums" ] && [ "$sums" != "$prevsums" ] ; then
         verdict "round=$round/$rounds seconds=$seconds"
-        echo "rbverify: round $round produced different rpms than round $((round-1)) ($sums vs $prevsums) - low-entropy nondeterminism"
+        say "rbverify: round $round produced different rpms than round $((round-1)) ($sums vs $prevsums) - low-entropy nondeterminism"
         exit 1
     fi
     prevsums=$sums
@@ -94,8 +107,8 @@ done
 
 flags=$(rpmbuildflags RPMS/.build.log)
 if [ -n "$prevflags" ] && [ "${prevflags%% *}" = "${flags%% *}" ] && [ "$flags" != "$prevflags" ] ; then
-    echo "rbverify: WARNING build flags differ from the previous run - a clean result under different flags proves nothing:"
-    diff <(tr ' ' '\n' <<<"$prevflags") <(tr ' ' '\n' <<<"$flags") | grep '^[<>]' | head -20
+    say "rbverify: WARNING build flags differ from the previous run - a clean result under different flags proves nothing:"
+    diff <(tr ' ' '\n' <<<"$prevflags") <(tr ' ' '\n' <<<"$flags") | grep '^[<>]' | head -20 | say
     exit 4
 fi
 exit 0

@@ -11,7 +11,7 @@
 #
 # Appends "package verdict differed seconds date" to rbtodo.out/recheck.tsv;
 # rbtodo shows the last verdict in the briefs and the index. The full rbverify
-# output of each package is kept in its dir as .rb.verify.out.
+# output of each package is in its dir as .rb.verify.out (written by rbverify).
 # Stop early with: touch /tmp/stoprebuild
 
 here=$(dirname "$(readlink -f "$BASH_SOURCE")")
@@ -57,7 +57,7 @@ recheck()  # pkg slot
         record "$p" slot-busy - -
         return
     fi
-    slot=$s rbverify "$d" > "$d/.rb.verify.out" 2>&1
+    slot=$s rbverify "$d" > /dev/null 2>&1  # rbverify writes $d/.rb.verify.out itself
     local ret=$?
     local verdicts=(reproducible unreproducible FTBFS skipped inconclusive)
     local seconds=$(sed -n 's/.*seconds=\([0-9]*\).*/\1/p' "$d/.rb.verify.out" | tail -1)
