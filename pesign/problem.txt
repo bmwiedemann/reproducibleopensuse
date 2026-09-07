@@ -1,0 +1,15 @@
+For several openSUSE packages, we run a separate signing step with
+https://github.com/openSUSE/pesign-obs-integration - cloned in ~/reproducibleopensuse/pesign/pesign-obs-integration/
+
+example packages are
+fwupd-efi / grub2 / xen / kernel-source / kmps(crash,drbd,leancrypto,nvidia-open-driver-G06-signed), systemd
+
+There seem to be two diffent kinds of sigs. One for kernel/kmp .ko files (appended) and another for PE binaries for UEFI (mixed in).
+
+This currently breaks nachbau verification.
+Of course we cannot publish the private key.
+This leaves two possible routes: 
+  A) strip the signature out, similar to what we do already with `rpm --delsign` and compare after that. IMHO, such a tool would need to be simple enough to be auditable. Needs recompression of rpm payload, so will be slow.
+  B) make the signing more transparent. OBS already runs a 2nd build step for the signing. This just needs to become a regular build that takes the unsigned package and prepared sigs as input and produces the signed output. Then both the creation of unsigned packages and the creation of signed packages can be reproducible builds. This only leaves the creation of sigs to the OBS server side. This approach would solve another problem with the creation of SLSA provenance files.
+     ~/reproducibleopensuse/pesign/open-build-service has a checkout to work in.
+
