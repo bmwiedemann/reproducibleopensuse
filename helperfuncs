@@ -9,13 +9,22 @@ gs()
 
 qs()
 {
-    local fuzz=--fuzz=1
+    local fuzz=--fuzz=1 pkgdir=$PWD d
     quilt -v setup $fuzz $(basename $(pwd)).spec
-    d=$(find . -maxdepth 1 -type d | grep -v -e '/binaries' -e /RPMS -e /deps -e '\.osc$' -e '^\.$'|head -1)
+    # quilt >= 0.67 unpacks into <name>-<version>-build/<tarball-dir>/ and
+    # puts series + patches there; without any Patch: line it creates neither
+    d=$(find . -mindepth 2 -maxdepth 4 -name series -not -path '*/.osc/*' -printf '%h\n' | head -1)
+    if [[ -z $d ]] ; then
+        d=$(find . -mindepth 1 -maxdepth 1 -type d -not -name binaries -not -name 'RPMS*' -not -name deps -not -name '.osc' | head -1)
+        if [[ $d == *-build ]] ; then
+            local inner=$(find "$d" -mindepth 1 -maxdepth 1 -type d -not -name SPECPARTS)
+            [[ $inner == */* && $inner != *$'\n'* ]] && d=$inner
+        fi
+    fi
     if [[ $d ]] ; then
-        cd $d
+        cd "$d"
         touch series
-        [[ -e patches ]] || ln -s ".." patches
+        [[ -e patches ]] || ln -s "$(realpath --relative-to=. "$pkgdir")" patches
         quilt push -a $fuzz
     fi
 }
